@@ -1,0 +1,26 @@
+package:
+  name: xpdsim
+  # use __conda_version__.txt for version
+
+source:
+  git_rev: master
+  git_url: http://github.com/chiahaoliu/xpdSim.git
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - numpy
+    - matplotlib
+    - pandas
+
+test:
+  imports:
+    - ophyd
+    - bluesky
+
+about:
+  home: https://github.com/chiahaoliu/xpdSim
