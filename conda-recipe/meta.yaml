@@ -1,7 +1,6 @@
 package:
   name: xpdsim
-  # use __conda_version__.txt for version
-
+  version: '1.0.0'
 source:
   git_rev: master
   git_url: http://github.com/chiahaoliu/xpdSim.git
@@ -15,7 +14,6 @@ requirements:
     - python
     - numpy
     - matplotlib
-    - pandas
 
 test:
   imports:
