@@ -7,7 +7,7 @@ class Count(object):
         self.det = detector
         self.num = num
 
-class Count2(object):
+class Count3(object):
     '''
     testing...delete when done!
     
