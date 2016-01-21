@@ -1,6 +1,8 @@
 # xpdSim
 simulator objects for bluesky, ophyd
 
+- [install the simulator](doc/installation)
+
 **Step 0: (Recommended)**
 
 Create a new conda environment as a sandbox:`conda create -n name_of_env python=3 ipython`
