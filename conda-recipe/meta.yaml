@@ -1,6 +1,6 @@
 package:
   name: xpdsim
-  version: '1.0.0'
+  version: '1.0.1'
 source:
   git_rev: master
   git_url: http://github.com/chiahaoliu/xpdSim.git
