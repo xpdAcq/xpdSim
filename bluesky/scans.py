@@ -6,3 +6,12 @@ class Count(object):
     def __init__(self, detector, num=1):
         self.det = detector
         self.num = num
+
+class Count2(object):
+    '''
+    testing...delete when done!
+    
+    '''
+    def __init__(self, detector, num=1):
+        self.det = detector
+        self.num = num
