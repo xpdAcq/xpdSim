@@ -1,7 +1,7 @@
 # xpdSim
 simulator objects for bluesky, ophyd
 
-- [install the simulator](doc/installation)
+- [install the simulator](doc/installation.md)
 
 **Step 0: (Recommended)**
 
