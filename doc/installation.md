@@ -10,7 +10,7 @@ Activate this environment: `source activate name_of_env`
 
 Install with pure git:
   1. Clone both repo: `xpdAcq` and `xpdSim`. After clone, there should be two separate directories in your computer
-  2. Navigate to each directory and run `python setup.py install`
+  2. Navigate to each directory and run `python setup.py develop`
 
 Install with conda:
   1. Under your sandbox environment, type: `conda install -c cl3077 xpdacq xpdsim`
