@@ -1,8 +1,8 @@
 **Install sphinx**
 
-  - Instlall from pip under root or a conda environment `pip install sphinx sphinx-autobuild`
+  - Install from pip under root or a conda environment `pip install sphinx sphinx-autobuild`
   
-**Pull from github and edit it**
+**Pull xpdSim from github and edit it**
 
   - After pulling from github, find the files needed to be edited. So far we take files with two extentions: `.txt` and `.md`, represents Markup and Markdown syntax respectively.
     - Markup syntax can be found at http://www.sphinx-doc.org/en/stable/rest.html#rst-primer
