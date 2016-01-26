@@ -53,20 +53,21 @@ def _ensure_empty_datapaths():
 def start_beamtime():
     """ start_beamtime function
 
-        setting up working directories
+        setting up working directories in local computer
 
     Parameters
     -----------
-    none: None
+
 
     Returns
     --------
     None
-        Nothing return
+        creates directory, nothing will return
+
     """
     _make_datapaths()
     _ensure_empty_datapaths()
-    print('Everything is ready to begin.  Please continue with icollection.')
+    print('Everything is ready to begin.\nPlease continue with icollection.')
     return
 
 
