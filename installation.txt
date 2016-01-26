@@ -3,7 +3,7 @@ Steps:
   0. Create a new conda environment as a sandbox: `conda create -n name_of_env python=3 ipython`
   1. Clone both repo: xpdAcq and xpdSim. After clone, there should be two separate directories in your computer
   2. Navigate to each directory and run `python setup.py develop`
-  3. After installtion, open an ipython section and run `from xpdacq.startbeamtime import *`
-  4. Working directories will be created under `home/user/xpdUser`
+  3. After installtion, open an ipython section and run `from xpdacq.start_beamtime import *`
+  4. Run `start_beamtime()` in ipython. Working directories will be created under `home/user/xpdUser`
   5. Navigate to xpdUser directory: `cd ~/xpdUser`
-  6. Now you can start simulation
+  6. Now you are ready to run simulations
