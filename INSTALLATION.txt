@@ -1,0 +1,20 @@
+These instructions are for Simon
+Steps:
+
+Initial setup
+  0. Create a new conda environment as a sandbox, e.g., : `conda create -n simulation python=3 ipython`
+  1. Clone both repo: xpdAcq and xpdSim. After clone, there should be two separate directories in your computer. Make sure the Master branch is checked out.
+  2. Navigate to the top directory of the xpdSim repository.
+  1. Activate the `simulation` conda environment
+  1. run `python setup.py develop`
+  1. repeat for xpdAcq
+  
+This should have installed all the components.
+To run a simulation
+  1. cd to a directory where you want to work.
+  1. activate the simulation environment
+  3. open ipython session
+  4. type `from simsetup.xpdsim import *`
+  4. Run `start_beamtime()` in ipython. Working directories will be created under `home/user/xpdUser`
+  5. Navigate to xpdUser directory: `cd ~/xpdUser`
+  6. Now you are ready to run simulations
