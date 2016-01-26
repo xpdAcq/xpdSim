@@ -33,6 +33,8 @@ import shlex
 extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -56,7 +58,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'xpdSim'
-copyright = '2016, Chia-Hao Liu, Simon J. L. Billinge'
+copyright = '(c) 2016 trustees of Columbia University in the City of New York'
 author = 'Chia-Hao Liu, Simon J. L. Billinge'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -198,7 +200,7 @@ html_static_path = ['_static']
 # Sphinx supports the following languages:
 #   'da', 'de', 'en', 'es', 'fi', 'fr', 'h', 'it', 'ja'
 #   'nl', 'no', 'pt', 'ro', 'r', 'sv', 'tr'
-#html_search_language = 'en'
+html_search_language = 'en'
 
 # A dictionary with options for the search language support, empty by default.
 # Now only 'ja' uses this config value

@@ -10,6 +10,11 @@ xpdSim is a python package that simulates experiment environment at XPD beamline
 
 Contents:
 
+
+.. automodule:: simsetup.xpdsim
+   :members:
+   :undoc-members:
+  
 .. toctree::
    :maxdepth: 2
 
