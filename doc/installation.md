@@ -22,7 +22,7 @@ Install with conda:
 
 **Step 3: Setting up working directories**
   - Under your conda environment with both `xpdacq` and `xpdsim` packeges properly installed, open an `ipython` section
-  - In your ipython section, run `from simsetup.xpdsim import *` and then run `start_beamtime()`
+  - In your ipython section, run `xpdacq.start_beamtime import *` and then run `start_beamtime()`
   - Main working directory should be created under `home/user_name/xpdUser` and several sub-working directories will be created under main working directory.
   - Navigate to `xpdUser` directory by runnig `cd ~/xpdUser`
   - Now you are ready to run simulation
