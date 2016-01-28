@@ -17,34 +17,3 @@
 '''
 import os.path
 
-def initialize():
-    '''creates environment for xpd simulation
-    
-    checks for the presence of ./xpdUser and ./xpdConfig directories
-    if absent it creates them.  If present it leavest them in the current state.
-    '''
-    from xpdacq.config import WORKING_DIR, CONFIG_DIR
-        
-    if os.path.isdir('./'+WORKING_DIR):
-        print('./'+WORKING_DIR+' already exists.  Leaving it.')
-    else:
-        os.mkdir('./'+WORKING_DIR)
-        print('./'+WORKING_DIR+' created.  Ready to play.')
-    
-    if os.path.isdir('./'+CONFIG_DIR):
-        print('./'+CONFIG_DIR+' already exists.  Leaving it.')
-    else:
-        os.mkdir('./'+CONFIG_DIR)
-        print('./'+CONFIG_DIR+' created.  Ready to play.')
-    
-    print('simulation environment initialized.  move to ./'+WORKING_DIR+' and type python -m start_beamtime')
-    
-initialize()   
-    
-if __name__ == '__main__':
-    try:
-        initialize()
-    except RuntimeError as e:
-        print(e, file=sys.stderr)
-        print("Ask beamline scientist what to do next.", file=sys.stderr)
-        sys.exit(1)
