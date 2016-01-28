@@ -2,10 +2,10 @@ These instructions are for Simon
 Steps:
 
 Initial setup
-  0. Create a new conda environment as a sandbox, e.g., : `conda create -n simulation python=3 ipython`
-  1. Clone both repo: xpdAcq and xpdSim. After clone, there should be two separate directories in your computer. Make sure the Master branch is checked out.
+  0. Create a new conda environment as a sandbox, e.g., : `conda create -n xpdsim python=3 ipython`
+  1. Clone both repos: xpdAcq and xpdSim. After clone, there should be two separate directories in your computer. Make sure the Master branch is checked out.
   2. Navigate to the top directory of the xpdSim repository.
-  1. Activate the `simulation` conda environment
+  1. Activate the `xpdsim` conda environment
   1. run `python setup.py develop`
   1. repeat for xpdAcq
 
@@ -14,10 +14,10 @@ To run a simulation
   1. cd to a directory where you want to work.
   1. activate the simulation environment, e.g., `source activate
   xpdsim`
-  4. Run `python initialize()` at the command prompt. This creates
-  the directories that are the same as you might encounter on the
-  xpd instrument
-  5. Navigate to xpdUser directory: `cd ./xpdUser`
+  4. Run `python -m initialize` at the command prompt. This creates
+  the top level directories that are present on the
+  xpd instrument computer
+  5. Navigate to the xpdUser directory: `cd ./xpdUser`
   6. Now you are ready to run simulations:
     1. type icollection and follow the directions on the xpdAcq
-    document pages
+    document pages [fixme...not working yet]
