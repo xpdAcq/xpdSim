@@ -18,10 +18,10 @@
 import os.path
 
 def initialize():
-    '''creates environment for xpd simulation
+    '''creates the environment for an xpd simulation
     
     checks for the presence of ./xpdUser and ./xpdConfig directories
-    if absent it creates them.  If present it leavest them in the current state.
+    if absent it creates them.  If present it leaves them in the current state.
     '''
     from xpdacq.config import WORKING_DIR, CONFIG_DIR
         
@@ -37,10 +37,9 @@ def initialize():
         os.mkdir('./'+CONFIG_DIR)
         print('./'+CONFIG_DIR+' created.  Ready to play.')
     
-    print('simulation environment initialized.  move to ./'+WORKING_DIR+' and type python -m start_beamtime')
-    
-initialize()   
-    
+    print('simulation environment initialized.\nTo continue move to ./'+WORKING_DIR+' ') 
+    print('and type python -m xpdacq.start_beamtime')
+        
 if __name__ == '__main__':
     try:
         initialize()
