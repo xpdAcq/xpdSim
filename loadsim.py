@@ -33,7 +33,7 @@ else:
     print('if it is not, please move there manually and rerun loadsim\n')
 
 print('Initializing the XPD data acquisition simulation environment') 
-from xpdacq.beamtime import *
+from xpdacq.beamtime import end_beamtime as end_beamtime
 
 print('OK, ready to go.  To continue, follow the steps in the xpdAcq')
 print('documentation at http://xpdacq.github.io/xpdacq')

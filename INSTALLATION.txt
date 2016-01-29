@@ -17,7 +17,10 @@ To run a simulation
   4. Run `python -m initialize` at the command prompt. This creates
   the top level directories that are present on the
   xpd instrument computer
-  5. start ipython: `ipython`
+  5. start ipython: `ipython --profile=xpdsim`
   1. load simulation modules: `import loadsim`
+  1. type `flush_directories`.  This will delete everything in the
+  simulation tree
+  1. type `start_beamtime`
   6. Now you are ready to run simulations: follow the directions on the xpdAcq
-    document pages [fixme...not working yet]
+    document pages under the `XPD users` link.
