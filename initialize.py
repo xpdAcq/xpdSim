@@ -15,7 +15,8 @@
 ##############################################################################
 '''module to initialize the directories for a local simulation of and XPD session
 '''
-import os.path
+import os
+
 
 def initialize():
     '''creates the environment for an xpd simulation
@@ -24,21 +25,26 @@ def initialize():
     if absent it creates them.  If present it leaves them in the current state.
     '''
     from xpdacq.config import WORKING_DIR, CONFIG_DIR
+    STEM = './'
         
-    if os.path.isdir('./'+WORKING_DIR):
-        print('./'+WORKING_DIR+' already exists.  Leaving it.')
+    if os.path.isdir(STEM+WORKING_DIR):
+        print(STEM+WORKING_DIR+' already exists.  Leaving it.')
     else:
-        os.mkdir('./'+WORKING_DIR)
-        print('./'+WORKING_DIR+' created.  Ready to play.')
+        os.mkdir(STEM+WORKING_DIR)
+        print(STEM+WORKING_DIR+' created.  Ready to play.')
     
-    if os.path.isdir('./'+CONFIG_DIR):
-        print('./'+CONFIG_DIR+' already exists.  Leaving it.')
+    if os.path.isdir(STEM+CONFIG_DIR):
+        print(STEM+CONFIG_DIR+' already exists.  Leaving it.')
     else:
-        os.mkdir('./'+CONFIG_DIR)
-        print('./'+CONFIG_DIR+' created.  Ready to play.')
+        os.mkdir(STEM+CONFIG_DIR)
+        print(STEM+CONFIG_DIR+' created.  Ready to play.')
     
-    print('simulation environment initialized.\nTo continue move to ./'+WORKING_DIR+' ') 
-    print('and type python -m xpdacq.start_beamtime')
+    print('simulation environment initialized.\n')
+    print('moving to '+STEM+WORKING_DIR) 
+    os.chdir(STEM+WORKING_DIR)
+    
+    print('to get going type ipython')
+    print('when ipython starts type import loadsim')
         
 if __name__ == '__main__':
     try:

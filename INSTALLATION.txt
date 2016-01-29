@@ -17,7 +17,7 @@ To run a simulation
   4. Run `python -m initialize` at the command prompt. This creates
   the top level directories that are present on the
   xpd instrument computer
-  5. Navigate to the xpdUser directory: `cd ./xpdUser`
-  6. Now you are ready to run simulations:
-    1. type icollection and follow the directions on the xpdAcq
+  5. start ipython: `ipython`
+  1. load simulation modules: `import loadsim`
+  6. Now you are ready to run simulations: follow the directions on the xpdAcq
     document pages [fixme...not working yet]
