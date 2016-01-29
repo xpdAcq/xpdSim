@@ -40,8 +40,11 @@ def initialize():
         print(STEM+CONFIG_DIR+' created.  Ready to play.')
     
     print('simulation environment initialized.\n')
-    print('moving to '+STEM+WORKING_DIR) 
+
+    # now move to xpdUser and create the Import and Export directories
     os.chdir(STEM+WORKING_DIR)
+    os.mkdir('Import')
+    os.mkdir('Export')
     
     print('to get going type ipython')
     print('when ipython starts type import loadsim')

@@ -25,9 +25,17 @@ if os.path.isdir(STEM+WORKING_DIR):
     print('moving to '+STEM+WORKING_DIR) 
     os.chdir(STEM+WORKING_DIR)
 else:
+    # this logic could be better, but I was running out of time. Fix later if
+    # necessary
     print('in '+os.getcwd())
-    print('the current director should be '+WORKING_DIR)
-    print('if it is not, please move there manually and rerun loadsim')
+    print('type pwd to check your current directory')
+    print('the current directory should be /yourpath/'+WORKING_DIR)
+    print('if it is not, please move there manually and rerun loadsim\n')
 
+print('Initializing the XPD data acquisition simulation environment') 
+from xpdacq.beamtime import *
+
+print('OK, ready to go.  To continue, follow the steps in the xpdAcq')
+print('documentation at http://xpdacq.github.io/xpdacq')
         
 
