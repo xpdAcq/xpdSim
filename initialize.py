@@ -16,7 +16,7 @@
 '''module to initialize the directories for a local simulation of and XPD session
 '''
 import os
-
+import shutil
 
 def initialize():
     '''creates the environment for an xpd simulation
@@ -43,7 +43,22 @@ def initialize():
     # now move to xpdUser and create the Import and Export directories
     os.chdir(STEM+WORKING_DIR)
     # copy the ipython_profile file to the current directory
-    # [fixme]
+    
+    # WARNING - we must run this copy and paste inside xpdSim/ as ipython look at .ipython/ directory if no profile directory at current working directory is found
+    
+    #repo_dir = input('Please enter where is "xpdSim" directory at your computer  ') 
+    #FIXME - might be too compicated.....
+    
+    repo_dir = os.path.expanduser('~/xpdSim')
+    
+    iprofile_dir = 'profile_xpdsim'
+    cwd = os.getcwd()
+    
+    src = os.path.join(repo_dir, iprofile_dir)
+    dst = os.path.join(cwd, iprofile_dir)
+    
+    shutil.copytree(src, dst)
+    
     os.mkdir('Import')
     os.mkdir('Export')
     
