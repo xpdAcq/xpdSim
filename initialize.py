@@ -38,17 +38,20 @@ def initialize():
     else:
         os.mkdir(STEM+CONFIG_DIR)
         print(STEM+CONFIG_DIR+' created.  Ready to play.')
-    
-    print('simulation environment initialized.\n')
 
+        
     # now move to xpdUser and create the Import and Export directories
     os.chdir(STEM+WORKING_DIR)
+    # copy the ipython_profile file to the current directory
+    # [fixme]
     os.mkdir('Import')
     os.mkdir('Export')
     
     print('to get going type ipython')
     print('when ipython starts type import loadsim')
         
+    print('simulation environment initialized.\n')
+
 if __name__ == '__main__':
     try:
         initialize()
