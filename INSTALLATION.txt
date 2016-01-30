@@ -21,6 +21,6 @@ To run a simulation
   1. load simulation modules: `import loadsim`
   1. type `flush_directories`.  This will delete everything in the
   simulation tree
-  1. type `start_beamtime`
+  1. type `start_beamtime()`
   6. Now you are ready to run simulations: follow the directions on the xpdAcq
     document pages under the `XPD users` link.
