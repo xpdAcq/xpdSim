@@ -71,6 +71,7 @@ def initialize():
         pass
 
     
+    os.chdir('..')
     print('to get going type ipython')
     print('when ipython starts type import loadsim')
         

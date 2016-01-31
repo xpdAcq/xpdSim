@@ -14,26 +14,42 @@
 #
 ##############################################################################
 import os
+from xpdacq.beamtime import BeamTime
 
-from xpdacq import *
-from xpdacq.config import WORKING_DIR, CONFIG_DIR
-
-STEM = './'
+STEM = '.' # simulating case
+WORKING_DIR = 'xpdUser'
+bt = BeamTime(STEM)
 
 # try and find our way to the right directory
-if os.path.isdir(STEM+WORKING_DIR):
-    print('moving to '+STEM+WORKING_DIR) 
-    os.chdir(STEM+WORKING_DIR)
-else:
+#if os.path.isdir(bt.datapath.base):
+    #print('moving to ' + bt.datapath.base) 
+    #os.chdir(bt.datapath.base)
+#else:
     # this logic could be better, but I was running out of time. Fix later if
     # necessary
-    print('in '+os.getcwd())
-    print('type pwd to check your current directory')
-    print('the current directory should be /yourpath/'+WORKING_DIR)
-    print('if it is not, please move there manually and rerun loadsim\n')
+    #print('in '+os.getcwd())
+    #print('type pwd to check your current directory')
+    #print('the current directory should be /yourpath/'+ WORKING_DIR)
+    #print('if it is not, please move there manually and rerun loadsim\n')
 
 print('Initializing the XPD data acquisition simulation environment') 
-from xpdacq.beamtime import end_beamtime as end_beamtime
+
+# initialization is done by start_beamtime
+bt.start_beamtime()
+
+# samll trick to properly change dir
+os.chdir('..')
+
+print('Flush directories under simulation tree')
+for dir in bt.datapath.allfolders:
+    try:
+        bt.flush_dir(dir)
+    except FileNotFoundError:
+        print(dir + ' error')
+        pass
+
+os.chdir(bt.datapath.base)
+print('\n')
 
 print('OK, ready to go.  To continue, follow the steps in the xpdAcq')
 print('documentation at http://xpdacq.github.io/xpdacq')
