@@ -44,12 +44,10 @@ def initialize():
     os.chdir(STEM+WORKING_DIR)
     # copy the ipython_profile file to the current directory
     
-    # WARNING - we must run this copy and paste inside xpdSim/ as ipython look at .ipython/ directory if no profile directory at current working directory is found
-    
     #repo_dir = input('Please enter where is "xpdSim" directory at your computer  ') 
     #FIXME - might be too compicated.....
     
-    repo_dir = os.path.expanduser('~/xpdSim')
+    repo_dir = os.path.expanduser('~/xpdSim')  # only works for my local computer
     
     iprofile_dir = 'profile_xpdsim'
     cwd = os.getcwd()
@@ -57,10 +55,21 @@ def initialize():
     src = os.path.join(repo_dir, iprofile_dir)
     dst = os.path.join(cwd, iprofile_dir)
     
-    shutil.copytree(src, dst)
+    try:
+        shutil.copytree(src, dst)
+    except FileExistsError:
+        pass
     
-    os.mkdir('Import')
-    os.mkdir('Export')
+    try:
+        os.mkdir('Import')
+    except FileExistsError:
+        pass
+
+    try:
+        os.mkdir('Export')
+    except FileExistsError:
+        pass
+
     
     print('to get going type ipython')
     print('when ipython starts type import loadsim')
