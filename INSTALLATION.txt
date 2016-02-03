@@ -12,15 +12,13 @@ Initial setup
       1. Install real ophyd: `git clone https://github.com/NSLS-II/ophyd.git`
       2. Navigate to `ophyd` repo, do `python setup.py develop`
       3. Install supporting packages `pip install pyepics prettytable`
-      4. Now you can instanciate `pe1c` with `import xpdsim pe1c = xpdsim.simulator.Areadetector(any_number_you_want)`
   4. Copy and paste the `profile_xpdsim` directory from xpdSim to your `~/.ipython` directory
 
 This should have installed all the components.
 To run a simulation
-  1. cd to a directory where you want to work.
-  2. activate the simulation environment.
-  3. Run `python -m initialize` at the command prompt. This creates the top level directories that are present on the xpd instrument computer
-  4. start ipython: `ipython --profile=xpdsim`
+  1. activate the simulation environment.
+  2. cd to a directory where you want to work.
+  3. start ipython: `ipython --profile=xpdsim`
 
   This block is wrapped inside loadsim. We can remove it after test
   #################################################################

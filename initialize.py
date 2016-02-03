@@ -25,7 +25,7 @@ def initialize():
     if absent it creates them.  If present it leaves them in the current state.
     '''
     from xpdacq.config import WORKING_DIR, CONFIG_DIR
-    STEM = './'
+    B_DIR = 
         
     if os.path.isdir(STEM+WORKING_DIR):
         print(STEM+WORKING_DIR+' already exists.  Leaving it.')
