@@ -15,10 +15,29 @@
 ##############################################################################
 ## fake detector objects
 
-class AreaDetector(object):
+class AcqT():
+    def __init__(self):
+        pass
+    
+    def put(self):
+        pass    
+        
+class Cam(AcqT):
+    def __init__(self,time):
+        self.acquire_time = time       
+        #self = collections.namedtuple('cam',['acquire_time'])
+ 
+#cam = Cam(0.5)        
+#
+
+class AreaDetector(Cam):
     ''' fake area detector class '''
-    def __init__(self, name, time = 0.5):
+    def __init__(self, cam, name):
+        import collections
         self.name = name
-        print('name of detector = %s' % name)
-        self.acquire_time = time
-        print('acquire_time of %s is %s' % (name, time))
+        self.cam = cam
+        print('name of detector = %s' % self.name)
+        print('acquire_time of %s is %s' % (name, self.cam.acquire_time))
+
+#self.cam.acquire_time.put()
+    

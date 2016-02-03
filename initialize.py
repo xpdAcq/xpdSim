@@ -47,18 +47,18 @@ def initialize():
     #repo_dir = input('Please enter where is "xpdSim" directory at your computer  ') 
     #FIXME - might be too compicated.....
     
-    repo_dir = os.path.expanduser('~/xpdSim')  # only works for my local computer
+    #repo_dir = os.path.expanduser('~/xpdSim')  # only works for my local computer
     
-    iprofile_dir = 'profile_xpdsim'
-    cwd = os.getcwd()
+    #iprofile_dir = 'profile_xpdsim'
+    #cwd = os.getcwd()
     
-    src = os.path.join(repo_dir, iprofile_dir)
-    dst = os.path.join(cwd, iprofile_dir)
+    #src = os.path.join(repo_dir, iprofile_dir)
+    #dst = os.path.join(cwd, iprofile_dir)
     
-    try:
-        shutil.copytree(src, dst)
-    except FileExistsError:
-        pass
+    #try:
+    #    shutil.copytree(src, dst)
+    #except FileExistsError:
+    #    pass
     
     try:
         os.mkdir('Import')

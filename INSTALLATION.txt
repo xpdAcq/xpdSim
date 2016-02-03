@@ -2,23 +2,20 @@ These instructions are for Simon
 Steps:
 
 Initial setup
-  0. Create a new conda environment as a sandbox, e.g., : `conda create -n xpdsim python=3 ipython`
-  1. Clone both repos: xpdAcq and xpdSim. After clone, there should be two separate directories in your computer. Make sure the Master branch is checked out.
-  2. Navigate to the top directory of the xpdSim repository.
-  1. Activate the `xpdsim` conda environment
-  1. run `python setup.py develop`
-  1. repeat for xpdAcq
+  1. Create a new conda environment as a sandbox, e.g., : `conda create -n xpdsim python=3 ipython`
+  2. Clone both repos: xpdAcq and xpdSim. After clone, there should be two separate directories in your computer. Make sure the Master branch is checked out.
+  3. Navigate to the top directory of the xpdSim repository.
+  4. Activate the `xpdsim` conda environment e.g., `source activate xpdsim` (linux) or `activate xpdsim` (windows)
+  5. run `python setup.py develop`
+  6. repeat for xpdAcq
 
 This should have installed all the components.
 To run a simulation
   1. cd to a directory where you want to work.
-  1. activate the simulation environment, e.g., `source activate
-  xpdsim`
-  4. Run `python -m initialize` at the command prompt. This creates
-  the top level directories that are present on the
-  xpd instrument computer
-  5. start ipython: `ipython --profile=xpdsim`
-  1. load simulation modules: `import loadsim`
+  2. activate the simulation environment.
+  3. Run `python -m initialize` at the command prompt. This creates the top level directories that are present on the xpd instrument computer
+  4. start ipython: `ipython --profile=xpdsim`
+  5. load simulation modules: `import loadsim`
 
   This block is wrapped inside loadsim. We can remove it after test
   #################################################################
