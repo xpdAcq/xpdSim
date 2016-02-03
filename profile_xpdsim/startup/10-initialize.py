@@ -42,23 +42,6 @@ def initialize():
         
     # now move to xpdUser and create the Import and Export directories
     os.chdir(STEM+WORKING_DIR)
-    # copy the ipython_profile file to the current directory
-    
-    #repo_dir = input('Please enter where is "xpdSim" directory at your computer  ') 
-    #FIXME - might be too compicated.....
-    
-    #repo_dir = os.path.expanduser('~/xpdSim')  # only works for my local computer
-    
-    #iprofile_dir = 'profile_xpdsim'
-    #cwd = os.getcwd()
-    
-    #src = os.path.join(repo_dir, iprofile_dir)
-    #dst = os.path.join(cwd, iprofile_dir)
-    
-    #try:
-    #    shutil.copytree(src, dst)
-    #except FileExistsError:
-    #    pass
     
     try:
         os.mkdir('Import')
@@ -69,18 +52,14 @@ def initialize():
         os.mkdir('Export')
     except FileExistsError:
         pass
-
     
-    os.chdir('..')
     print('to get going type ipython')
-    print('when ipython starts type import loadsim')
-        
     print('simulation environment initialized.\n')
 
 if __name__ == '__main__':
     try:
         initialize()
     except RuntimeError as e:
-        print(e, file=sys.stderr)
-        print("Ask beamline scientist what to do next.", file=sys.stderr)
+        #print(e, file=sys.stderr)
+        #print("Ask beamline scientist what to do next.", file=sys.stderr)
         sys.exit(1)
