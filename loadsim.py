@@ -15,13 +15,13 @@
 ##############################################################################
 import os
 from xpdacq.beamtimeSetup import *
-from ophyd.detector import AreaDetector
+from simulator.areadetector import AreaDetector
 
 WORKING_DIR = 'xpdUser'
 
 B_DIR = './'   # this overloads the value loaded from config. Be careful, it will be set back if xpdacq.config is reloaded.
-datapath = DataPath(B_DIR)
-pe1c = AreaDetector('pe1c')
+#datapath = DataPath(B_DIR)
+pe1c = AreaDetector(.1)
 
 # try and find our way to the right directory
 #if os.path.isdir(bt.datapath.base):
@@ -38,11 +38,12 @@ pe1c = AreaDetector('pe1c')
 print('Initializing the XPD data acquisition simulation environment') 
 
 # initialization is done by start_beamtime
-start_beamtime('./')
+#start_beamtime('./')
 
 # samll trick to properly change dir
-os.chdir('..')
+#os.chdir('..')
 
+'''
 print('Flush directories under simulation tree')
 datapath = DataPath('./')
 for dir in datapath.allfolders:
@@ -51,9 +52,10 @@ for dir in datapath.allfolders:
     except FileNotFoundError:
         print(dir + ' error')
         pass
+'''
 
-os.chdir(datapath.base)
-print('\n')
+#os.chdir(datapath.base)
+#print('\n')
 
 print('OK, ready to go.  To continue, follow the steps in the xpdAcq')
 print('documentation at http://xpdacq.github.io/xpdacq')

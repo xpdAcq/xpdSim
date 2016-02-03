@@ -8,7 +8,7 @@ Initial setup
   4. Activate the `xpdsim` conda environment e.g., `source activate xpdsim` (linux) or `activate xpdsim` (windows)
   5. run `python setup.py develop`
   6. repeat for xpdAcq
-    - Additional step after adding ophyd
+  7. Add ophyd
       1. Install real ophyd: `git clone https://github.com/NSLS-II/ophyd.git`
       2. Navigate to `ophyd` repo, do `python setup.py develop`
       3. Install supporting packages `pip install pyepics prettytable`
