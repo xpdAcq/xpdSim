@@ -14,6 +14,7 @@
 #
 ##############################################################################
 import os
+from xpdacq.config import DataPath
 from xpdacq.beamtimeSetup import _make_clean_env
 from simulator.areadetector import AreaDetector
 
