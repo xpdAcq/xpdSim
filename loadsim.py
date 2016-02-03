@@ -20,6 +20,7 @@ from ophyd.detector import AreaDetector
 WORKING_DIR = 'xpdUser'
 
 B_DIR = './'   # this overloads the value loaded from config. Be careful, it will be set back if xpdacq.config is reloaded.
+datapath = DataPath(B_DIR)
 pe1c = AreaDetector('pe1c')
 
 # try and find our way to the right directory
