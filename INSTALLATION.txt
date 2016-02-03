@@ -8,6 +8,7 @@ Initial setup
   4. Activate the `xpdsim` conda environment e.g., `source activate xpdsim` (linux) or `activate xpdsim` (windows)
   5. run `python setup.py develop`
   6. repeat for xpdAcq
+  4. Copy and paste the `profile_xpdsim` directory from xpdSim to your `~/.ipython` directory
 
 This should have installed all the components.
 To run a simulation
@@ -15,7 +16,6 @@ To run a simulation
   2. activate the simulation environment.
   3. Run `python -m initialize` at the command prompt. This creates the top level directories that are present on the xpd instrument computer
   4. start ipython: `ipython --profile=xpdsim`
-  5. load simulation modules: `import loadsim`
 
   This block is wrapped inside loadsim. We can remove it after test
   #################################################################
