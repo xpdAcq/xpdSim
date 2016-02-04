@@ -7,7 +7,7 @@
 #                        New York.
 #                   All rights reserved
 #
-# File coded by:    Simon Billinge
+# File coded by:    Simon Billinge, Chia Hao Liu
 #
 # See AUTHORS.txt for a list of people who contributed.
 # See LICENSE.txt for license information.
