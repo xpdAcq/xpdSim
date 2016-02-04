@@ -15,32 +15,26 @@
 ##############################################################################
 import os
 from xpdacq.config import DataPath
+from xpdacq.beamtimeSetup import *
 from xpdacq.beamtimeSetup import _make_clean_env
+from xpdacq.beamtime import XPD 
 from simulator.areadetector import AreaDetector
+
 
 WORKING_DIR = 'xpdUser'
 B_DIR = os.getcwd()
 datapath = DataPath(B_DIR)
 pe1c = AreaDetector(0.1)
 
+print('Initializing the XPD data acquisition simulation environment') 
 _make_clean_env(datapath)
 
-# try and find our way to the right directory
-#if os.path.isdir(bt.datapath.base):
-    #print('moving to ' + bt.datapath.base) 
-    #os.chdir(bt.datapath.base)
-#else:
-    # this logic could be better, but I was running out of time. Fix later if
-    # necessary
-    #print('in '+os.getcwd())
-    #print('type pwd to check your current directory')
-    #print('the current directory should be /yourpath/'+ WORKING_DIR)
-    #print('if it is not, please move there manually and rerun loadsim\n')
-
-print('Initializing the XPD data acquisition simulation environment') 
+os.chdir(os.path.join(B_DIR,WORKING_DIR))
+#if there is a yml file in the normal place, then load the beamtime object
+bt = XPD.loadyamls()[0]
 
 '''
-print('Flush directories under simulation tree')
+print('Flushing directories under simulation tree')
 datapath = DataPath('./')
 for dir in datapath.allfolders:
     try:
