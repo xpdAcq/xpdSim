@@ -19,14 +19,7 @@ To run a simulation
   1. activate the simulation environment.
   2. cd to a directory where you want to work.
   3. start ipython: `ipython --profile=xpdsim`
-
-  This block is wrapped inside loadsim. We can remove it after test
-  #################################################################
-  #1. type `flush_directories`.  This will delete everything in the
-  #simulation tree
-  #1. type `start_beamtime()`
-  #################################################################
-
-
-  6. Now you are ready to run simulations: follow the directions on the xpdAcq
+  4. Now you are ready to run simulations: follow the directions on the xpdAcq
     document pages under the `XPD users` link.
+  5. [fixme] new beamtime vs. go again.
+  7. There is no Beamline scientist to set up your Beamtime `bt` object so set

@@ -1,0 +1,49 @@
+These commands make my local work (if xpdacq.xpdacq has two imports
+commented out) 2/5/16
+
+from xpdacq.beamtime import *
+
+
+
+
+
+shctl1 = Beamtime('dummy',1,1.)
+xpdRE = Beamtime('dummy',1,1.)
+LiveTable = Beamtime('dummy',1,1.)
+#pe1c = Beamtime('dummy',1,1.)
+temp_controller = Beamtime('dummy',1,1.)
+bt = Beamtime('Billinge',300256,0.1818,{('Simon','Billinge'),('Chia-Hao','Liu')})
+bt.list()
+
+e = Experiment('ProteinFolding',bt)
+e = Experiment('InGaAsAlloyPD',bt)
+s1 = Sample('GaAs',e)
+s2 = Sample('In0.25Ga0.75As',e)
+s3 = Sample('InGaAs-5050',e)
+s4 = Sample('IGA75-25',e)
+s5 = Sample('InAs',e)
+s3.md
+
+sc = Scan('ct1.5','ct',{'exposure':1.5})                      # the simplest count scan definition
+sc = Scan('ct1.5_nosh','ct',{'exposure':1.5},shutter=False)   # same scan as before but let's do the shutter by hand (be careful!)
+sc = Scan('ct100.5_nolt','ct',{'exposure':100.5},livetable=False)    # nice long scan but we don't want to clutter our terminal with the table showing the counts
+sc = Scan('ct2_vw','ct',{'exposure':2},verify_write=True)     # we want to be sure the tiff was written in pe1_data, but pay a price of a ~ 1 second overhead.
+sc = Scan('ct2_vw_nosh','ct',{'exposure':2},verify_write=True,shutter=False) # hopefully you are getting the idea.
+Scan('ct2','ct',{'exposure':2})                               # this will also work in xpdAcq because we can reference this object with bt.list() and bt.get()
+
+This part not working:
+
+class Area_det():
+    def __init__(self,dummy):
+        pass
+class Cam(Area_det):
+    def __init__(self,dummy):
+        pass
+    def put(self):
+        pass
+
+class AT(Cam):
+    pass
+
+pe1c = AT('adf')
+from xpdacq.xpdacq import *
