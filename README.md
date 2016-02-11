@@ -7,3 +7,4 @@ Authors: Chia-Hao Liu, Simon J. L. Billinge
 - [run the simulator](doc/runme.md)
 - [building up sphinx html] (doc/buildhtml.md)
 - [push github packages] (doc/gh_pages.md)
+- [install bluesky and ophyd] (doc/bluesky_ophyd.md)
