@@ -1,6 +1,6 @@
 [run]
 source = 
-    xpdSim
+    xpdsim
 [report]
 omit =
     */python?.?/*
