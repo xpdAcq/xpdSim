@@ -1,4 +1,6 @@
 # xpdSim
+[![Build Status](https://travis-ci.org/xpdAcq/xpdSim.svg?branch=master)](https://travis-ci.org/xpdAcq/xpdSim)
+
 A simulation environment for experiments at the XPD beamline at NSLS-II
 
 Authors: Chia-Hao Liu, Simon J. L. Billinge
