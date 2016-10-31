@@ -5,6 +5,8 @@ from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
 import os
+from bluesky.examples import ReaderWithFileStore
+from xpdsim.db import *
 
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
@@ -30,4 +32,7 @@ def build_image_cycle(path):
 nsls_ii_ni = build_image_cycle(
     os.path.join(DATA_DIR,
                  'XPD/ni/*.tiff'))
-print(nsls_ii_ni)
+nsls_ii_ni_gen = nsls_ii_ni()
+
+nsls_ii_ni_det = ReaderWithFileStore('nsls_ii_ni', {'pe1_image': lambda: next(nsls_ii_ni_gen)}, fs=fs)
+print(nsls_ii_ni_det)
