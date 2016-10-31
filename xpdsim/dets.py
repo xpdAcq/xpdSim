@@ -1,6 +1,7 @@
 """
 Spoof detectors
 """
+from cycler import Cycler
+from pims import ImageSequence
 
-cal_det = stuff
-image_det = stuff
+nsls_ii_ni = ImageSequence()
