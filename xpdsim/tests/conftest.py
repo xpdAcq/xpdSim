@@ -18,7 +18,7 @@ import sys
 import tempfile
 
 import pytest
-from databroker.tests.conftest import build_pymongo_backed_broker
+from .utils import build_pymongo_backed_broker
 
 if sys.version_info >= (3, 0):
     pass
