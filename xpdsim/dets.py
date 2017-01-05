@@ -1,6 +1,19 @@
-"""
-Spoof detectors
-"""
+""" Spoof detectors """
+##############################################################################
+#
+# xpdsim            by Billinge Group
+#                   Simon J. L. Billinge sb2896@columbia.edu
+#                   (c) 2016 trustees of Columbia University in the City of
+#                        New York.
+#                   All rights reserved
+#
+# File coded by:    Christopher J. Wright
+#
+# See AUTHORS.txt for a list of people who contributed.
+# See LICENSE.txt for license information.
+#
+##############################################################################
+
 from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
@@ -75,6 +88,22 @@ chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
 def det_factory(name, fs, path, **kwargs):
+    """Build a detector using real images
+
+    Parameters
+    ----------
+    name: str
+        Name of the detector
+    fs: filestore.FileStore instance
+        The filestore to save all the data in
+    path: str
+        The path to the tiff files
+
+    Returns
+    -------
+    detector: SimulatedPE1C instance
+        The detector
+    """
     cycle = build_image_cycle(
         path)
     gen = cycle()

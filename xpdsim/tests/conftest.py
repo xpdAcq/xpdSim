@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# xpdan            by Billinge Group
+# xpdsim            by Billinge Group
 #                   Simon J. L. Billinge sb2896@columbia.edu
 #                   (c) 2016 trustees of Columbia University in the City of
 #                        New York.
