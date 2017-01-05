@@ -5,11 +5,51 @@ from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
 import os
-from bluesky.examples import ReaderWithFileStore
-from xpdsim.db import *
-
+import bluesky.examples as be
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
+
+
+class PutGet:
+    """basic class to have set/put method"""
+
+    def __init__(self, numeric_val=1):
+        self._val = numeric_val
+
+    def put(self, val):
+        """set value"""
+        self._val = val
+        return self._val
+
+    def get(self):
+        """read current value"""
+        return self._val
+
+
+class SimulatedCam:
+    """class to simulate Camera class"""
+
+    def __init__(self, frame_acq_time=0.1, acquire=1):
+        # default acq_time = 0.1s and detector is turned on
+        self.acquire_time = PutGet(frame_acq_time)
+        self.acquire = PutGet(acquire)
+
+
+# define simulated PE1C
+class SimulatedPE1C(be.ReaderWithFileStore):
+    """Subclass the bluesky plain detector examples ('Reader');
+
+    also add realistic attributes.
+    """
+
+    def __init__(self, name, read_fields, fs, **kwargs):
+        self.images_per_set = PutGet()
+        self.number_of_sets = PutGet()
+        self.cam = SimulatedCam()
+        self._staged = False
+        super().__init__(name, read_fields, fs=fs, **kwargs)
+        self.ready = True  # work around a hack in Reader
+
 
 def build_image_cycle(path):
     """Build image cycles, essentially generators with endless images
@@ -25,20 +65,22 @@ def build_image_cycle(path):
     Cycler:
         The iterable like object to cycle through the images
     """
-    imgs = ImageSequence(path)
-    return cycler(img=[i for i in imgs])
-nsls_ii_ni = build_image_cycle(
-    os.path.join(DATA_DIR,
-                 'XPD/ni/*.tiff'))
-
-nsls_ii_ni_gen = nsls_ii_ni()
+    imgs = ImageSequence(os.path.join(path, '*.tif*'))
+    return cycler(pe1_image=[i for i in imgs])
 
 
-def nexter():
-    next(nsls_ii_ni_gen)
+nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
+
+chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-nsls_ii_ni_det = ReaderWithFileStore('nsls_ii_ni', {'pe1_image': lambda: nexter()}, fs=fs)
-print(nsls_ii_ni_det)
-print(nsls_ii_ni_det.trigger())
-print(nsls_ii_ni_det.read())
+def det_factory(name, fs, path, **kwargs):
+    cycle = build_image_cycle(
+        path)
+    gen = cycle()
+
+    def nexter():
+        return next(gen)['pe1_image']
+
+    return SimulatedPE1C(name,
+                         {'pe1_image': lambda: nexter()}, fs=fs, **kwargs)
