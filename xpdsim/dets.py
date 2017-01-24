@@ -19,6 +19,10 @@ from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
 import os
 import bluesky.examples as be
+import time as ttime
+import numpy as np
+from itertools import chain
+from xpdsim.movers import shctl1
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
 
@@ -52,16 +56,38 @@ class SimulatedCam:
 class SimulatedPE1C(be.ReaderWithFileStore):
     """Subclass the bluesky plain detector examples ('Reader');
 
-    also add realistic attributes.
+    also add realistic attributes and shutter stuff.
     """
 
-    def __init__(self, name, read_fields, fs, **kwargs):
+    def __init__(self, name, read_fields, fs, shutter=None,
+                 dark_fields=None, **kwargs):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
+        self.shutter = shutter
         self._staged = False
         super().__init__(name, read_fields, fs=fs, **kwargs)
         self.ready = True  # work around a hack in Reader
+        self._dark_fields = dict(self._fields)
+        self._dark_fields.update(dark_fields)
+
+    def read(self):
+        """
+        Simulate readings by calling functions. With dark/shutter support
+
+        The readings are collated with timestamps.
+        """
+        if self.shutter and self._dark_fields:
+            sv = self.shutter.read()  # ???
+            # If the shutter is down use the dark images
+            if sv == 0:
+                return {field: {'value': func(), 'timestamp': ttime.time()}
+                        for field, func in self._dark_fields.items()
+                        if field in self.read_attrs}
+        # Otherwise give back the usual images
+        return {field: {'value': func(), 'timestamp': ttime.time()}
+                for field, func in self._fields.items()
+                if field in self.read_attrs}
 
 
 def build_image_cycle(path):
@@ -87,7 +113,7 @@ nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-def det_factory(name, fs, path, **kwargs):
+def det_factory(name, fs, path, shutter=shctl1, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -107,9 +133,18 @@ def det_factory(name, fs, path, **kwargs):
     cycle = build_image_cycle(
         path)
     gen = cycle()
+    stream_piece = next(gen)
+    sample_img = stream_piece['pe1_image']
+    gen = chain((i for i in [stream_piece]), gen)  # put the piece on top
 
     def nexter():
         return next(gen)['pe1_image']
 
+    def dark_nexter():
+        return np.zeros(sample_img.shape)
+
     return SimulatedPE1C(name,
-                         {'pe1_image': lambda: nexter()}, fs=fs, **kwargs)
+                         {'pe1_image': lambda: nexter()}, fs=fs,
+                         shutter=shutter,
+                         dark_fields={'pe1_image': lambda: dark_nexter()},
+                         **kwargs)
