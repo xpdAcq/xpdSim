@@ -14,15 +14,16 @@
 #
 ##############################################################################
 
+import os
+import time as ttime
+from itertools import chain
+
+import bluesky.examples as be
+import numpy as np
 from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
-import os
-import bluesky.examples as be
-import time as ttime
-import numpy as np
-from itertools import chain
-from xpdsim.movers import shctl1
+from bluesky.utils import new_uid, short_uid
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
 
@@ -68,8 +69,11 @@ class SimulatedPE1C(be.ReaderWithFileStore):
         self._staged = False
         super().__init__(name, read_fields, fs=fs, **kwargs)
         self.ready = True  # work around a hack in Reader
-        self._dark_fields = dict(self._fields)
-        self._dark_fields.update(dark_fields)
+        if dark_fields:
+            self._dark_fields = dict(self._fields)
+            self._dark_fields.update(dark_fields)
+        else:
+            self._dark_fields = None
 
     def read(self):
         """
@@ -85,9 +89,36 @@ class SimulatedPE1C(be.ReaderWithFileStore):
                         for field, func in self._dark_fields.items()
                         if field in self.read_attrs}
         # Otherwise give back the usual images
-        return {field: {'value': func(), 'timestamp': ttime.time()}
-                for field, func in self._fields.items()
-                if field in self.read_attrs}
+        return super().read()
+
+    def trigger(self):
+        if self._dark_fields and self.shutter.read():
+            # save file stash file name
+            self._result.clear()
+            for idx, (name, reading) in enumerate(self.read().items()):
+                # Save the actual reading['value'] to disk and create a record
+                # in FileStore.
+                np.save('{}_{}.npy'.format(self._path_stem, idx), reading['value'])
+                datum_id = new_uid()
+                self.fs.insert_datum(self._resource_id, datum_id,
+                                     dict(index=idx))
+                # And now change the reading in place, replacing the value with
+                # a reference to FileStore.
+                reading['value'] = datum_id
+                self._result[name] = reading
+
+            delay_time = self.exposure_time
+            if delay_time:
+                if self.loop.is_running():
+                    st = be.SimpleStatus()
+                    self.loop.call_later(delay_time, st._finished)
+                    return st
+                else:
+                    ttime.sleep(delay_time)
+
+            return be.NullStatus()
+        else:
+            return super().trigger()
 
 
 def build_image_cycle(path):
@@ -113,7 +144,7 @@ nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-def det_factory(name, fs, path, shutter=shctl1, **kwargs):
+def det_factory(name, fs, path, shutter=None, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -133,18 +164,24 @@ def det_factory(name, fs, path, shutter=shctl1, **kwargs):
     cycle = build_image_cycle(
         path)
     gen = cycle()
-    stream_piece = next(gen)
-    sample_img = stream_piece['pe1_image']
-    gen = chain((i for i in [stream_piece]), gen)  # put the piece on top
 
     def nexter():
         return next(gen)['pe1_image']
 
-    def dark_nexter():
-        return np.zeros(sample_img.shape)
+    if shutter:
+        stream_piece = next(gen)
+        sample_img = stream_piece['pe1_image']
+        gen = chain((i for i in [stream_piece]), gen)  # put the piece on top
+
+        def dark_nexter():
+            return np.zeros(sample_img.shape)
+
+        return SimulatedPE1C(name,
+                             {'pe1_image': lambda: nexter()}, fs=fs,
+                             shutter=shutter,
+                             dark_fields={'pe1_image': lambda: dark_nexter()},
+                             **kwargs)
 
     return SimulatedPE1C(name,
                          {'pe1_image': lambda: nexter()}, fs=fs,
-                         shutter=shutter,
-                         dark_fields={'pe1_image': lambda: dark_nexter()},
                          **kwargs)
