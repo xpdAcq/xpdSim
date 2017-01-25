@@ -23,7 +23,7 @@ import numpy as np
 from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
-from bluesky.utils import new_uid, short_uid
+from bluesky.utils import new_uid
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
 
