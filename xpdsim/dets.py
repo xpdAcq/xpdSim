@@ -75,30 +75,18 @@ class SimulatedPE1C(be.ReaderWithFileStore):
         else:
             self._dark_fields = None
 
-    def read(self):
-        """
-        Simulate readings by calling functions. With dark/shutter support
-
-        The readings are collated with timestamps.
-        """
-        if self.shutter and self._dark_fields:
-            sv = self.shutter.read()  # ???
-            # If the shutter is down use the dark images
-            if sv == 0:
-                return {field: {'value': func(), 'timestamp': ttime.time()}
-                        for field, func in self._dark_fields.items()
-                        if field in self.read_attrs}
-        # Otherwise give back the usual images
-        return super().read()
-
     def trigger(self):
-        if self._dark_fields and self.shutter.read():
-            # save file stash file name
+        if self.shutter and self._dark_fields and self.shutter.read()['rad'][
+            'value'] == 0:
+            read_v = {field: {'value': func(), 'timestamp': ttime.time()}
+                      for field, func in self._dark_fields.items()
+                      if field in self.read_attrs}
             self._result.clear()
-            for idx, (name, reading) in enumerate(self.read().items()):
+            for idx, (name, reading) in enumerate(read_v.items()):
                 # Save the actual reading['value'] to disk and create a record
                 # in FileStore.
-                np.save('{}_{}.npy'.format(self._path_stem, idx), reading['value'])
+                np.save('{}_{}.npy'.format(self._path_stem, idx),
+                        reading['value'])
                 datum_id = new_uid()
                 self.fs.insert_datum(self._resource_id, datum_id,
                                      dict(index=idx))
@@ -117,6 +105,7 @@ class SimulatedPE1C(be.ReaderWithFileStore):
                     ttime.sleep(delay_time)
 
             return be.NullStatus()
+
         else:
             return super().trigger()
 
