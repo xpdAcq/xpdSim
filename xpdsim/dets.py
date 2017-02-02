@@ -76,8 +76,8 @@ class SimulatedPE1C(be.ReaderWithFileStore):
             self._dark_fields = None
 
     def trigger(self):
-        if self.shutter and self._dark_fields and self.shutter.read()['rad'][
-            'value'] == 0:
+        if self.shutter and self._dark_fields and \
+                        self.shutter.read()['rad']['value'] == 0:
             read_v = {field: {'value': func(), 'timestamp': ttime.time()}
                       for field, func in self._dark_fields.items()
                       if field in self.read_attrs}

@@ -1,9 +1,11 @@
-from ..dets import *
+from ..dets import det_factory, build_image_cycle, nsls_ii_path, chess_path
 from bluesky.plans import Count, abs_set
 from bluesky.tests.utils import setup_test_run_engine
 from numpy.testing import assert_array_equal
 import pytest
 from ..movers import shctl1
+import numpy as np
+import bluesky.examples as be
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
 

@@ -15,7 +15,8 @@ def build_sqlite_backed_broker(request):
 
     tempdirname = tempfile.mkdtemp()
     mds = MDS({'directory': tempdirname,
-                             'timezone': tzlocal.get_localzone().zone}, version=1)
+               'timezone': tzlocal.get_localzone().zone},
+              version=1)
     filenames = ['run_starts.json', 'run_stops.json', 'event_descriptors.json',
                  'events.json']
     for fn in filenames:
@@ -39,10 +40,10 @@ def build_sqlite_backed_broker(request):
 
 
 def build_pymongo_backed_broker(request):
-    '''Provide a function level scoped MDS instance talking to
+    """Provide a function level scoped MDS instance talking to
     temporary database on localhost:27017 with v1 schema.
 
-    '''
+    """
     from metadatastore.mds import MDS
     from filestore.utils import create_test_database
     from filestore.fs import FileStore

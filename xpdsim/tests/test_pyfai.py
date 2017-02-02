@@ -23,5 +23,6 @@ def test_smoke_load():
     ai = AzimuthalIntegrator()
     ai.setPyFAI(**pyfai_dict)
 
+
 if __name__ == '__main__':
     test_smoke_load()
