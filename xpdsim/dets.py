@@ -14,11 +14,16 @@
 #
 ##############################################################################
 
+import os
+import time as ttime
+from itertools import chain
+
+import bluesky.examples as be
+import numpy as np
 from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
-import os
-import bluesky.examples as be
+from bluesky.utils import new_uid
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
 
@@ -52,16 +57,57 @@ class SimulatedCam:
 class SimulatedPE1C(be.ReaderWithFileStore):
     """Subclass the bluesky plain detector examples ('Reader');
 
-    also add realistic attributes.
+    also add realistic attributes and shutter stuff.
     """
 
-    def __init__(self, name, read_fields, fs, **kwargs):
+    def __init__(self, name, read_fields, fs, shutter=None,
+                 dark_fields=None, **kwargs):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
+        self.shutter = shutter
         self._staged = False
         super().__init__(name, read_fields, fs=fs, **kwargs)
         self.ready = True  # work around a hack in Reader
+        if dark_fields:
+            self._dark_fields = dict(self._fields)
+            self._dark_fields.update(dark_fields)
+        else:
+            self._dark_fields = None
+
+    def trigger(self):
+        if self.shutter and self._dark_fields and \
+                        self.shutter.read()['rad']['value'] == 0:
+            read_v = {field: {'value': func(), 'timestamp': ttime.time()}
+                      for field, func in self._dark_fields.items()
+                      if field in self.read_attrs}
+            self._result.clear()
+            for idx, (name, reading) in enumerate(read_v.items()):
+                # Save the actual reading['value'] to disk and create a record
+                # in FileStore.
+                np.save('{}_{}.npy'.format(self._path_stem, idx),
+                        reading['value'])
+                datum_id = new_uid()
+                self.fs.insert_datum(self._resource_id, datum_id,
+                                     dict(index=idx))
+                # And now change the reading in place, replacing the value with
+                # a reference to FileStore.
+                reading['value'] = datum_id
+                self._result[name] = reading
+
+            delay_time = self.exposure_time
+            if delay_time:
+                if self.loop.is_running():
+                    st = be.SimpleStatus()
+                    self.loop.call_later(delay_time, st._finished)
+                    return st
+                else:
+                    ttime.sleep(delay_time)
+
+            return be.NullStatus()
+
+        else:
+            return super().trigger()
 
 
 def build_image_cycle(path):
@@ -87,7 +133,7 @@ nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-def det_factory(name, fs, path, **kwargs):
+def det_factory(name, fs, path, shutter=None, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -111,5 +157,20 @@ def det_factory(name, fs, path, **kwargs):
     def nexter():
         return next(gen)['pe1_image']
 
+    if shutter:
+        stream_piece = next(gen)
+        sample_img = stream_piece['pe1_image']
+        gen = chain((i for i in [stream_piece]), gen)  # put the piece on top
+
+        def dark_nexter():
+            return np.zeros(sample_img.shape)
+
+        return SimulatedPE1C(name,
+                             {'pe1_image': lambda: nexter()}, fs=fs,
+                             shutter=shutter,
+                             dark_fields={'pe1_image': lambda: dark_nexter()},
+                             **kwargs)
+
     return SimulatedPE1C(name,
-                         {'pe1_image': lambda: nexter()}, fs=fs, **kwargs)
+                         {'pe1_image': lambda: nexter()}, fs=fs,
+                         **kwargs)
