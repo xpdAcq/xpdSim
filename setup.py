@@ -6,6 +6,6 @@ setup(
     packages=find_packages(),
     description='simulators',
     zip_safe=False,
-    package_data={'xpdsim': ['data/']},
-    url='https://github.com/chiahaoliu/xpdSim'
+    package_data={'xpdsim': ['data/*']},
+    url='https://github.com/xpdAcq/xpdSim'
 )
