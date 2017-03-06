@@ -1,7 +1,7 @@
 This code was developed in the Billinge Group at Columbia University.
 The main developer was
 
-    Timothy Liu
+    Timothy Liu and Christopher J. Wright (@CJ-Wright)
 
 with significant inputs from
 
