@@ -53,7 +53,7 @@ before_install:
 
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker bluesky flake8 pyFAI -c lightsource2 -c conda-forge -c soft-matter
+  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker bluesky flake8 pyFAI -c conda-forge -c lightsource2 -c soft-matter
   - source activate testenv
   - 'pip install python-coveralls'
   - 'pip install https://github.com/NSLS-II/event-model/zipball/master#egg=event_model'
