@@ -18,30 +18,24 @@ import sys
 import tempfile
 
 import pytest
-from .utils import build_pymongo_backed_broker
+from databroker.tests.utils import build_pymongo_backed_broker, build_sqlite_backed_broker
 
 if sys.version_info >= (3, 0):
     pass
 
 
-def clean_database(database):
-    for sub_db_name in ['mds', 'fs']:
-        sub_db = getattr(database, sub_db_name)
-        sub_db._connection.drop_database(sub_db.config['database'])
-
-
 @pytest.fixture(params=[
-    # 'sqlite',
-    'mongo'], scope='module')
+    'sqlite',
+    # 'mongo'
+], scope='module')
 def db(request):
     print('Making DB')
     param_map = {
-        # 'sqlite': build_sqlite_backed_broker,
-        'mongo': build_pymongo_backed_broker}
+        'sqlite': build_sqlite_backed_broker,
+        # 'mongo': build_pymongo_backed_broker
+}
     databroker = param_map[request.param](request)
     yield databroker
-    print('CLEAN DB')
-    clean_database(databroker)
 
 
 @pytest.fixture(scope='module')
