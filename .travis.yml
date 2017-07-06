@@ -53,17 +53,8 @@ before_install:
 
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker bluesky flake8 pyFAI -c conda-forge -c lightsource2 -c soft-matter
+  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker bluesky flake8 pyFAI mongoquery codecov attrs -c conda-forge -c lightsource2 -c soft-matter
   - source activate testenv
-  - 'pip install python-coveralls'
-  - 'pip install https://github.com/NSLS-II/event-model/zipball/master#egg=event_model'
-  - conda remove metadatastore databroker filestore bluesky --yes
-  - 'pip install https://github.com/NSLS-II/databroker/zipball/master#egg=databroker'
-  - 'pip install https://github.com/NSLS-II/filestore/zipball/master#egg=filestore'
-  - 'pip install https://github.com/NSLS-II/metadatastore/zipball/master#egg=metadatastore'
-  - 'pip install https://github.com/NSLS-II/portable-mds/zipball/master#egg=portable_mds'
-  - 'pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky'
-  - pip install codecov attrs
   - python setup.py install
   # Need to clean the python build directory (and other cruft) or pytest is
   # going to find the build directory and get confused why there are two sets
