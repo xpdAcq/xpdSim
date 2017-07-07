@@ -18,7 +18,7 @@ import sys
 import tempfile
 
 import pytest
-from databroker.tests.utils import build_pymongo_backed_broker, build_sqlite_backed_broker
+from databroker.tests.utils import build_sqlite_backed_broker
 
 if sys.version_info >= (3, 0):
     pass
@@ -33,7 +33,7 @@ def db(request):
     param_map = {
         'sqlite': build_sqlite_backed_broker,
         # 'mongo': build_pymongo_backed_broker
-}
+    }
     databroker = param_map[request.param](request)
     yield databroker
 
