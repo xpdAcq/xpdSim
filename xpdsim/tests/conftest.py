@@ -18,22 +18,31 @@ import sys
 import tempfile
 
 import pytest
-from databroker.tests.utils import build_sqlite_backed_broker
+import importlib
+from databroker.tests.utils import build_pymongo_backed_broker, \
+                                   build_sqlite_backed_broker
+params = []
+param_map = {}
+
+for name, builder, mod in zip(['mongo', 'sqlite'],
+                              [build_pymongo_backed_broker,
+                               build_sqlite_backed_broker],
+                              ['metadatastore', 'portable_mds']):
+    try:
+        importlib.import_module(mod)
+    except ImportError:
+        pass
+    else:
+        params.append(name)
+        param_map.update({name: builder})
 
 if sys.version_info >= (3, 0):
     pass
 
 
-@pytest.fixture(params=[
-    'sqlite',
-    # 'mongo'
-], scope='module')
+@pytest.fixture(params=params, scope='module')
 def db(request):
     print('Making DB')
-    param_map = {
-        'sqlite': build_sqlite_backed_broker,
-        # 'mongo': build_pymongo_backed_broker
-    }
     databroker = param_map[request.param](request)
     yield databroker
 
