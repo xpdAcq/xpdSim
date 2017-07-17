@@ -1,4 +1,4 @@
-import bluesky.exammples as be
+import bluesky.examples as be
 
 
 class FilterBank():

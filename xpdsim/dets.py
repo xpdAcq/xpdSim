@@ -86,7 +86,7 @@ class SimulatedPE1C(be.ReaderWithFileStore):
             for idx, (name, reading) in enumerate(read_v.items()):
                 # Save the actual reading['value'] to disk and create a record
                 # in FileStore.
-                if self.filter_bank_filter_bank:
+                if self.filter_bank:
                     read_v *= self._filter_bank.get_attenuation()
                 np.save('{}_{}.npy'.format(self._path_stem, idx),
                         reading['value'])
