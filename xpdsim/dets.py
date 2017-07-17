@@ -87,7 +87,7 @@ class SimulatedPE1C(be.ReaderWithFileStore):
                 # Save the actual reading['value'] to disk and create a record
                 # in FileStore.
                 if self.filter_bank_filter_bank:
-                    read_v *= self._filter_bank.getAttenuation()
+                    read_v *= self._filter_bank.get_attenuation()
                 np.save('{}_{}.npy'.format(self._path_stem, idx),
                         reading['value'])
                 datum_id = new_uid()

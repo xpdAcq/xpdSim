@@ -8,18 +8,18 @@ class FilterBank():
                             'filter4': .5}
         self.filter_list = []
         for k, v in attenuations.items():
-            f = Filter(k, {'rad': lambda x: x}, {'x': 0}, v)
+            f = XRayFilter(k, {'rad': lambda x: x}, {'x': 0}, v)
             self.filter_list.append(f)
             setattr(self, k, f)
 
-    def getAttenuation(self):
+    def get_attenuation(self):
         totalAttenuation = 1
         for i in self.filter_list:
-            totalAttenuation *= filter.attenuation
+            totalAttenuation *= XRayFilter.attenuation
         return totalAttenuation
 
 
-class Filter(be.Mover):
+class XRayFilter(be.Mover):
     def __init__(self, name, fields, initial_set, attenuation, **kwargs):
         self.attenuation = attenuation
         super().__init__(name, fields, initial_set, **kwargs)
