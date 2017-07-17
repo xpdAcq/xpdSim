@@ -6,7 +6,7 @@ import pytest
 from ..movers import shctl1
 import numpy as np
 import bluesky.examples as be
-from ..filter import XRayFilter, FilterBank
+from filters import XRayFilterBankExample
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
 
@@ -53,8 +53,31 @@ def test_dets_shutter(db, tmp_dir, name, fp):
             assert_array_equal(d['data']['pe1_image'], next(cg)['pe1_image'])
     assert uid is not None
 
-def tests_dets_XRayFilter():
-    f = XRayFilter('filter1', {'rad': lambda x: x}, {'x': 0}, 0.5)
 
+@pytest.mark.parametrize(('name', 'fp'), test_params)
+def test_dets_XRayFilter(db, tmp_dir, name, fp):
+    det = det_factory(name, db.fs, fp, save_path=tmp_dir,
+                      filter_bank=XRayFilterBankExample)
+    RE = setup_test_run_engine()
+    RE.subscribe('all', db.mds.insert)
+    scan = Count([det], )
+    db.fs.register_handler('RWFS_NPY', be.ReaderWithFSHandler)
+    cycle2 = build_image_cycle(fp)
+    cg = cycle2()
+    # With the filters down
+    RE(abs_set(shctl1, 0, wait=True))
+    uid = RE(scan)
+    for n, d in db.restream(db[-1], fill=True):
+        if n == 'event':
+            assert_array_equal(d['data']['pe1_image'],
+                               np.zeros(next(cg)['pe1_image'].shape))
+        assert uid is not None
 
+    # With the filters up
+    RE(abs_set(shctl1, 1, wait=True))
+    uid = RE(scan)
+    for n, d in db.restream(db[-1], fill=True):
+        if n == 'event':
+            assert_array_equal(d['data']['pe1_image'], next(cg)['pe1_image'])
+    assert uid is not None
 

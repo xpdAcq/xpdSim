@@ -24,3 +24,5 @@ class XRayFilter(be.Mover):
         self.attenuation = attenuation
         super().__init__(name, fields, initial_set, **kwargs)
 
+
+XRayFilterBankExample = FilterBank()
