@@ -61,12 +61,13 @@ class SimulatedPE1C(be.ReaderWithFileStore):
     """
 
     def __init__(self, name, read_fields, fs, shutter=None,
-                 dark_fields=None, **kwargs):
+                 dark_fields=None, filter_bank=None, **kwargs):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
         self.shutter = shutter
         self._staged = False
+        self.filter_bank = filter_bank
         super().__init__(name, read_fields, fs=fs, **kwargs)
         self.ready = True  # work around a hack in Reader
         if dark_fields:
@@ -85,6 +86,8 @@ class SimulatedPE1C(be.ReaderWithFileStore):
             for idx, (name, reading) in enumerate(read_v.items()):
                 # Save the actual reading['value'] to disk and create a record
                 # in FileStore.
+                if self.filter_bank_filter_bank:
+                    read_v *= self._filter_bank.getAttenuation()
                 np.save('{}_{}.npy'.format(self._path_stem, idx),
                         reading['value'])
                 datum_id = new_uid()
