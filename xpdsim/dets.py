@@ -87,7 +87,7 @@ class SimulatedPE1C(be.ReaderWithFileStore):
                 # Save the actual reading['value'] to disk and create a record
                 # in FileStore.
                 if self.filter_bank:
-                    read_v *= self._filter_bank.get_attenuation()
+                    reading['value'] *= self._filter_bank.get_attenuation()
                 np.save('{}_{}.npy'.format(self._path_stem, idx),
                         reading['value'])
                 datum_id = new_uid()
@@ -136,7 +136,7 @@ nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-def det_factory(name, fs, path, shutter=None, **kwargs):
+def det_factory(name, fs, path, shutter=None, filter_bank=None, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -160,6 +160,8 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
     def nexter():
         return next(gen)['pe1_image']
 
+    kwargs['read_fields'] = {'pe1_image': lambda: nexter()}
+
     if shutter:
         stream_piece = next(gen)
         sample_img = stream_piece['pe1_image']
@@ -168,12 +170,15 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
         def dark_nexter():
             return np.zeros(sample_img.shape)
 
-        return SimulatedPE1C(name,
-                             {'pe1_image': lambda: nexter()}, fs=fs,
-                             shutter=shutter,
-                             dark_fields={'pe1_image': lambda: dark_nexter()},
-                             **kwargs)
+        kwargs.update(shutter=shutter,
+                      dark_fields={'pe1_image': lambda: dark_nexter()})
 
-    return SimulatedPE1C(name,
-                         {'pe1_image': lambda: nexter()}, fs=fs,
-                         **kwargs)
+    if filter_bank:
+        def dark_nexter():
+            return np.zeros(sample_img.shape)
+
+        kwargs.update(shutter=shutter,
+                      dark_fields={'pe1_image': lambda: dark_nexter()})
+
+    return SimulatedPE1C(name, fs=fs, **kwargs)
+

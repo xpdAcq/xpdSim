@@ -6,6 +6,7 @@ import pytest
 from ..movers import shctl1
 import numpy as np
 import bluesky.examples as be
+from ..filter import XRayFilter, FilterBank
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
 
@@ -51,3 +52,9 @@ def test_dets_shutter(db, tmp_dir, name, fp):
         if n == 'event':
             assert_array_equal(d['data']['pe1_image'], next(cg)['pe1_image'])
     assert uid is not None
+
+def tests_dets_XRayFilter():
+    f = XRayFilter('filter1', {'rad': lambda x: x}, {'x': 0}, 0.5)
+
+
+
