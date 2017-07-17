@@ -14,7 +14,7 @@ class FilterBank():
 
     def getAttenuation(self):
         totalAttenuation = 1
-        for filter in self.filter_list:
+        for i in self.filter_list:
             totalAttenuation *= filter.attenuation
         return totalAttenuation
 
@@ -23,3 +23,4 @@ class Filter(be.Mover):
     def __init__(self, name, fields, initial_set, attenuation, **kwargs):
         self.attenuation = attenuation
         super().__init__(name, fields, initial_set, **kwargs)
+
