@@ -15,7 +15,7 @@ class FilterBank():
     def get_attenuation(self):
         totalAttenuation = 1
         for i in self.filter_list:
-            totalAttenuation *= XRayFilter.attenuation
+            totalAttenuation *= i.attenuation
         return totalAttenuation
 
 
