@@ -87,7 +87,8 @@ class SimulatedPE1C(be.ReaderWithFileStore):
                 # Save the actual reading['value'] to disk and create a record
                 # in FileStore.
                 if self.filter_bank:
-                    reading['value'] *= self._filter_bank.get_attenuation()
+                    print(self.filter_bank.get_attenuation())
+                    reading['value'] *= self.filter_bank.get_attenuation()
                 np.save('{}_{}.npy'.format(self._path_stem, idx),
                         reading['value'])
                 datum_id = new_uid()
@@ -174,10 +175,7 @@ def det_factory(name, fs, path, shutter=None, filter_bank=None, **kwargs):
                       dark_fields={'pe1_image': lambda: dark_nexter()})
 
     if filter_bank:
-        def dark_nexter():
-            return np.zeros(sample_img.shape)
-
-        kwargs.update(shutter=shutter,
+        kwargs.update(filter_bank=filter_bank,
                       dark_fields={'pe1_image': lambda: dark_nexter()})
 
     return SimulatedPE1C(name, fs=fs, **kwargs)

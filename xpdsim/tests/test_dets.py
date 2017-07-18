@@ -6,7 +6,7 @@ import pytest
 from ..movers import shctl1
 import numpy as np
 import bluesky.examples as be
-from filters import XRayFilterBankExample
+from ..filter import XRayFilterBankExample
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
 
@@ -64,20 +64,36 @@ def test_dets_XRayFilter(db, tmp_dir, name, fp):
     db.fs.register_handler('RWFS_NPY', be.ReaderWithFSHandler)
     cycle2 = build_image_cycle(fp)
     cg = cycle2()
-    # With the filters down
-    RE(abs_set(shctl1, 0, wait=True))
-    uid = RE(scan)
-    for n, d in db.restream(db[-1], fill=True):
-        if n == 'event':
-            assert_array_equal(d['data']['pe1_image'],
-                               np.zeros(next(cg)['pe1_image'].shape))
-        assert uid is not None
-
-    # With the filters up
-    RE(abs_set(shctl1, 1, wait=True))
-    uid = RE(scan)
+    # No filters
+    for f in XRayFilterBankExample.filter_list:
+        RE(abs_set(f, 0, wait=True))
+        uid = RE(scan)
     for n, d in db.restream(db[-1], fill=True):
         if n == 'event':
             assert_array_equal(d['data']['pe1_image'], next(cg)['pe1_image'])
+    assert uid is not None
+
+    # Each filter
+    for f in XRayFilterBankExample.filter_list:
+        RE(abs_set(f, 0, wait=True))
+    for f in XRayFilterBankExample.filter_list:
+        RE(abs_set(f, 'In', wait=True))
+        uid = RE(scan)
+        for n, d in db.restream(db[-1], fill=True):
+            if n == 'event':
+                print(det.filter_bank)
+                assert_array_equal(d['data']['pe1_image'],
+                                   (next(cg)['pe1_image']) * f.attenuation)
+        assert uid is not None
+        RE(abs_set(f, 0, wait=True))
+
+    # All filters
+    for f in XRayFilterBankExample.filter_list:
+        RE(abs_set(f, 1, wait=True))
+        uid = RE(scan)
+    for n, d in db.restream(db[-1], fill=True):
+        if n == 'event':
+            assert_array_equal(d['data']['pe1_image'], (next(cg)['pe1_image']) *
+                               XRayFilterBankExample.get_attenuation())
     assert uid is not None
 

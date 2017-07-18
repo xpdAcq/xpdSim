@@ -26,3 +26,4 @@ class XRayFilter(be.Mover):
 
 
 XRayFilterBankExample = FilterBank()
+
