@@ -102,7 +102,11 @@ def build_image_cycle(path):
     Cycler:
         The iterable like object to cycle through the images
     """
-    imgs = ImageSequence(os.path.join(path, '*.tif*'), dtype=np.float64)
+    if isinstance(path, str):
+        imgs = ImageSequence(os.path.join(path, '*.tif*'), dtype=np.float64)
+    else:
+        imgs = [np.ones(path)]
+        imgs = ImageSequence(os.path.join(path, '*.tif*'), dtype=np.float64)
     return cycler(pe1_image=[i for i in imgs])
 
 

@@ -25,11 +25,14 @@ class XRayFilter(be.Mover):
         super().__init__(name, fields, initial_set, **kwargs)
 
     def get_XRayFilter_attenuation(self):
-        ###########################################
-        print(self.read)
-        ###########################################
         position_info = self.read()
-        if (position_info.get('x') == 0):
+        print('###########################################')
+        print(position_info)
+        print('###########################################')
+        position_info_subdict = position_info.get('rad')
+        position_info_sub_subdict = position_info_subdict.get('value')
+        print(position_info_sub_subdict)
+        if (position_info_sub_subdict == 0):
             return 0
         else:
             return self.attenuation
