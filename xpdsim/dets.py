@@ -84,7 +84,7 @@ class SimulatedPE1C(be.ReaderWithFileStore):
                       if field in self.read_attrs}
         if self.filter_bank:
             print(self.filter_bank.get_attenuation())
-            read_v *= self.filter_bank.get_attenuation()
+            read_v['pe1_image']['value'] *= self.filter_bank.get_attenuation()
         return read_v
 
 
@@ -102,7 +102,7 @@ def build_image_cycle(path):
     Cycler:
         The iterable like object to cycle through the images
     """
-    imgs = ImageSequence(os.path.join(path, '*.tif*'))
+    imgs = ImageSequence(os.path.join(path, '*.tif*'), dtype=np.float64)
     return cycler(pe1_image=[i for i in imgs])
 
 

@@ -15,7 +15,7 @@ class FilterBank():
     def get_attenuation(self):
         totalAttenuation = 1
         for i in self.filter_list:
-            totalAttenuation *= i.attenuation
+            totalAttenuation *= i.get_XRayFilter_attenuation()
         return totalAttenuation
 
 
@@ -23,6 +23,16 @@ class XRayFilter(be.Mover):
     def __init__(self, name, fields, initial_set, attenuation, **kwargs):
         self.attenuation = attenuation
         super().__init__(name, fields, initial_set, **kwargs)
+
+    def get_XRayFilter_attenuation(self):
+        ###########################################
+        print(self.read)
+        ###########################################
+        position_info = self.read()
+        if (position_info.get('x') == 0):
+            return 0
+        else:
+            return self.attenuation
 
 
 XRayFilterBankExample = FilterBank()

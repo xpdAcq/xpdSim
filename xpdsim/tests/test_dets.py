@@ -80,6 +80,9 @@ def test_dets_XRayFilter(db, tmp_dir, name, fp):
         uid = RE(scan)
     for n, d in db.restream(db[-1], fill=True):
         if n == 'event':
+            ###########################################
+            print(f.get_XRayFilter_attenuation())
+            ###########################################
             assert_array_equal(d['data']['pe1_image'], next(cg)['pe1_image'])
     assert uid is not None
 
@@ -87,13 +90,14 @@ def test_dets_XRayFilter(db, tmp_dir, name, fp):
     for f in XRayFilterBankExample.filter_list:
         RE(abs_set(f, 0, wait=True))
     for f in XRayFilterBankExample.filter_list:
-        RE(abs_set(f, 'In', wait=True))
+        RE(abs_set(f, 1, wait=True))
         uid = RE(scan)
         for n, d in db.restream(db[-1], fill=True):
             if n == 'event':
                 print(det.filter_bank)
-                assert_array_equal(d['data']['pe1_image'],
-                                   (next(cg)['pe1_image']) * f.attenuation)
+                assert_array_equal((d['data']['pe1_image']),
+                                   next(cg)['pe1_image'] *
+                                   f.get_XRayFilter_attenuation)
         assert uid is not None
         RE(abs_set(f, 0, wait=True))
 
