@@ -31,7 +31,9 @@ def test_dets(db, tmp_dir, name, fp):
         uid = RE(scan)
         for n, d in db.restream(db[-1], fill=True):
             if n == 'event':
+                print('!!!!! TEST 1 !!!!!!')
                 print(d['data']['pe1_image'])
+                print('!!!!! TEST 1 !!!!!!')
                 img = next(cg)['pe1_image']
                 print(img)
                 assert_array_equal(d['data']['pe1_image'], img)

@@ -77,6 +77,9 @@ class SimulatedPE1C(be.ReaderWithFileStore):
 
     def trigger_read(self):
         read_v = super().trigger_read()
+        print('ppppppppppppppppppppppppppp')
+        print(read_v)
+        print('ppppppppppppppppppppppppppp')
         if self.shutter and self._dark_fields and \
                 self.shutter.read()['rad']['value'] == 0:
             read_v = {field: {'value': func(), 'timestamp': ttime.time()}
@@ -106,7 +109,6 @@ def build_image_cycle(path):
         imgs = ImageSequence(os.path.join(path, '*.tif*'), dtype=np.float64)
     else:
         imgs = [np.ones(path)]
-        imgs = ImageSequence(os.path.join(path, '*.tif*'), dtype=np.float64)
     return cycler(pe1_image=[i for i in imgs])
 
 
@@ -155,6 +157,8 @@ def det_factory(name, fs, path, shutter=None, filter_bank=None, **kwargs):
     if filter_bank:
         kwargs.update(filter_bank=filter_bank,
                       dark_fields={'pe1_image': lambda: dark_nexter()})
+        print('&&&&&& If Updating for filter')
+        print(SimulatedPE1C(name, fs=fs, **kwargs))
 
     return SimulatedPE1C(name, fs=fs, **kwargs)
 
