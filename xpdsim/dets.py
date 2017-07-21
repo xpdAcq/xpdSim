@@ -76,17 +76,15 @@ class SimulatedPE1C(be.ReaderWithFileStore):
             self._dark_fields = None
 
     def trigger_read(self):
-        read_v = super().trigger_read()
-        print('ppppppppppppppppppppppppppp')
-        print(read_v)
-        print('ppppppppppppppppppppppppppp')
+        rv = super().trigger_read()
         if self.shutter and self._dark_fields and \
                 self.shutter.read()['rad']['value'] == 0:
-            read_v = {field: {'value': func(), 'timestamp': ttime.time()}
-                      for field, func in self._dark_fields.items()
-                      if field in self.read_attrs}
+            rv = {field: {'value': func(), 'timestamp': ttime.time()}
+                  for field, func in self._dark_fields.items()
+                  if field in self.read_attrs}
+        read_v = dict(rv)
+        read_v['pe1_image']['value'] = read_v['pe1_image']['value'].copy()
         if self.filter_bank:
-            print(self.filter_bank.get_attenuation())
             read_v['pe1_image']['value'] *= self.filter_bank.get_attenuation()
         return read_v
 
@@ -155,10 +153,7 @@ def det_factory(name, fs, path, shutter=None, filter_bank=None, **kwargs):
                       dark_fields={'pe1_image': lambda: dark_nexter()})
 
     if filter_bank:
-        kwargs.update(filter_bank=filter_bank,
-                      dark_fields={'pe1_image': lambda: dark_nexter()})
-        print('&&&&&& If Updating for filter')
-        print(SimulatedPE1C(name, fs=fs, **kwargs))
+        kwargs.update(filter_bank=filter_bank)
 
     return SimulatedPE1C(name, fs=fs, **kwargs)
 

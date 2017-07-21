@@ -1,4 +1,4 @@
-from ..dets import (det_factory, build_image_cycle, nsls_ii_path, # chess_path
+from ..dets import (det_factory, build_image_cycle,  # chess_path
                     )
 from bluesky.plans import Count, abs_set
 from bluesky.tests.utils import setup_test_run_engine
@@ -12,8 +12,8 @@ from ..filter import XRayFilterBankExample
 # Note the missing Chess data, there seems to be a de-syncing of the det and
 # cycle which causes the tests to not pass, FIXME
 # test_params = [('nslsii', nsls_ii_path),
-               # ('chess', chess_path)
-               # ]
+                # ('chess', chess_path)
+                # ]
 test_params = [('10x10', (10, 10))]
 
 
@@ -26,16 +26,11 @@ def test_dets(db, tmp_dir, name, fp):
     cycle2 = build_image_cycle(fp)
     cg = cycle2()
     for i in range(5):
-        print(i)
         scan = Count([det], )
         uid = RE(scan)
         for n, d in db.restream(db[-1], fill=True):
             if n == 'event':
-                print('!!!!! TEST 1 !!!!!!')
-                print(d['data']['pe1_image'])
-                print('!!!!! TEST 1 !!!!!!')
                 img = next(cg)['pe1_image']
-                print(img)
                 assert_array_equal(d['data']['pe1_image'], img)
         assert uid is not None
 
@@ -89,15 +84,16 @@ def test_dets_XRayFilter(db, tmp_dir, name, fp):
     # Each filter
     for f in XRayFilterBankExample.filter_list:
         RE(abs_set(f, 0, wait=True))
+    count = 0
     for f in XRayFilterBankExample.filter_list:
+        count += 1
         RE(abs_set(f, 1, wait=True))
         uid = RE(scan)
         for n, d in db.restream(db[-1], fill=True):
             if n == 'event':
-                print(det.filter_bank)
                 assert_array_equal((d['data']['pe1_image']),
                                    next(cg)['pe1_image'] *
-                                   f.get_XRayFilter_attenuation)
+                                   f.get_XRayFilter_attenuation())
         assert uid is not None
         RE(abs_set(f, 0, wait=True))
 

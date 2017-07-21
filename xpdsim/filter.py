@@ -26,14 +26,10 @@ class XRayFilter(be.Mover):
 
     def get_XRayFilter_attenuation(self):
         position_info = self.read()
-        print('###########################################')
-        print(position_info)
-        print('###########################################')
         position_info_subdict = position_info.get('rad')
         position_info_sub_subdict = position_info_subdict.get('value')
-        print(position_info_sub_subdict)
         if (position_info_sub_subdict == 0):
-            return 0
+            return 1
         else:
             return self.attenuation
 
