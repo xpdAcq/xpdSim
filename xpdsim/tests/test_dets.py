@@ -1,4 +1,4 @@
-from ..dets import (det_factory, build_image_cycle,  # chess_path
+from ..dets import (det_factory, build_image_cycle, nsls_ii_path,  # chess_path
                     )
 from bluesky.plans import Count, abs_set
 from bluesky.tests.utils import setup_test_run_engine
@@ -11,10 +11,10 @@ from ..filter import XRayFilterBankExample
 
 # Note the missing Chess data, there seems to be a de-syncing of the det and
 # cycle which causes the tests to not pass, FIXME
-# test_params = [('nslsii', nsls_ii_path),
-                # ('chess', chess_path)
-                # ]
-test_params = [('10x10', (10, 10))]
+test_params = [('nslsii', nsls_ii_path),
+               # ('chess', chess_path)
+               ]
+test_params += [('10x10', (10, 10))]
 
 
 @pytest.mark.parametrize(('name', 'fp'), test_params)
@@ -49,8 +49,10 @@ def test_dets_shutter(db, tmp_dir, name, fp):
     uid = RE(scan)
     for n, d in db.restream(db[-1], fill=True):
         if n == 'event':
+            print('========= Shutter goes down =========')
+            print(d['data']['pe1_image'])
             assert_array_equal(d['data']['pe1_image'],
-                               np.zeros(next(cg)['pe1_image'].shape))
+                               np.zeros(d['data']['pe1_image'].shape))
     assert uid is not None
 
     # With the shutter up
