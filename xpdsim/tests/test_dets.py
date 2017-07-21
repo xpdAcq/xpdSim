@@ -49,12 +49,6 @@ def test_dets_shutter(db, tmp_dir, name, fp):
     uid = RE(scan)
     for n, d in db.restream(db[-1], fill=True):
         if n == 'event':
-            print('========= Shutter goes down =========')
-            print(d['data']['pe1_image'])
-            print('@@@@@@@@@ Shape 1 @@@@@@@@@')
-            print(d['data']['pe1_image'].shape)
-            print('@@@@@@@@@ Shape 2 @@@@@@@@@')
-            print(np.zeros(d['data']['pe1_image'].shape))
             assert_array_equal(d['data']['pe1_image'],
                                np.zeros(d['data']['pe1_image'].shape))
     assert uid is not None
