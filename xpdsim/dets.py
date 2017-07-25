@@ -80,6 +80,8 @@ class SimulatedPE1C(be.ReaderWithFileStore):
             rv = {field: {'value': func(), 'timestamp': ttime.time()}
                   for field, func in self._dark_fields.items()
                   if field in self.read_attrs}
+            print('======Triggered shutter======')
+            print(rv)
         else:
             rv = super().trigger_read()
         read_v = dict(rv)
