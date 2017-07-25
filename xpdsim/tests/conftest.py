@@ -28,7 +28,7 @@ for name, builder, mod in zip(['mongo', 'sqlite'],
                               [build_pymongo_backed_broker,
                                build_sqlite_backed_broker],
                               ['metadatastore', 'portable_mds']):
-    try:
+    try:  # pragma: no cover
         importlib.import_module(mod)
     except ImportError:
         pass
