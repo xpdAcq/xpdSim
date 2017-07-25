@@ -156,4 +156,3 @@ def det_factory(name, fs, path, shutter=None, filter_bank=None, **kwargs):
         kwargs.update(filter_bank=filter_bank)
 
     return SimulatedPE1C(name, fs=fs, **kwargs)
-
