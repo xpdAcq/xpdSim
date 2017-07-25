@@ -10,4 +10,6 @@ omit =
     *_version.py
 
 exclude_lines =
+    pragma: no cover
+    raise ImportError
     if __name__ == '__main__':
