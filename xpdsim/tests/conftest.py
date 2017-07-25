@@ -30,7 +30,7 @@ for name, builder, mod in zip(['mongo', 'sqlite'],
                               ['metadatastore', 'portable_mds']):
     try:  # pragma: no cover
         importlib.import_module(mod)
-    except ImportError:
+    except ImportError:  # pragma: no cover
         pass
     else:
         params.append(name)
