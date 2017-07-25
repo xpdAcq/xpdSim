@@ -56,6 +56,7 @@ def test_dets_shutter(db, tmp_dir, name, fp):
     # With the shutter up
     RE(abs_set(shctl1, 1, wait=True))
     uid = RE(scan)
+    next(cg)
     for n, d in db.restream(db[-1], fill=True):
         if n == 'event':
             assert_array_equal(d['data']['pe1_image'], next(cg)['pe1_image'])
