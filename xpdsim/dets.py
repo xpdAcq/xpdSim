@@ -111,6 +111,8 @@ class SimulatedPE1C(be.ReaderWithFileStore):
 
 
 def build_image_cycle(path):
+    # Goal: replace this with a mediator to the robot, to be handled in
+    # detector factory fxn
     """Build image cycles, essentially generators with endless images
 
     Parameters

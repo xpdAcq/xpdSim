@@ -1,7 +1,13 @@
+# Detector will get the sample information from the robot to determine which
+# image to display.
 import bluesky.examples as be
 
 
 class Robot(be.Mover):
+    # create dummy components? Will need to find EpicsSignal syntax
+    sample_number = Cpt(EpicsSignal, 'ID:Tgt-SP')
+    current_sample_number = Cpt(EpicsSignalRO, 'Addr:CurrSmpl-I')
+
     def __init__(self, name, fields, initial_set, theta, sample_map=None):
         theta = be.Mover('theta', {'rad': lambda x: x}, {'x': 0})
         self.theta = theta
@@ -9,6 +15,8 @@ class Robot(be.Mover):
             # sample_map maps positions with image cycles @ build_image_cycle
             # sample_map = {path (str): Cycler (iterable like object to cycle
             # through images}
+            # Will need sample info
+            # Is this TH_POS in API?
         self._current_sample_geometry = None
         super().__init__(name, fields, initial_set, **kwargs)
 
@@ -19,7 +27,7 @@ class Robot(be.Mover):
             raise RuntimeError("Sample %d is already loaded."
                                % self.current_sample_number.get())
 
-        #Rotate theta into loading position if necessary
+        # Rotate theta into loading position if necessary
         load_pos = self.TH_POS[sample_geometry]['load']
         if load_post is not None:
             print('Moving theta to load position')
@@ -41,9 +49,3 @@ class Robot(be.Mover):
 
         # Stash the current sample geomtery for reference when we unload
         self._current_sample_geometry = sample_geometry
-
-
-
-
-    # What functions should be included?
-
