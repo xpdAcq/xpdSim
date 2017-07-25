@@ -10,4 +10,5 @@ omit =
     *_version.py
 
 exclude_lines =
+    raise ImportError
     if __name__ == '__main__':
