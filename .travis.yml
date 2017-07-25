@@ -53,10 +53,11 @@ before_install:
 
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker bluesky flake8 pyFAI mongoquery codecov attrs metadatastore filestore -c conda-forge -c lightsource2-tag -c soft-matter
+  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker flake8 pyFAI mongoquery codecov attrs metadatastore filestore -c conda-forge -c lightsource2-tag -c soft-matter
   - source activate testenv
   - 'pip install https://github.com/NSLS-II/portable-mds/zipball/master#egg=portable_mds'
   - 'pip install https://github.com/NSLS-II/portable-fs/zipball/master#egg=portable_fs'
+  - 'pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky'
   - python setup.py install
   # Need to clean the python build directory (and other cruft) or pytest is
   # going to find the build directory and get confused why there are two sets
