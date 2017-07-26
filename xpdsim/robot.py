@@ -8,18 +8,6 @@ from ophyd import Device
 
 
 class Robot(Device):
-    # sample_number = be.Mover('ID:Tgt-SP',
-    # {'ID:Tgt-SP': lambda x: x}, {'x': 0})
-    # load_cmd = be.Mover('Cmd:Load-Cmd.PROC',
-                        #  {'Cmd:Load-Cmd.PROC': lambda x: x}, {'x': 0})
-    # unload_cmd = be.Mover('Cmd:Unload-Cmd.PROC',
-                        #  {'Cmd:Unload-Cmd.PROC': lambda x: x}, {'x': 0})
-    # execute_cmd = be.Mover('Cmd:Exec-Cmd',
-                        #   {'Cmd:Exec-Cmd': lambda x: x}, {'x': 0})
-    # status = be.Mover('Sts-Sts', {'Sts-Sts': lambda x: x}, {'x': 0})
-    # current_sample_number = be.Mover('Addr:CurrSmpl-I',
-                                # {'Addr:CurrSmpl-I': lambda x: x}, {'x': 0})
-
     sample_number = Cpt(EpicsSignal, 'ID:Tgt-SP')
     load_cmd = Cpt(EpicsSignal, 'Cmd:Load-Cmd.PROC')
     unload_cmd = Cpt(EpicsSignal, 'Cmd:Unload-Cmd.PROC')

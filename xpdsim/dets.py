@@ -176,5 +176,10 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
                          {'pe1_image': lambda: nexter()}, fs=fs,
                          **kwargs)
 
-    # Robot factory - will need to pass in a sample map
-    # From robot factory, extract info about what images detector should display
+
+def robot_current_sample_number_getter(name, fs, path, Robot=None, **kwargs):
+    if Robot:
+        sample_map = {1: 'cycle1', 2: 'cycle2'}
+        return sample_map.get(Robot.current_sample_number)
+        # If I do it this way, do I need sample_map as a parameter in Robot?
+        # sample_map would correlate sample_number with cycle
