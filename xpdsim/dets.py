@@ -111,8 +111,6 @@ class SimulatedPE1C(be.ReaderWithFileStore):
 
 
 def build_image_cycle(path):
-    # Goal: replace this with a mediator to the robot, to be handled in
-    # detector factory fxn
     """Build image cycles, essentially generators with endless images
 
     Parameters
@@ -136,6 +134,7 @@ chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
 def det_factory(name, fs, path, shutter=None, **kwargs):
+    # Revise HOW image cycle is handed to the detector
     """Build a detector using real images
 
     Parameters
@@ -176,3 +175,6 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
     return SimulatedPE1C(name,
                          {'pe1_image': lambda: nexter()}, fs=fs,
                          **kwargs)
+
+    # Robot factory - will need to pass in a sample map
+    # From robot factory, extract info about what images detector should display

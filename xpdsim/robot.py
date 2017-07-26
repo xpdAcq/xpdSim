@@ -1,26 +1,53 @@
-# Detector will get the sample information from the robot to determine which
-# image to display.
-import bluesky.examples as be
+# Detector will get the sample information from the robot via a mediator to
+# determine which image to display.
+import time as ttime
+from ophyd.utils import set_and_wait
+from ophyd import EpicsSignal
+from ophyd import Component as Cpt
+from ophyd import Device
 
 
-class Robot(be.Mover):
-    # create dummy components? Will need to find EpicsSignal syntax
+class Robot(Device):
+    # sample_number = be.Mover('ID:Tgt-SP',
+    # {'ID:Tgt-SP': lambda x: x}, {'x': 0})
+    # load_cmd = be.Mover('Cmd:Load-Cmd.PROC',
+                        #  {'Cmd:Load-Cmd.PROC': lambda x: x}, {'x': 0})
+    # unload_cmd = be.Mover('Cmd:Unload-Cmd.PROC',
+                        #  {'Cmd:Unload-Cmd.PROC': lambda x: x}, {'x': 0})
+    # execute_cmd = be.Mover('Cmd:Exec-Cmd',
+                        #   {'Cmd:Exec-Cmd': lambda x: x}, {'x': 0})
+    # status = be.Mover('Sts-Sts', {'Sts-Sts': lambda x: x}, {'x': 0})
+    # current_sample_number = be.Mover('Addr:CurrSmpl-I',
+                                # {'Addr:CurrSmpl-I': lambda x: x}, {'x': 0})
+
     sample_number = Cpt(EpicsSignal, 'ID:Tgt-SP')
-    current_sample_number = Cpt(EpicsSignalRO, 'Addr:CurrSmpl-I')
+    load_cmd = Cpt(EpicsSignal, 'Cmd:Load-Cmd.PROC')
+    unload_cmd = Cpt(EpicsSignal, 'Cmd:Unload-Cmd.PROC')
+    execute_cmd = Cpt(EpicsSignal, 'Cmd:Exec-Cmd')
+    status = Cpt(EpicsSignal, 'Sts-Sts')
+    current_sample_number = Cpt(EpicsSignal, 'Addr:CurrSmpl-I')
 
-    def __init__(self, name, fields, initial_set, theta, sample_map=None):
-        theta = be.Mover('theta', {'rad': lambda x: x}, {'x': 0})
-        self.theta = theta
-        if sample_map is None:
-            # sample_map maps positions with image cycles @ build_image_cycle
-            # sample_map = {path (str): Cycler (iterable like object to cycle
-            # through images}
-            # Will need sample info
-            # Is this TH_POS in API?
+    # Map sample types to load position and measurement position
+    TH_POS = {'capillary': {'load': None, 'measure': None},
+              'plate': {'load': 0, 'measure': 90},
+              None: {'load': None, 'measure': None}}
+
+    def __init__(self, name, fields, initial_set, theta, sample_map, **kwargs):
+        self.theta = theta  # theta is a motor
+        self.sample_map = sample_map  # sample_map is a dict
         self._current_sample_geometry = None
         super().__init__(name, fields, initial_set, **kwargs)
 
-    def load_sample(self, saple_number, sample_geometry=None):
+    def _poll_until_idle(self):
+        ttime.sleep(3)  # gives robot plenty of time to start
+        while self.status.get() != 'Idle':
+            ttime.sleep(.1)
+
+    def _poll_until_sample_cleared(self):
+        while self.current_sample_number.get() != 0:
+            ttime.sleep(.1)
+
+    def load_sample(self, sample_number, sample_geometry=None):
         # If no sample is loaded, current_sample_number = 0
         # is reported by the robot
         if self.current_sample_number.get() != 0:
@@ -29,7 +56,7 @@ class Robot(be.Mover):
 
         # Rotate theta into loading position if necessary
         load_pos = self.TH_POS[sample_geometry]['load']
-        if load_post is not None:
+        if load_pos is not None:
             print('Moving theta to load position')
             self.theta.move(load_pos, wait=True)
 
@@ -37,6 +64,7 @@ class Robot(be.Mover):
         # Set sample_number; issue load_cmd; issue execute_cmd.
         set_and_wait(self.sample_number, sample_number)
         set_and_wait(self.load_cmd, 1)
+        # set_and_wait is an ophyd.utils import
         self.execute_cmd.put(1)
         print('Loading...')
         self._poll_until_idle()
@@ -49,3 +77,26 @@ class Robot(be.Mover):
 
         # Stash the current sample geomtery for reference when we unload
         self._current_sample_geometry = sample_geometry
+
+    def unload_sample(self):
+        if self.current_sample_number.get() == 0:
+            # there is nothing to do
+            return
+
+        # Rotate theta into loading position if necessary (e.g. flat plate
+        # model)
+        load_pos = self.TH_POS[self._current_sample_geomgery]['load']
+        if load_pos is not None:
+            print('Moving theta to unload position')
+            self.theta.move(load_pos, wait=True)
+
+        set_and_wait(self.unload_cmd, 1)
+        self.execute_cmd.put(1)
+        print('Unloading...')
+        self._poll_until_idle()
+        self._poll_until_sample_cleared()
+        self._current_sample_geometry = None
+
+    def stop(self):
+        self.theta.stop()
+        super().stop()
