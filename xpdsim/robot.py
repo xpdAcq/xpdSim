@@ -20,6 +20,8 @@ class Robot(Device):
               'plate': {'load': 0, 'measure': 90},
               None: {'load': None, 'measure': None}}
 
+    # init is unlike robot api - that produces error message
+    # how to resolve ?
     def __init__(self, name, fields, initial_set, theta, sample_map, **kwargs):
         self.theta = theta  # theta is a motor
         self.sample_map = sample_map  # sample_map is a dict
