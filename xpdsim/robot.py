@@ -1,10 +1,13 @@
 # Detector will get the sample information from the robot via a mediator to
 # determine which image to display.
-import time as ttime
-from ophyd.utils import set_and_wait
-from ophyd import EpicsSignal
+import asyncio
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import Component as Cpt
-from ophyd import Device
+from ophyd.utils import set_and_wait
+from bluesky import Msg
+from bluesky.plans import subs_wrapper, count, list_scan, single_gen
+from bluesky.callbacks import LiveTable
+import time as ttime
 
 
 class Robot(Device):
@@ -20,13 +23,12 @@ class Robot(Device):
               'plate': {'load': 0, 'measure': 90},
               None: {'load': None, 'measure': None}}
 
-    # init is unlike robot api - that produces error message
-    # how to resolve ?
-    def __init__(self, name, fields, initial_set, theta, sample_map, **kwargs):
+    # I've taken init from the Robot API - why is the syntax invalid?
+    def __init__(self, *args, theta, diff=None, **kwargs):
         self.theta = theta  # theta is a motor
-        self.sample_map = sample_map  # sample_map is a dict
+        # self.sample_map = sample_map  # sample_map is a dict
         self._current_sample_geometry = None
-        super().__init__(name, fields, initial_set, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _poll_until_idle(self):
         ttime.sleep(3)  # gives robot plenty of time to start
