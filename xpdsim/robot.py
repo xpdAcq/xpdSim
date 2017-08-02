@@ -23,10 +23,9 @@ class Robot(Device):
               'plate': {'load': 0, 'measure': 90},
               None: {'load': None, 'measure': None}}
 
-    # I've taken init from the Robot API - why is the syntax invalid?
-    def __init__(self, *args, theta, diff=None, **kwargs):
+    def __init__(self, theta, *args, sample_map=None, **kwargs):
         self.theta = theta  # theta is a motor
-        # self.sample_map = sample_map  # sample_map is a dict
+        self.sample_map = sample_map  # sample_map is a dict
         self._current_sample_geometry = None
         super().__init__(*args, **kwargs)
 

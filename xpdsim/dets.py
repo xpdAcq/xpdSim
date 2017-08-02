@@ -23,7 +23,7 @@ import numpy as np
 from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
-from bluesky.utils import new_uid
+from .robot import Robot
 
 DATA_DIR = rs_fn('xpdsim', 'data/')
 
@@ -61,11 +61,12 @@ class SimulatedPE1C(be.ReaderWithFileStore):
     """
 
     def __init__(self, name, read_fields, fs, shutter=None,
-                 dark_fields=None, **kwargs):
+                 dark_fields=None, Robot=None, **kwargs):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
         self.shutter = shutter
+        self.robot = Robot
         self._staged = False
         super().__init__(name, read_fields, fs=fs, **kwargs)
         self.ready = True  # work around a hack in Reader
@@ -75,39 +76,19 @@ class SimulatedPE1C(be.ReaderWithFileStore):
         else:
             self._dark_fields = None
 
-    def trigger(self):
+    def trigger_read(self):
         if self.shutter and self._dark_fields and \
-                        self.shutter.read()['rad']['value'] == 0:
-            read_v = {field: {'value': func(), 'timestamp': ttime.time()}
-                      for field, func in self._dark_fields.items()
-                      if field in self.read_attrs}
-            self._result.clear()
-            for idx, (name, reading) in enumerate(read_v.items()):
-                # Save the actual reading['value'] to disk and create a record
-                # in FileStore.
-                np.save('{}_{}.npy'.format(self._path_stem, idx),
-                        reading['value'])
-                datum_id = new_uid()
-                self.fs.insert_datum(self._resource_id, datum_id,
-                                     dict(index=idx))
-                # And now change the reading in place, replacing the value with
-                # a reference to FileStore.
-                reading['value'] = datum_id
-                self._result[name] = reading
-
-            delay_time = self.exposure_time
-            if delay_time:
-                if self.loop.is_running():
-                    st = be.SimpleStatus()
-                    self.loop.call_later(delay_time, st._finished)
-                    return st
-                else:
-                    ttime.sleep(delay_time)
-
-            return be.NullStatus()
-
+                self.shutter.read()['rad']['value'] == 0:
+            rv = {field: {'value': func(), 'timestamp': ttime.time()}
+                  for field, func in self._dark_fields.items()
+                  if field in self.read_attrs}
+            print('======Triggered shutter======')
+            print(rv)
         else:
-            return super().trigger()
+            rv = super().trigger_read()
+        read_v = dict(rv)
+        read_v['pe1_image']['value'] = read_v['pe1_image']['value'].copy()
+        return read_v
 
 
 def build_image_cycle(path):
@@ -133,8 +114,11 @@ nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-def det_factory(name, fs, path, shutter=None, **kwargs):
-    # Revise HOW image cycle is handed to the detector
+def robot_factory(self, theta, sample_map=None, **kwargs):
+    return Robot(theta, sample_map)
+
+
+def det_factory(name, fs, path, shutter=None, Robot=None, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -151,9 +135,7 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
     detector: SimulatedPE1C instance
         The detector
     """
-    robot_current_sample_number_getter()
-    cycle = build_image_cycle(
-        path)
+    cycle = build_image_cycle(path)
     gen = cycle()
 
     def nexter():
@@ -162,27 +144,27 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
     if shutter:
         stream_piece = next(gen)
         sample_img = stream_piece['pe1_image']
-        gen = chain((i for i in [stream_piece]), gen)  # put the piece on top
+        gen = chain((i for i in [stream_piece]), gen)
+        # put the piece on top
 
         def dark_nexter():
             return np.zeros(sample_img.shape)
 
-        return SimulatedPE1C(name,
-                             {'pe1_image': lambda: nexter()}, fs=fs,
-                             shutter=shutter,
-                             dark_fields={'pe1_image': lambda: dark_nexter()},
+        if Robot is None:
+            return SimulatedPE1C(name, {'pe1_image': lambda: nexter()},
+                                 fs=fs, shutter=shutter, dark_fields=
+                                 {'pe1_image': lambda: dark_nexter()},
+                                 **kwargs)
+        else:
+            return SimulatedPE1C(name, {'pe1_image': lambda: nexter()},
+                                 fs=fs, shutter=shutter,
+                                 dark_fields={'pe1_image': lambda:
+                                              dark_nexter()},
+                                 Robot=Robot, **kwargs)
+
+    if Robot is None:
+        return SimulatedPE1C(name, {'pe1_image': lambda: nexter()}, fs=fs,
                              **kwargs)
-
-    return SimulatedPE1C(name,
-                         {'pe1_image': lambda: nexter()}, fs=fs,
-                         **kwargs)
-
-
-def robot_current_sample_number_getter(Robot=None, **kwargs):
-    if Robot:
-        sample_map = {1: 'cycle1', 2: 'cycle2'}
-        return sample_map.get(Robot.current_sample_number)
-        # I think this would eliminate the need for sample_map to be a parameter
-        # of Robot
-        # I want to call this function in det_factory, so where should I
-        # construct the robot? Pass the robot to det_factory as a parameter?
+    else:
+        return SimulatedPE1C(name, {'pe1_image': lambda: nexter()}, fs=fs,
+                             Robot=Robot, **kwargs)

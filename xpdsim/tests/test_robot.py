@@ -4,7 +4,6 @@ import bluesky.examples as be
 
 def test_robot():
     th = be.Mover('theta', {'theta': lambda x: x}, {'x': 0})
-    robot = Robot('XF:28IDC-ES:1{SM}', theta=th)
-    # Crashes : Cannot find Epics CA DLL, but taken from Robot API reference
-    # file?
-# What features of the robot should be tested ?
+    s_m = {'sample1': 'img1', 'sample2': 'img2'}
+    r = Robot(th, sample_map=s_m)
+    assert r.sample_map.get('sample1') is 'img1'
