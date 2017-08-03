@@ -10,7 +10,7 @@ from bluesky.callbacks import LiveTable
 import time as ttime
 
 
-class Robot(Device):
+class Robot:
     sample_number = Cpt(EpicsSignal, 'ID:Tgt-SP')
     load_cmd = Cpt(EpicsSignal, 'Cmd:Load-Cmd.PROC')
     unload_cmd = Cpt(EpicsSignal, 'Cmd:Unload-Cmd.PROC')
@@ -27,7 +27,10 @@ class Robot(Device):
         self.theta = theta  # theta is a motor
         self.sample_map = sample_map  # sample_map is a dict
         self._current_sample_geometry = None
-        super().__init__(*args, **kwargs)
+        # super().__init__(*args, **kwargs)
+
+    def get_current_sample_number(self):
+        return self.current_sample_number
 
     def _poll_until_idle(self):
         ttime.sleep(3)  # gives robot plenty of time to start

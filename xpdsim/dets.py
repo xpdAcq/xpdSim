@@ -65,8 +65,9 @@ class SimulatedPE1C(be.ReaderWithFileStore):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
+        self.current_sample_num = None
         self.shutter = shutter
-        self.robot = Robot
+        self.Robot = Robot
         self._staged = False
         super().__init__(name, read_fields, fs=fs, **kwargs)
         self.ready = True  # work around a hack in Reader
@@ -77,13 +78,17 @@ class SimulatedPE1C(be.ReaderWithFileStore):
             self._dark_fields = None
 
     def trigger_read(self):
+        if self.Robot:
+            if self.Robot.get_current_sample_number() != \
+                  self.current_sample_num:
+                self.current_sample_num = self.Robot.get_current_sample_number()
+                self.read_fiels = self.Robot.read()
+
         if self.shutter and self._dark_fields and \
                 self.shutter.read()['rad']['value'] == 0:
             rv = {field: {'value': func(), 'timestamp': ttime.time()}
                   for field, func in self._dark_fields.items()
                   if field in self.read_attrs}
-            print('======Triggered shutter======')
-            print(rv)
         else:
             rv = super().trigger_read()
         read_v = dict(rv)
@@ -152,9 +157,9 @@ def det_factory(name, fs, path, shutter=None, Robot=None, **kwargs):
 
         if Robot is None:
             return SimulatedPE1C(name, {'pe1_image': lambda: nexter()},
-                                 fs=fs, shutter=shutter, dark_fields=
-                                 {'pe1_image': lambda: dark_nexter()},
-                                 **kwargs)
+                                 fs=fs, shutter=shutter,
+                                 dark_fields={'pe1_image': lambda:
+                                              dark_nexter()}, **kwargs)
         else:
             return SimulatedPE1C(name, {'pe1_image': lambda: nexter()},
                                  fs=fs, shutter=shutter,
