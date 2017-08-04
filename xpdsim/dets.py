@@ -65,7 +65,8 @@ class SimulatedPE1C(be.ReaderWithFileStore):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
-        self.current_sample_num = None
+        self.read_fields = read_fields
+        self.sample_num = None
         self.shutter = shutter
         self.Robot = Robot
         self._staged = False
@@ -79,10 +80,12 @@ class SimulatedPE1C(be.ReaderWithFileStore):
 
     def trigger_read(self):
         if self.Robot:
-            if self.Robot.get_current_sample_number() != \
-                  self.current_sample_num:
-                self.current_sample_num = self.Robot.get_current_sample_number()
-                self.read_fiels = self.Robot.read()
+            if self.Robot.get_sample_number() != \
+                  self.sample_num:
+                self.sample_num = self.Robot.get_sample_number()
+                self.read_fields.update({k: v for k, v in
+                                         self.Robot.get_fields_dict().items if k
+                                         in self.read_fields.keys()})
 
         if self.shutter and self._dark_fields and \
                 self.shutter.read()['rad']['value'] == 0:
@@ -119,8 +122,8 @@ nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
-def robot_factory(self, theta, sample_map=None, **kwargs):
-    return Robot(theta, sample_map)
+def robot_factory(theta, sample_map=None, **kwargs):
+    return Robot(theta, sample_map=sample_map)
 
 
 def det_factory(name, fs, path, shutter=None, Robot=None, **kwargs):

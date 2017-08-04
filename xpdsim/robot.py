@@ -3,6 +3,7 @@
 import asyncio
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import Component as Cpt
+from ophyd import PseudoPositioner, PseudoSingle
 from ophyd.utils import set_and_wait
 from bluesky import Msg
 from bluesky.plans import subs_wrapper, count, list_scan, single_gen
@@ -10,8 +11,9 @@ from bluesky.callbacks import LiveTable
 import time as ttime
 
 
-class Robot:
-    sample_number = Cpt(EpicsSignal, 'ID:Tgt-SP')
+class Robot():
+    # pseudo positioners
+    sample_number = Cpt(PseudoSingle)
     load_cmd = Cpt(EpicsSignal, 'Cmd:Load-Cmd.PROC')
     unload_cmd = Cpt(EpicsSignal, 'Cmd:Unload-Cmd.PROC')
     execute_cmd = Cpt(EpicsSignal, 'Cmd:Exec-Cmd')
@@ -25,12 +27,17 @@ class Robot:
 
     def __init__(self, theta, *args, sample_map=None, **kwargs):
         self.theta = theta  # theta is a motor
-        self.sample_map = sample_map  # sample_map is a dict
+        self.sample_map = sample_map
+        # sample_map = {sample #: {'pe1_image: nexter}
         self._current_sample_geometry = None
         # super().__init__(*args, **kwargs)
 
-    def get_current_sample_number(self):
-        return self.current_sample_number
+    def get_fields_dict(self):
+        n = self.get_sample_number()
+        return self.sample_map[n]
+
+    def get_sample_number(self):
+        return self.sample_number
 
     def _poll_until_idle(self):
         ttime.sleep(3)  # gives robot plenty of time to start
