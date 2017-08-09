@@ -3,7 +3,7 @@
 import asyncio
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import Component as Cpt
-from ophyd import PseudoPositioner, PseudoSingle
+from ophyd import Signal
 from ophyd.utils import set_and_wait
 from bluesky import Msg
 from bluesky.plans import subs_wrapper, count, list_scan, single_gen
@@ -11,14 +11,13 @@ from bluesky.callbacks import LiveTable
 import time as ttime
 
 
-class Robot():
-    # pseudo positioners
-    sample_number = Cpt(PseudoSingle)
-    load_cmd = Cpt(EpicsSignal, 'Cmd:Load-Cmd.PROC')
-    unload_cmd = Cpt(EpicsSignal, 'Cmd:Unload-Cmd.PROC')
-    execute_cmd = Cpt(EpicsSignal, 'Cmd:Exec-Cmd')
-    status = Cpt(EpicsSignal, 'Sts-Sts')
-    current_sample_number = Cpt(EpicsSignal, 'Addr:CurrSmpl-I')
+class Robot(Device):
+    sample_number = Cpt(Signal, value=0)
+    load_cmd = Cpt(Signal, value=0)
+    unload_cmd = Cpt(Signal, value=0)
+    execute_cmd = Cpt(Signal, value=0)
+    status = Cpt(Signal, value=0)
+    current_sample_number = Cpt(Signal, value=0)
 
     # Map sample types to load position and measurement position
     TH_POS = {'capillary': {'load': None, 'measure': None},
@@ -30,7 +29,7 @@ class Robot():
         self.sample_map = sample_map
         # sample_map = {sample #: {'pe1_image: nexter}
         self._current_sample_geometry = None
-        # super().__init__(*args, **kwargs)
+        super().__init__("", *args, **kwargs)
 
     def get_fields_dict(self):
         n = self.get_sample_number()

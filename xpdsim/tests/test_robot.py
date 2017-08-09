@@ -20,7 +20,7 @@ def test_robot(db, tmp_dir):
         def nexter():
             return next(gen)['pe1_image']
         sm[i] = {'pe1_image': lambda: nexter()}
-    r = robot_factory(th, sample_map=sm)
+        r = robot_factory(th, sample_map=sm)
     det = det_factory(name, db.fs, path, save_path=tmp_dir, Robot=r)
     RE = setup_test_run_engine()
     RE.subscribe('all', db.mds.insert)
