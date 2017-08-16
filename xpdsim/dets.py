@@ -24,9 +24,9 @@ from cycler import cycler
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
 from bluesky.utils import new_uid
+import bluesky.examples as be
 
-DATA_DIR = rs_fn('xpdsim', 'data/')
-
+DATA_DIR_STEM = 'xpdsim.data'
 
 class PutGet:
     """basic class to have set/put method"""
@@ -54,26 +54,64 @@ class SimulatedCam:
 
 
 # define simulated PE1C
-class SimulatedPE1C(be.ReaderWithFileStore):
-    """Subclass the bluesky plain detector examples ('Reader');
+class SimpleSimulatedPE1C(be.ReaderWithRegistry):
+    """Simple simlulated detector, which only include reference to the
+    Registry (FileStore in the past). This simulated detector has no
+    information about shutter or dark strategy. Realistic attributes
+    from the camera are also available in this simulated object
 
-    also add realistic attributes and shutter stuff.
+    Parameters
+    ----------
+    name : str
+        name of this simulated detector
+    read_fields : str
+        name of data field readed from this detector
+    reg : Registry
+        object providing reference of the data
     """
 
-    def __init__(self, name, read_fields, fs, shutter=None,
-                 dark_fields=None, **kwargs):
+    def __init__(self, name, read_fields, reg, **kwargs):
         self.images_per_set = PutGet()
         self.number_of_sets = PutGet()
         self.cam = SimulatedCam()
-        self.shutter = shutter
         self._staged = False
-        super().__init__(name, read_fields, fs=fs, **kwargs)
+        super().__init__(name, read_fields, reg=reg, **kwargs)
         self.ready = True  # work around a hack in Reader
+
+
+
+class SimulatedPE1C(SimpleSimulatedPE1C):
+    """Advanced version of simlulated detector, which includes reference to the
+    Registry (FileStore in the past), shutter and dark strategy.
+    Realistic attributes from the camera are also available in this
+    simulated object
+
+    Parameters
+    ----------
+    name : str
+        name of this simulated detector
+    read_fields : str
+        name of data field readed from this detector
+    reg : Registry
+        object providing reference of the data
+    shutter : object, optional
+        a valid python object represents the shutter. Default is None.
+    dark_fields: dict, optional
+        a dictionary with key beining the name of the dark_field and
+        the value represents the function of dark strategey. Default is
+        None.
+    """
+    def __init__(self, name, read_fields, reg, shutter=None,
+                 dark_fields=None, **kwargs):
+        self._staged = False
+        if shutter:
+            self.shutter = shutter
         if dark_fields:
             self._dark_fields = dict(self._fields)
             self._dark_fields.update(dark_fields)
         else:
             self._dark_fields = None
+        super().__init__(name, read_fields, reg=reg, **kwargs)
 
     def trigger(self):
         if self.shutter and self._dark_fields and \
@@ -128,9 +166,9 @@ def build_image_cycle(path):
     return cycler(pe1_image=[i for i in imgs])
 
 
-nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
+#nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
 
-chess_path = os.path.join(DATA_DIR, 'chess/')
+#chess_path = os.path.join(DATA_DIR, 'chess/')
 
 
 def det_factory(name, fs, path, shutter=None, **kwargs):
