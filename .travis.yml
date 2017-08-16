@@ -25,8 +25,6 @@ addons:
 
 matrix:
   include:
-#    - python: 3.5
-#      env: BUILD_DOCS=false
     - python: 3.5
       env: BUILD_DOCS=true
 
@@ -50,13 +48,18 @@ before_install:
   - mkdir -p /home/travis/.config/filestore
   - 'echo ''port: 27017'' > /home/travis/.config/filestore/connection.yml'
 
-
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION pytest coverage pip databroker bluesky flake8 pyFAI mongoquery codecov attrs metadatastore filestore -c conda-forge -c lightsource2-tag -c soft-matter
+  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION scipy jsonschema pytest coverage pip ophyd pyepics mock xlrd pyfai flake8 codecov -c lightsource2-tag -c conda-forge -c soft-matter
   - source activate testenv
-  - 'pip install https://github.com/NSLS-II/portable-mds/zipball/master#egg=portable_mds'
-  - 'pip install https://github.com/NSLS-II/portable-fs/zipball/master#egg=portable_fs'
+#  - 'pip install https://github.com/NSLS-II/event-model/zipball/master#egg=event_model'
+#  - conda remove metadatastore databroker filestore --yes
+  - 'pip install https://github.com/NSLS-II/databroker/zipball/master#egg=databroker'
+#  - 'pip install https://github.com/NSLS-II/filestore/zipball/master#egg=filestore'
+#  - 'pip install https://github.com/NSLS-II/metadatastore/zipball/master#egg=metadatastore'
+#  - 'pip install https://github.com/NSLS-II/portable-mds/zipball/master#egg=portable_mds'
+  - 'pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky'
+  - 'pip install https://github.com/xpdAcq/xpdAn/zipball/master#egg=xpdan'
   - python setup.py install
   # Need to clean the python build directory (and other cruft) or pytest is
   # going to find the build directory and get confused why there are two sets
@@ -69,8 +72,7 @@ install:
 script:
   - coverage run run_tests.py
   - coverage report -m
-  - flake8 .
 
-after_success:
+after_script:
+  - flake8
   - codecov
-  - coveralls
