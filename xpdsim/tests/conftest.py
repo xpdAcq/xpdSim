@@ -14,16 +14,49 @@
 ##############################################################################
 import os
 import shutil
-import sys
-import tempfile
-
 import pytest
-import importlib
-from databroker.tests.utils import build_pymongo_backed_broker, \
-                                   build_sqlite_backed_broker
-params = []
-param_map = {}
+import tempfile
+from databroker.tests.utils import (build_sqlite_backed_broker,
+                                    build_pymongo_backed_broker,
+                                    #build_hdf5_backed_broker,
+                                    #build_client_backend_broker,
+                                    #start_md_server,
+                                    #stop_md_server
+                                    )
 
+params = ['sqlite', 'mongo',
+          #'hdf5', 'client'
+          ]
+
+@pytest.fixture(params=params, scope='module')
+def db(request):
+    param_map = {'sqlite': build_sqlite_backed_broker,
+                 'mongo': build_pymongo_backed_broker,
+                 #'hdf5': build_hdf5_backed_broker,
+                 #'client': build_client_backend_broker
+                 }
+    databroker = param_map[request.param](request)
+    yield databroker
+
+
+@pytest.fixture(scope='module')
+def tmp_dir():
+    td = tempfile.mkdtemp()
+    print('creating {}'.format(td))
+    yield td
+    if os.path.exists(td):
+        print('removing {}'.format(td))
+        shutil.rmtree(td)
+
+""" holding place
+import sys
+import uuid
+import ujson
+import time
+import requests.exceptions
+import tzlocal
+import databroker.headersource.mongoquery as mqmds
+from databroker.headersource import sqlite as sqlmds
 for name, builder, mod in zip(['mongo', 'sqlite'],
                               [build_pymongo_backed_broker,
                                build_sqlite_backed_broker],
@@ -38,20 +71,4 @@ for name, builder, mod in zip(['mongo', 'sqlite'],
 
 if sys.version_info >= (3, 0):
     pass
-
-
-@pytest.fixture(params=params, scope='module')
-def db(request):
-    print('Making DB')
-    databroker = param_map[request.param](request)
-    yield databroker
-
-
-@pytest.fixture(scope='module')
-def tmp_dir():
-    td = tempfile.mkdtemp()
-    print('creating {}'.format(td))
-    yield td
-    if os.path.exists(td):
-        print('removing {}'.format(td))
-        shutil.rmtree(td)
+"""

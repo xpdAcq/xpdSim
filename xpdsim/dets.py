@@ -28,6 +28,10 @@ import bluesky.examples as be
 
 DATA_DIR_STEM = 'xpdsim.data'
 
+nsls_ii_path = rs_fn(DATA_DIR_STEM+'.XPD', 'ni')
+chess_path = rs_fn(DATA_DIR_STEM, 'chess')
+
+
 class PutGet:
     """basic class to have set/put method"""
 
@@ -79,7 +83,6 @@ class SimpleSimulatedPE1C(be.ReaderWithRegistry):
         self.ready = True  # work around a hack in Reader
 
 
-
 class SimulatedPE1C(SimpleSimulatedPE1C):
     """Advanced version of simlulated detector, which includes reference to the
     Registry (FileStore in the past), shutter and dark strategy.
@@ -104,8 +107,7 @@ class SimulatedPE1C(SimpleSimulatedPE1C):
     def __init__(self, name, read_fields, reg, shutter=None,
                  dark_fields=None, **kwargs):
         self._staged = False
-        if shutter:
-            self.shutter = shutter
+        self.shutter = shutter
         if dark_fields:
             self._dark_fields = dict(self._fields)
             self._dark_fields.update(dark_fields)
@@ -166,10 +168,6 @@ def build_image_cycle(path):
     return cycler(pe1_image=[i for i in imgs])
 
 
-#nsls_ii_path = os.path.join(DATA_DIR, 'XPD/ni/')
-
-#chess_path = os.path.join(DATA_DIR, 'chess/')
-
 
 def det_factory(name, fs, path, shutter=None, **kwargs):
     """Build a detector using real images
@@ -188,8 +186,7 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
     detector: SimulatedPE1C instance
         The detector
     """
-    cycle = build_image_cycle(
-        path)
+    cycle = build_image_cycle(path)
     gen = cycle()
 
     def nexter():
@@ -204,11 +201,11 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
             return np.zeros(sample_img.shape)
 
         return SimulatedPE1C(name,
-                             {'pe1_image': lambda: nexter()}, fs=fs,
+                             {'pe1_image': lambda: nexter()}, reg=fs,
                              shutter=shutter,
                              dark_fields={'pe1_image': lambda: dark_nexter()},
                              **kwargs)
 
     return SimulatedPE1C(name,
-                         {'pe1_image': lambda: nexter()}, fs=fs,
+                         {'pe1_image': lambda: nexter()}, reg=fs,
                          **kwargs)
