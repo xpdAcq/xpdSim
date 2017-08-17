@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from databroker.broker import Broker
+from databroker import Broker
 from databroker.headersource.mongo import MDS
 from databroker.assets.utils import create_test_database
 from databroker.assets.mongo import Registry
