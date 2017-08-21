@@ -22,9 +22,9 @@ def test_dets(db, tmp_dir, name, fp):
     db.reg.register_handler('RWFS_NPY', be.ReaderWithRegistryHandler)
     cycle2 = build_image_cycle(fp)
     cg = cycle2()
-    for n, d in db.restream(db[-1], fill=True):
-        if n == 'event':
-            assert_array_equal(d['data']['pe1_image'],
+    for name, doc in db.restream(db[-1], fill=True):
+        if name == 'event':
+            assert_array_equal(doc['data']['pe1_image'],
                                next(cg)['pe1_image'])
     assert uid is not None
 
@@ -34,25 +34,26 @@ def test_dets_shutter(db, tmp_dir, name, fp):
     det = det_factory(name, db.reg, fp, save_path=tmp_dir, shutter=shctl1)
     RE = setup_test_run_engine()
     RE.subscribe(db.mds.insert, 'all')
-    scan = bs.count([det], )
+    scan = bs.count([det])
     db.reg.register_handler('RWFS_NPY', be.ReaderWithRegistryHandler)
     cycle2 = build_image_cycle(fp)
     cg = cycle2()
     # With the shutter down
     RE(abs_set(shctl1, 0, wait=True))
     uid = RE(scan)
-    for n, d in db.restream(db[-1], fill=True):
-        if n == 'event':
-            assert_array_equal(d['data']['pe1_image'],
-                               np.zeros(d['data']['pe1_image'].shape))
+    for name, doc in db.restream(db[-1], fill=True):
+        if name == 'event':
+            assert_array_equal(doc['data']['pe1_image'],
+                               np.zeros(doc['data']['pe1_image'].shape))
     assert uid is not None
 
     # With the shutter up
-    RE(abs_set(shctl1, 1, wait=True))
+    RE(abs_set(shctl1, 60, wait=True))
+    scan = bs.count([det])
     uid = RE(scan)
     next(cg)
-    for n, d in db.restream(db[-1], fill=True):
-        if n == 'event':
-            assert_array_equal(d['data']['pe1_image'],
+    for name, doc in db.restream(db[-1], fill=True):
+        if name == 'event':
+            assert_array_equal(doc['data']['pe1_image'],
                                next(cg)['pe1_image'])
     assert uid is not None
