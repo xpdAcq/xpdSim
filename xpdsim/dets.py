@@ -129,6 +129,7 @@ class SimulatedPE1C(SimpleSimulatedPE1C):
                         reading['value'])
                 datum_id = new_uid()
                 self.reg.insert_datum(self._resource_id, datum_id,
+                                      dict(index=idx))
                 # And now change the reading in place, replacing the value with
                 # a reference to FileStore.
                 reading['value'] = datum_id
