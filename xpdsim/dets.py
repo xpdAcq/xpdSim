@@ -55,32 +55,7 @@ class SimulatedCam:
 
 
 # define simulated PE1C
-class SimpleSimulatedPE1C(be.ReaderWithRegistry):
-    """Simple simlulated detector, which only include reference to the
-    Registry (FileStore in the past). This simulated detector has no
-    information about shutter or dark strategy. Realistic attributes
-    from the camera are also available in this simulated object
-
-    Parameters
-    ----------
-    name : str
-        name of this simulated detector
-    read_fields : str
-        name of data field readed from this detector
-    reg : Registry
-        object providing reference of the data
-    """
-
-    def __init__(self, name, read_fields, reg, **kwargs):
-        self.images_per_set = PutGet()
-        self.number_of_sets = PutGet()
-        self.cam = SimulatedCam()
-        self._staged = False
-        super().__init__(name, read_fields, reg=reg, **kwargs)
-        self.ready = True  # work around a hack in Reader
-
-
-class SimulatedPE1C(SimpleSimulatedPE1C):
+class SimulatedPE1C(be.ReaderWithRegistry):
     """Advanced version of simlulated detector, which includes reference to the
     Registry (FileStore in the past), shutter and dark strategy.
     Realistic attributes from the camera are also available in this
@@ -103,8 +78,12 @@ class SimulatedPE1C(SimpleSimulatedPE1C):
     """
     def __init__(self, name, read_fields, reg, shutter=None,
                  dark_fields=None, **kwargs):
+        self.images_per_set = PutGet()
+        self.number_of_sets = PutGet()
+        self.cam = SimulatedCam()
         super().__init__(name, read_fields, reg=reg, **kwargs)
         self._staged = False
+        self.ready = True  # work around a hack in Reader
         self.shutter = shutter
         if dark_fields:
             self._dark_fields = dict(self._fields)
