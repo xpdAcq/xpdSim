@@ -51,6 +51,8 @@ def test_dets_shutter(db, tmp_dir, name, fp):
     RE(abs_set(shctl1, 60, wait=True))
     scan = bs.count([det])
     uid = RE(scan)
+    # Note: since reader.describe takes trial data we must advance
+    # the cycle by one as well
     next(cg)
     for name, doc in db.restream(db[-1], fill=True):
         if name == 'event':
