@@ -15,22 +15,22 @@
 ##############################################################################
 
 import os
-import time as ttime
-from itertools import chain
-
-import bluesky.examples as be
 import numpy as np
+import time as ttime
 from cycler import cycler
+from itertools import chain
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
-from bluesky.utils import new_uid
+
 import bluesky.examples as be
+from bluesky.utils import new_uid
 
 DATA_DIR_STEM = 'xpdsim.data'
 
 nsls_ii_path = rs_fn(DATA_DIR_STEM+'.XPD', 'ni')
 chess_path = rs_fn(DATA_DIR_STEM, 'chess')
 
+#from xpdsim.mover import XPD_SHUTTER_CONF 
 
 class PutGet:
     """basic class to have set/put method"""
@@ -106,6 +106,7 @@ class SimulatedPE1C(SimpleSimulatedPE1C):
     """
     def __init__(self, name, read_fields, reg, shutter=None,
                  dark_fields=None, **kwargs):
+        super().__init__(name, read_fields, reg=reg, **kwargs)
         self._staged = False
         self.shutter = shutter
         if dark_fields:
@@ -113,7 +114,6 @@ class SimulatedPE1C(SimpleSimulatedPE1C):
             self._dark_fields.update(dark_fields)
         else:
             self._dark_fields = None
-        super().__init__(name, read_fields, reg=reg, **kwargs)
 
     def trigger(self):
         if self.shutter and self._dark_fields and \
@@ -128,8 +128,7 @@ class SimulatedPE1C(SimpleSimulatedPE1C):
                 np.save('{}_{}.npy'.format(self._path_stem, idx),
                         reading['value'])
                 datum_id = new_uid()
-                self.fs.insert_datum(self._resource_id, datum_id,
-                                     dict(index=idx))
+                self.reg.insert_datum(self._resource_id, datum_id,
                 # And now change the reading in place, replacing the value with
                 # a reference to FileStore.
                 reading['value'] = datum_id
@@ -169,24 +168,24 @@ def build_image_cycle(path):
 
 
 
-def det_factory(name, fs, path, shutter=None, **kwargs):
+def det_factory(name, reg, src_path, shutter=None, **kwargs):
     """Build a detector using real images
 
     Parameters
     ----------
     name: str
         Name of the detector
-    fs: filestore.FileStore instance
+    reg: Registry
         The filestore to save all the data in
-    path: str
-        The path to the tiff files
+    src_path: str
+        The path to the source tiff files
 
     Returns
     -------
     detector: SimulatedPE1C instance
         The detector
     """
-    cycle = build_image_cycle(path)
+    cycle = build_image_cycle(src_path)
     gen = cycle()
 
     def nexter():
@@ -201,11 +200,11 @@ def det_factory(name, fs, path, shutter=None, **kwargs):
             return np.zeros(sample_img.shape)
 
         return SimulatedPE1C(name,
-                             {'pe1_image': lambda: nexter()}, reg=fs,
+                             {'pe1_image': lambda: nexter()}, reg=reg,
                              shutter=shutter,
                              dark_fields={'pe1_image': lambda: dark_nexter()},
                              **kwargs)
 
     return SimulatedPE1C(name,
-                         {'pe1_image': lambda: nexter()}, reg=fs,
+                         {'pe1_image': lambda: nexter()}, reg=reg,
                          **kwargs)
