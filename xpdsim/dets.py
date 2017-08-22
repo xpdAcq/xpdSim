@@ -19,9 +19,11 @@ import numpy as np
 import time as ttime
 from cycler import cycler
 from itertools import chain
+from tifffile import imread
 from pims import ImageSequence
 from pkg_resources import resource_filename as rs_fn
 import bluesky.examples as be
+from pathlib import Path
 
 DATA_DIR_STEM = 'xpdsim.data'
 
@@ -118,9 +120,12 @@ def build_image_cycle(path):
     Cycler:
         The iterable like object to cycle through the images
     """
-    imgs = ImageSequence(os.path.join(path, '*.tif*'))
-    return cycler(pe1_image=[i for i in imgs])
+    p = Path(path)
+    imgs = [imread(str(fp)) for fp in p.glob('*.tif*')]
+    # switch back to pims if the error is resolved
+    #imgs = ImageSequence(path)
 
+    return cycler(pe1_image=imgs)
 
 
 def det_factory(name, reg, src_path, shutter=None, **kwargs):
@@ -155,8 +160,8 @@ def det_factory(name, reg, src_path, shutter=None, **kwargs):
             return np.zeros(sample_img.shape)
 
         return SimulatedPE1C(name,
-                             {'pe1_image': lambda: nexter()}, reg=reg,
-                             shutter=shutter,
+                             {'pe1_image': lambda: nexter()},
+                             reg=reg, shutter=shutter,
                              dark_fields={'pe1_image': lambda: dark_nexter()},
                              **kwargs)
 
