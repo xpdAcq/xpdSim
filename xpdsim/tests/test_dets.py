@@ -24,8 +24,11 @@ def test_dets(db, tmp_dir, name, fp):
     cg = cycle2()
     for name, doc in db.restream(db[-1], fill=True):
         if name == 'event':
-            assert_array_equal(doc['data']['pe1_image'],
-                               next(cg)['pe1_image'])
+            db_img = doc['data']['pe1_image']
+            cycler_img = next(cg)['pe1_image']
+            assert_array_equal(db_img, cycler_img)
+            assert db_img.squeeze().shape == (2048, 2048)
+            assert cycler_img.squeeze().shape == (2048, 2048)
     assert uid is not None
 
 
