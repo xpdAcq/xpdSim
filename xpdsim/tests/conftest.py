@@ -17,21 +17,21 @@ import shutil
 import pytest
 import tempfile
 from databroker.tests.utils import (build_sqlite_backed_broker,
-                                    build_pymongo_backed_broker,
+                                    #build_pymongo_backed_broker,
                                     #build_hdf5_backed_broker,
                                     #build_client_backend_broker,
                                     #start_md_server,
                                     #stop_md_server
                                     )
 
-params = ['sqlite', 'mongo',
+params = ['sqlite', #'mongo',
           #'hdf5', 'client'
           ]
 
 @pytest.fixture(params=params, scope='module')
 def db(request):
     param_map = {'sqlite': build_sqlite_backed_broker,
-                 'mongo': build_pymongo_backed_broker,
+                 #'mongo': build_pymongo_backed_broker,
                  #'hdf5': build_hdf5_backed_broker,
                  #'client': build_client_backend_broker
                  }

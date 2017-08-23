@@ -1,5 +1,7 @@
 from xpdsim.dets import (det_factory, build_image_cycle,
                          nsls_ii_path, chess_path)
+from pathlib import Path
+from tifffile import imread
 from bluesky.plans import Count, abs_set
 from bluesky.tests.utils import setup_test_run_engine
 from numpy.testing import assert_array_equal
@@ -11,6 +13,13 @@ import bluesky.plans as bs
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
 
+
+@pytest.mark.parametrize(('name', 'fp'), test_params)
+def test_img_shape(name, fp):
+    p = Path(fp)
+    shape_check = [imread(str(fp)).shape == (2048, 2048)
+                   for fp in p.glob('*.tif*')]
+    assert all(shape_check)
 
 @pytest.mark.parametrize(('name', 'fp'), test_params)
 def test_dets(db, tmp_dir, name, fp):
