@@ -46,8 +46,9 @@ install:
   - 'pip install https://github.com/NSLS-II/databroker/zipball/master#egg=databroker'
   - 'pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky'
   - 'pip install https://github.com/xpdAcq/xpdAn/zipball/master#egg=xpdan'
-  - python setup.py install
+  - pip install .
   - python -c "from bluesky.utils import get_history; get_history()"
+  - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.trigger_read()"
   - git clean -xfd
 
 script:
