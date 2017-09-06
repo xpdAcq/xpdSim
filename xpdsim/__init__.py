@@ -11,3 +11,4 @@ simple_pe1c = SimulatedPE1C('pe1c', {'pe1_image':lambda: np.ones((5, 5))},
                             reg=db.reg)
 # advanced detector
 xpd_pe1c = det_factory('pe1c', db.reg, nsls_ii_path, shutter=shctl1)
+
