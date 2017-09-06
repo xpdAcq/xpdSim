@@ -28,6 +28,7 @@ from pathlib import Path
 DATA_DIR_STEM = 'xpdsim.data'
 
 nsls_ii_path = rs_fn(DATA_DIR_STEM+'.XPD', 'ni')
+xpd_wavelength = 0.1823
 chess_path = rs_fn(DATA_DIR_STEM, 'chess')
 
 
