@@ -1,8 +1,9 @@
-import bluesky.examples as be
+from ophyd.sim import SynAxis
 
-shutter_read_field = 'rad'
-temp_controller_read_field = 'temperature'
+# NOTE: device field name has been deprecated. The readback field is
+# default to device name for all devices.
+#shutter_read_field = 'rad'
+#temp_controller_read_field = 'temperature'
 
-shctl1 = be.Mover('shctl1', {shutter_read_field: lambda x: x}, {'x': 0})
-cs700 = be.Mover('cs700', {temp_controller_read_field: lambda x: x},
-                 {'x': 300})
+cs700 = SynAxis(name='cs700', value=300)
+shctl1 = SynAxis(name='shctl1', value=0)
