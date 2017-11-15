@@ -25,6 +25,7 @@ from pkg_resources import resource_filename as rs_fn
 from pathlib import Path
 
 from ophyd import sim, Device
+from xpdacq.xpdacq_conf import XPD_SHUTTER_CONF
 
 DATA_DIR_STEM = 'xpdsim.data'
 nsls_ii_path = rs_fn(DATA_DIR_STEM+'.XPD', 'ni')
@@ -58,7 +59,8 @@ class SimulatedCam(Device):
     acquire = sim.SynSignal(name='acquire')
 
 
-def det_factory(reg, *, full_img=False, src_path=None, **kwargs):
+def det_factory(reg, *, shutter=None,
+                src_path=None, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -80,12 +82,20 @@ def det_factory(reg, *, full_img=False, src_path=None, **kwargs):
     if src_path:
         cycle = build_image_cycle(src_path)
         gen = cycle()
-
-        def nexter():
-            return next(gen)['pe1_image']
-
+        _img = next(gen)
+        def nexter(shutter):
+            # instantiate again
+            gen = cycle()
+            if shutter:
+                status = shutter.get()
+                if status.readback ==  XPD_SHUTTER_CONF['close']:
+                    return np.zeros_like(_img)
+                elif status.readback ==  XPD_SHUTTER_CONF['open']:
+                    return next(gen)['pe1_image']
+            else:
+                return next(gen)['pe1_image']
         pe1c = sim.SynSignalWithRegistry(name='pe1_image',
-                                         func=lambda: nexter(),
+                                         func=lambda: nexter(shutter),
                                          reg=reg)
     else:
         pe1c = sim.SynSignalWithRegistry(name='pe1_image',
