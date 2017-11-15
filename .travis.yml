@@ -48,7 +48,7 @@ install:
   - pip install https://github.com/xpdAcq/xpdAcq/zipball/master#egg=xpdan
   - pip install .
   - python -c "from bluesky.utils import get_history; get_history()"
-  - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.trigger_read()"
+  - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.get()"
   - git clean -xfd
 
 script:
