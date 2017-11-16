@@ -41,14 +41,14 @@ before_install:
 
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION scipy jsonschema pytest coverage pip ophyd pyepics mock xlrd pyfai flake8 codecov -c lightsource2-tag -c conda-forge -c soft-matter
+  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION scipy ipython jsonschema pytest coverage pip ophyd pyepics mock xlrd pyfai flake8 codecov -c lightsource2-tag -c conda-forge -c soft-matter
   - source activate testenv
-  - 'pip install https://github.com/NSLS-II/databroker/zipball/master#egg=databroker'
-  - 'pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky'
-  - 'pip install https://github.com/xpdAcq/xpdAn/zipball/master#egg=xpdan'
+  - pip install https://github.com/NSLS-II/databroker/zipball/master#egg=databroker
+  - pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky
+  - pip install https://github.com/xpdAcq/xpdAcq/zipball/master#egg=xpdan
   - pip install .
   - python -c "from bluesky.utils import get_history; get_history()"
-  - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.trigger_read()"
+  - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.get()"
   - git clean -xfd
 
 script:
