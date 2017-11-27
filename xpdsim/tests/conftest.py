@@ -17,12 +17,11 @@ import shutil
 import pytest
 import tempfile
 from bluesky.tests.conftest import RE
-from xpdsim.build_sim_db import build_sim_db
 
 @pytest.fixture(scope='module')
 def db():
-    from xpdsim import db, db_path
+    from xpdsim import db, sim_db_dir
     yield db
-    if os.path.exists(db_path):
+    if os.path.exists(sim_db_dir):
         print('Flush db dir')
-        shutil.rmtree(db_path)
+        shutil.rmtree(sim_db_dir)
