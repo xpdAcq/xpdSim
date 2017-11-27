@@ -6,7 +6,7 @@ from ophyd.sim import (SynSignalWithRegistry, NumpySeqHandler,
                        SynSignalRO)
 from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength
 
-db_path, db = build_sim_db() # default is sqlite
+sim_db_dir, db = build_sim_db() # default is sqlite
 db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
 # detector with 5 by 5 image -> for testing functionality
 simple_pe1c = det_factory(db.reg)

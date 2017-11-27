@@ -88,9 +88,11 @@ def det_factory(reg, *, shutter=None,
             gen = cycle()
             if shutter:
                 status = shutter.get()
-                if status.readback ==  XPD_SHUTTER_CONF['close']:
+                if np.allclose(status.readback,
+                               XPD_SHUTTER_CONF['close']):
                     return np.zeros_like(_img)
-                elif status.readback ==  XPD_SHUTTER_CONF['open']:
+                elif np.allclose(status.readback,
+                                 XPD_SHUTTER_CONF['open']):
                     return next(gen)['pe1_image']
             else:
                 return next(gen)['pe1_image']
