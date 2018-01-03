@@ -1,5 +1,5 @@
 $PROJECT = 'xpdSim'
-$ACTIVITIES = ['version_bump', 'changelog', 'tag', 'push_tag'
+$ACTIVITIES = ['version_bump', 'changelog', 'tag', 'push_tag',
         #'conda_forge',
         'ghrelease']
 
