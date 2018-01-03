@@ -1,9 +1,14 @@
+from pkg_resources import resource_filename as rs_fn
+
 from ophyd.sim import (NumpySeqHandler,
                        SynSignalRO)
 
 from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength
 from xpdsim.build_sim_db import build_sim_db
 from xpdsim.movers import shctl1, cs700
+
+pyfai_path = rs_fn('xpdsim', 'data/pyfai/pyFAI_calib.yml')
+
 
 sim_db_dir, db = build_sim_db()  # default is sqlite
 db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
