@@ -1,15 +1,18 @@
-import pytest
 from pathlib import Path
-from tifffile import imread
-from numpy.testing import assert_array_equal
-from xpdsim.area_det import *
-from xpdsim.movers import shctl1
-import numpy as np
-import bluesky.plans as bp
+
 import bluesky.plan_stubs as bs
-from bluesky.run_engine import RunEngine
+import bluesky.plans as bp
+import numpy as np
+import pytest
+from numpy.testing import assert_array_equal
+from tifffile import imread
+
+from xpdsim.area_det import (XPD_SHUTTER_CONF, nsls_ii_path, chess_path,
+                             det_factory, build_image_cycle)
+from xpdsim.movers import shctl1
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
+
 
 @pytest.mark.parametrize(('name', 'fp'), test_params)
 def test_img_shape(name, fp):
@@ -17,6 +20,7 @@ def test_img_shape(name, fp):
     shape_check = [imread(str(fp)).shape == (2048, 2048)
                    for fp in p.glob('*.tif*')]
     assert all(shape_check)
+
 
 @pytest.mark.parametrize(('name', 'fp'), test_params)
 def test_dets(RE, db, fp, name):
@@ -33,6 +37,7 @@ def test_dets(RE, db, fp, name):
             assert db_img.squeeze().shape == (2048, 2048)
             assert cycler_img.squeeze().shape == (2048, 2048)
     assert uid is not None
+
 
 @pytest.mark.parametrize(('name', 'fp'), test_params)
 def test_dets_shutter(RE, db, name, fp):

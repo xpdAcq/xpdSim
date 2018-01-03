@@ -51,7 +51,7 @@ script:
   - conda install --file requirements/test.txt
   - coverage run run_tests.py
   - coverage report -m
-  - flake8
+  - flake8 xpdsim
   - codecov
   - conda install --file requirements/doc.txt
   - cd docs

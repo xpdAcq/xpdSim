@@ -25,7 +25,7 @@ from tifffile import imread
 XPD_SHUTTER_CONF = {'open': 60, 'close': 0}
 
 DATA_DIR_STEM = 'xpdsim.data'
-nsls_ii_path = rs_fn(DATA_DIR_STEM+'.XPD', 'ni')
+nsls_ii_path = rs_fn(DATA_DIR_STEM + '.XPD', 'ni')
 xpd_wavelength = 0.1823
 chess_path = rs_fn(DATA_DIR_STEM, 'chess')
 
@@ -47,7 +47,7 @@ def build_image_cycle(path):
     p = Path(path)
     imgs = [imread(str(fp)) for fp in p.glob('*.tif*')]
     # switch back to pims if the error is resolved
-    #imgs = ImageSequence(path)
+    # imgs = ImageSequence(path)
     return cycler(pe1_image=imgs)
 
 
@@ -80,6 +80,7 @@ def det_factory(reg, *, shutter=None,
         cycle = build_image_cycle(src_path)
         gen = cycle()
         _img = next(gen)
+
         def nexter(shutter):
             # instantiate again
             gen = cycle()
@@ -93,12 +94,13 @@ def det_factory(reg, *, shutter=None,
                     return next(gen)['pe1_image']
             else:
                 return next(gen)['pe1_image']
+
         pe1c = sim.SynSignalWithRegistry(name='pe1_image',
                                          func=lambda: nexter(shutter),
                                          reg=reg)
     else:
         pe1c = sim.SynSignalWithRegistry(name='pe1_image',
-                                         func=lambda: np.ones((5,5)),
+                                         func=lambda: np.ones((5, 5)),
                                          reg=reg)
     # plug-ins
     pe1c.images_per_set = sim.SynSignal(name='images_per_set')

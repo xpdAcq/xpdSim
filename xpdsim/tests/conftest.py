@@ -12,16 +12,12 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-import os
-import shutil
 import pytest
-import tempfile
 from bluesky.tests.conftest import RE
 
+
 @pytest.fixture(scope='module')
-def db():
-    from xpdsim import db, sim_db_dir
+def db(tmpdir):
+    from xpdsim.build_sim_db import build_sim_db
+    db, sim_db_dir = build_sim_db(tmpdir)
     yield db
-    if os.path.exists(sim_db_dir):
-        print('Flush db dir')
-        shutil.rmtree(sim_db_dir)
