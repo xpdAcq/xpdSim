@@ -1,6 +1,10 @@
 language: python
 sudo: false
 
+env:
+  global:
+    - secure: "ARO7fKE3i5jtNsqwcX7moq0kK/opj9cre1Uh3I5g8FOdnBMGDDmO7ng6z/vbhymBjI8GYgWfMS08mQ+6X4y41picT7/UKqydEfYOa3P30q1TYBBy+Az1wE3XcEjC8biu//Jd99PwCIUfO145K3hSbp+aMa3BizprqUC+e89txFaJV2FHkGjHLkGvV+QMvzS7KRHyv5pUKT4gtqaTk89uNCPjBXSOJ+Njfn0hrYPG7UqG+wj7PeNg1ZhPNWR5WpNgbhIza2i8B2QqeYLho790MnThn9iQjVQb7hX7g7YEA4Akw6CPdw5d5BNsL2KFpjncAWDJdF+ofVYTvXovXXngeBJtI3aq55pJ976tJmi0wZMKfa1j0Gy6TxzOGvf65RovrmmZAT78HwSm0qQG4IlqteBmKLjAN8k0VdPz19wHs3qe0zTyKHIQ5nEZOG7dOjIgfiaP6h0DqPNxZyUPMpLrQWm4E3TfTIww5mFL41gsAu/rh3paSp5QCtX9KzPKGTzKA1rSzV5P3Rhc/ikdErCWHnLVYFYkFTpY/fKngGzh1/7ZNR713widAPniwQgW6PrZlYlalrmfqxtBOCzYPvvoNjkMcXCItoTH3YHRskzxhfg4FwAlqIXL3K9h7fKGOH2mZhyLsOKQ/QHClc9COievEejDOhC7L0FLBMB+hzGRFuY="
+
 cache:
   directories:
     - $HOME/.cache/pip
@@ -53,3 +57,4 @@ script:
   - cd docs
   - make html
   - cd ..
+  - doctr deploy . --built-docs ./docs/_build/html;
