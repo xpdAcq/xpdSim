@@ -14,18 +14,15 @@
 #
 ##############################################################################
 
-import os
-import numpy as np
-import time as ttime
-from cycler import cycler
-from itertools import chain
-from tifffile import imread
-from pims import ImageSequence
-from pkg_resources import resource_filename as rs_fn
 from pathlib import Path
 
+import numpy as np
+from cycler import cycler
 from ophyd import sim, Device
-from xpdacq.xpdacq_conf import XPD_SHUTTER_CONF
+from pkg_resources import resource_filename as rs_fn
+from tifffile import imread
+
+XPD_SHUTTER_CONF = {'open': 60, 'close': 0}
 
 DATA_DIR_STEM = 'xpdsim.data'
 nsls_ii_path = rs_fn(DATA_DIR_STEM+'.XPD', 'ni')
