@@ -2,5 +2,6 @@
 exclude =
     .git,
     __pycache__,
-    __init__
+    xpdsim/__init__.py,
+    xpdsim/tests/conftest.py
 max-complexity = 10
