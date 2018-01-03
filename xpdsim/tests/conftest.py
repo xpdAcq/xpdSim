@@ -12,12 +12,18 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
+import tempfile
+
 import pytest
 from bluesky.tests.conftest import RE
+from ophyd.sim import (NumpySeqHandler)
 
 
 @pytest.fixture(scope='module')
-def db(tmpdir):
+def db():
+    temp_dir = tempfile.TemporaryDirectory()
     from xpdsim.build_sim_db import build_sim_db
-    db, sim_db_dir = build_sim_db(tmpdir)
+    sim_db_dir, db = build_sim_db(temp_dir.name)
+    db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
     yield db
+    temp_dir.cleanup()
