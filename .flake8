@@ -1,0 +1,8 @@
+[flake8]
+ignore = F401
+exclude =
+    .git,
+    __pycache__,
+    xpdsim/__init__.py,
+    xpdsim/tests/conftest.py
+max-complexity = 10

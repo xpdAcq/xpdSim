@@ -1,0 +1,4 @@
+ophyd
+pyfai
+databroker
+bluesky

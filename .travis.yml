@@ -1,13 +1,9 @@
 language: python
 sudo: false
+
 env:
   global:
-    BUILD_DOCS_BRANCH: master
-    DOCS_SUBDIR: doc/
-    TARGET_DEV_SUBDIR: bluesky/
-    HTML_SUBDIR: build/html
-    DOCS_CONDA_DEPS: "bluesky"
-    DOCS_PIP_DEPS: "tqdm"
+    - secure: "ARO7fKE3i5jtNsqwcX7moq0kK/opj9cre1Uh3I5g8FOdnBMGDDmO7ng6z/vbhymBjI8GYgWfMS08mQ+6X4y41picT7/UKqydEfYOa3P30q1TYBBy+Az1wE3XcEjC8biu//Jd99PwCIUfO145K3hSbp+aMa3BizprqUC+e89txFaJV2FHkGjHLkGvV+QMvzS7KRHyv5pUKT4gtqaTk89uNCPjBXSOJ+Njfn0hrYPG7UqG+wj7PeNg1ZhPNWR5WpNgbhIza2i8B2QqeYLho790MnThn9iQjVQb7hX7g7YEA4Akw6CPdw5d5BNsL2KFpjncAWDJdF+ofVYTvXovXXngeBJtI3aq55pJ976tJmi0wZMKfa1j0Gy6TxzOGvf65RovrmmZAT78HwSm0qQG4IlqteBmKLjAN8k0VdPz19wHs3qe0zTyKHIQ5nEZOG7dOjIgfiaP6h0DqPNxZyUPMpLrQWm4E3TfTIww5mFL41gsAu/rh3paSp5QCtX9KzPKGTzKA1rSzV5P3Rhc/ikdErCWHnLVYFYkFTpY/fKngGzh1/7ZNR713widAPniwQgW6PrZlYlalrmfqxtBOCzYPvvoNjkMcXCItoTH3YHRskzxhfg4FwAlqIXL3K9h7fKGOH2mZhyLsOKQ/QHClc9COievEejDOhC7L0FLBMB+hzGRFuY="
 
 cache:
   directories:
@@ -33,28 +29,32 @@ before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
   - "export DISPLAY=:99.0"
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b -p /home/travis/mc
-  - export PATH=/home/travis/mc/bin:$PATH
-  - conda config --set show_channel_urls True
-  - conda config --set always_yes True
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels conda-forge
+  - conda update conda
 
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv nose python=$TRAVIS_PYTHON_VERSION scipy ipython jsonschema pytest coverage pip ophyd pyepics mock xlrd pyfai flake8 codecov -c lightsource2-tag -c conda-forge -c soft-matter
+  - conda create -n testenv python=$TRAVIS_PYTHON_VERSION
   - source activate testenv
-  - pip install https://github.com/NSLS-II/databroker/zipball/master#egg=databroker
-  - pip install https://github.com/NSLS-II/bluesky/zipball/master#egg=bluesky
-  - pip install https://github.com/xpdAcq/xpdAcq/zipball/master#egg=xpdan
+  - conda install --file requirements/build.txt
   - pip install .
+  - conda install --file requirements/run.txt
   - python -c "from bluesky.utils import get_history; get_history()"
   - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.get()"
   - git clean -xfd
 
 script:
+  - set -e
+  - conda install --file requirements/test.txt
   - coverage run run_tests.py
   - coverage report -m
-
-after_script:
-  - flake8
+  - flake8 xpdsim
   - codecov
+  - conda install --file requirements/doc.txt
+  - cd docs
+  - make html
+  - cd ..
+  - doctr deploy . --built-docs ./docs/_build/html;
