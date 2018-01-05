@@ -41,7 +41,7 @@ install:
   - source activate testenv
   - conda install --file requirements/build.txt
   - pip install .
-  - conda install --file requirements/run.txt
+  - conda install --file requirements/run.txt --quiet
   - python -c "from bluesky.utils import get_history; get_history()"
   - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.get()"
   - git clean -xfd
