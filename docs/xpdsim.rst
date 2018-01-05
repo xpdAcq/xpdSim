@@ -36,14 +36,6 @@ xpdsim\.movers module
     :undoc-members:
     :show-inheritance:
 
-xpdsim\.utils module
---------------------
-
-.. automodule:: xpdsim.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------
