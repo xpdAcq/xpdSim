@@ -20,15 +20,6 @@ xpdsim\.tests\.test\_dets module
     :undoc-members:
     :show-inheritance:
 
-xpdsim\.tests\.utils module
----------------------------
-
-.. automodule:: xpdsim.tests.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 Module contents
 ---------------
 
