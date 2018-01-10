@@ -1,6 +1,6 @@
 $PROJECT = 'xpdSim'
 $ACTIVITIES = ['version_bump', 'changelog', 'tag', 'push_tag',
-        #'conda_forge',
+        'conda_forge',
         'ghrelease']
 
 $VERSION_BUMP_PATTERNS = [
