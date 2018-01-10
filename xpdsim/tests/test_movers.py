@@ -1,4 +1,4 @@
-from xpdsim.movers import *
+from xpdsim.movers import cs700, shctl1, fb
 
 
 def test_cs700():
