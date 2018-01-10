@@ -13,4 +13,5 @@ class SimFilterBank(Device):
     flt3 = Component(SynSignal, func=lambda: 'Out')
     flt4 = Component(SynSignal, func=lambda: 'Out')
 
+
 fb = SimFilterBank(name='fb')
