@@ -9,7 +9,7 @@ $VERSION_BUMP_PATTERNS = [
     ]
 $CHANGELOG_FILENAME = 'CHANGELOG.rst'
 $CHANGELOG_IGNORE = ['TEMPLATE']
-$TAG_REMOTE = 'git@github.com:xpdAcq/xpdSim.git'
+$TAG_REMOTE = 'https://github.com/xpdAcq/xpdSim.git'
 
 $GITHUB_ORG = 'xpdAcq'
 $GITHUB_REPO = 'xpdSim'
