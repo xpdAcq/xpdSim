@@ -8,7 +8,7 @@ $VERSION_BUMP_PATTERNS = [
     ('setup.py', 'version=\s*=.*,', "version='$VERSION',")
     ]
 $CHANGELOG_FILENAME = 'CHANGELOG.rst'
-$CHANGELOG_IGNORE = ['TEMPLATE.rst']
+$CHANGELOG_IGNORE = ['TEMPLATE']
 $TAG_REMOTE = 'git@github.com:xpdAcq/xpdSim.git'
 
 $GITHUB_ORG = 'xpdAcq'
