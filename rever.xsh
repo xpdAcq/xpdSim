@@ -13,3 +13,4 @@ $PUSH_TAG_REMOTE = 'https://github.com/xpdAcq/xpdSim.git'
 
 $GITHUB_ORG = 'xpdAcq'
 $GITHUB_REPO = 'xpdSim'
+$CONDA_FORGE_FEEDSTOCK = 'xpdsim-feedstock'
