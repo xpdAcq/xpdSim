@@ -10,7 +10,11 @@ from xpdsim.movers import shctl1, cs700, fb
 __version__ = '0.1.2'
 
 pyfai_path = rs_fn('xpdsim', 'data/pyfai/pyFAI_calib.yml')
+pyfai_poni = rs_fn('xpdsim', 'data/pyfai/test.poni')
 
+image_file = rs_fn('xpdsim',
+                   'data/XPD/ni/sub_20170626'
+                   '-150911_Ni_Tim_series_tseries_1_e910af_0250.tif')
 
 sim_db_dir, db = build_sim_db()  # default is sqlite
 db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
