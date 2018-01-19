@@ -1,3 +1,1 @@
-
-def test_import():
-    from xpdsim import *
+from xpdsim import *
