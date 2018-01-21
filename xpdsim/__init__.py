@@ -7,7 +7,7 @@ from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength
 from xpdsim.build_sim_db import build_sim_db
 from xpdsim.movers import shctl1, cs700, fb
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 pyfai_path = rs_fn('xpdsim', 'data/pyfai/pyFAI_calib.yml')
 pyfai_poni = rs_fn('xpdsim', 'data/pyfai/test.poni')
