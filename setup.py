@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     description='simulators',
     zip_safe=False,
-    package_data={'xpdsim.data': ['XPD/ni/*.tif*', 'data.pyfai/*']},
+    package_data={'xpdsim.data': ['XPD/ni/*.tif*', 'pyfai/*']},
     include_package_data=True,
     url='https://github.com/xpdAcq/xpdSim'
 )
