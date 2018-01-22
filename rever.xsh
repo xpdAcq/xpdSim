@@ -17,5 +17,5 @@ $CONDA_FORGE_FEEDSTOCK = 'xpdsim-feedstock'
 $LICENSE_URL = 'https://github.com/{}/{}/blob/master/LICENSE'.format($GITHUB_ORG, $GITHUB_REPO)
 
 from urllib.request import urlopen
-rns = urlopen('https://raw.githubusercontent.com/xpdAcq/mission-control/master/tools/release_not_stub.rst').read().decode('utf-8')
+rns = urlopen('https://raw.githubusercontent.com/xpdAcq/mission-control/master/tools/release_not_stub.md').read().decode('utf-8')
 $GHRELEASE_PREPEND = rns.format($LICENSE_URL, $PROJECT.lower())
