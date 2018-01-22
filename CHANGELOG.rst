@@ -4,6 +4,16 @@ xpdSim Change Log
 
 .. current developments
 
+v0.1.5
+====================
+
+**Fixed:**
+
+* ``pyfai_poni`` now is properly stored in package data.
+
+
+
+
 v0.1.4
 ====================
 
