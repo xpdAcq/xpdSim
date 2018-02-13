@@ -179,8 +179,8 @@
     <span class="kn">from</span> <span class="nn">xpdsim.build_sim_db</span> <span class="k">import</span> <span class="n">build_sim_db</span>
     <span class="n">sim_db_dir</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">build_sim_db</span><span class="p">(</span><span class="n">temp_dir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">register_handler</span><span class="p">(</span><span class="s1">&#39;NPY_SEQ&#39;</span><span class="p">,</span> <span class="n">NumpySeqHandler</span><span class="p">)</span>
-    <span class="k">yield</span> <span class="n">db</span>
-    <span class="n">temp_dir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span></div>
+    <span class="k">yield</span> <span class="n">db</span></div>
+    <span class="n">temp_dir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </pre></div>
 
            </div>
