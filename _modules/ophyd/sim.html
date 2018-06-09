@@ -145,21 +145,29 @@
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">ttime</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">.signal</span> <span class="k">import</span> <span class="n">Signal</span>
+<span class="kn">from</span> <span class="nn">.signal</span> <span class="k">import</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>
 <span class="kn">from</span> <span class="nn">.status</span> <span class="k">import</span> <span class="n">DeviceStatus</span><span class="p">,</span> <span class="n">StatusBase</span>
-<span class="kn">from</span> <span class="nn">.device</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">C</span>
+<span class="kn">from</span> <span class="nn">.device</span> <span class="k">import</span> <span class="p">(</span><span class="n">Device</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">C</span><span class="p">,</span>
+                     <span class="n">DynamicDeviceComponent</span> <span class="k">as</span> <span class="n">DDC</span><span class="p">,</span> <span class="n">Kind</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">SimpleNamespace</span>
 <span class="kn">from</span> <span class="nn">.pseudopos</span> <span class="k">import</span> <span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">,</span> <span class="n">PseudoSingle</span><span class="p">,</span>
                         <span class="n">real_position_argument</span><span class="p">,</span> <span class="n">pseudo_position_argument</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.positioner</span> <span class="k">import</span> <span class="n">SoftPositioner</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">DO_NOT_USE</span><span class="p">,</span> <span class="n">ReadOnlyError</span><span class="p">,</span> <span class="n">LimitError</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <span class="c1"># two convenience functions &#39;vendored&#39; from bluesky.utils</span>
@@ -202,6 +210,8 @@
 <span class="sd">        Digits of precision. Default is 3.</span>
 <span class="sd">    parent : Device, optional</span>
 <span class="sd">        Used internally if this Signal is made part of a larger Device.</span>
+<span class="sd">    kind : a member the Kind IntEnum (or equivalent integer), optional</span>
+<span class="sd">        Default is Kind.normal. See Kind for options.</span>
 <span class="sd">    loop : asyncio.EventLoop, optional</span>
 <span class="sd">        used for ``subscribe`` updates; uses ``asyncio.get_event_loop()`` if</span>
 <span class="sd">        unspecified</span>
@@ -213,6 +223,8 @@
                  <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># When triggered, just put the current value.</span>
@@ -226,7 +238,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(),</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">ttime</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                         <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
+                         <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -265,16 +277,16 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">SynSignalRO</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The signal </span><span class="si">{}</span><span class="s2"> is readonly.&quot;</span>
-                                  <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-
-
 <span class="k">class</span> <span class="nc">SignalRO</span><span class="p">(</span><span class="n">Signal</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The signal </span><span class="si">{}</span><span class="s2"> is readonly.&quot;</span>
-                                  <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">ReadOnlyError</span><span class="p">(</span><span class="s2">&quot;The signal </span><span class="si">{}</span><span class="s2"> is readonly.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ReadOnlyError</span><span class="p">(</span><span class="s2">&quot;The signal </span><span class="si">{}</span><span class="s2"> is readonly.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">SynSignalRO</span><span class="p">(</span><span class="n">SignalRO</span><span class="p">,</span> <span class="n">SynSignal</span><span class="p">):</span>
+    <span class="k">pass</span>
 
 
 <span class="k">def</span> <span class="nf">periodic_update</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">period_jitter</span><span class="p">):</span>
@@ -311,6 +323,8 @@
 <span class="sd">        0.</span>
 <span class="sd">    parent : Device, optional</span>
 <span class="sd">        Used internally if this Signal is made part of a larger Device.</span>
+<span class="sd">    kind : a member the Kind IntEnum (or equivalent integer), optional</span>
+<span class="sd">        Default is Kind.normal. See Kind for options.</span>
 <span class="sd">    loop : asyncio.EventLoop, optional</span>
 <span class="sd">        used for ``subscribe`` updates; uses ``asyncio.get_event_loop()`` if</span>
 <span class="sd">        unspecified</span>
@@ -320,12 +334,14 @@
                  <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">period_jitter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
                          <span class="n">exposure_time</span><span class="o">=</span><span class="n">exposure_time</span><span class="p">,</span>
-                         <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="n">loop</span><span class="p">)</span>
+                         <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="n">loop</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">periodic_update</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                          <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
@@ -391,6 +407,8 @@
 <span class="sd">        Digits of precision. Default is 3.</span>
 <span class="sd">    parent : Device, optional</span>
 <span class="sd">        Used internally if this Signal is made part of a larger Device.</span>
+<span class="sd">    kind : a member the Kind IntEnum (or equivalent integer), optional</span>
+<span class="sd">        Default is Kind.normal. See Kind for options.</span>
 <span class="sd">    loop : asyncio.EventLoop, optional</span>
 <span class="sd">        used for ``subscribe`` updates; uses ``asyncio.get_event_loop()`` if</span>
 <span class="sd">        unspecified</span>
@@ -405,13 +423,14 @@
                  <span class="n">readback_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">readback_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">readback_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">x</span>
         <span class="k">if</span> <span class="n">loop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_state</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_readback_func</span> <span class="o">=</span> <span class="n">readback_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
@@ -424,7 +443,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_state</span><span class="p">[</span><span class="s1">&#39;readback&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">readback_func</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_state</span><span class="p">[</span><span class="s1">&#39;readback_ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ttime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readback</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -477,15 +496,7 @@
 
 
 <span class="k">class</span> <span class="nc">SynAxis</span><span class="p">(</span><span class="n">SynAxisNoHints</span><span class="p">):</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">readback</span><span class="o">.</span><span class="n">name</span><span class="p">]}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span>
-
-    <span class="nd">@hints</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="n">readback</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">ReadbackSignal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">SynGauss</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">):</span>
@@ -745,8 +756,9 @@
 <span class="sd">    loop : asyncio.EventLoop, optional</span>
 <span class="sd">        used for ``subscribe`` updates; uses ``asyncio.get_event_loop()`` if</span>
 <span class="sd">        unspecified</span>
-<span class="sd">    reg : Registry</span>
-<span class="sd">        Registry object that supports inserting resource and datum documents</span>
+<span class="sd">    reg : Registry, optional</span>
+<span class="sd">        DEPRECATED. If used, this is ignored and a warning is issued. In a</span>
+<span class="sd">        future release, this parameter will be removed.</span>
 <span class="sd">    save_path : str, optional</span>
 <span class="sd">        Path to save files to, if None make a temp dir, defaults to None.</span>
 <span class="sd">    save_func : function, optional</span>
@@ -755,18 +767,19 @@
 <span class="sd">    save_spec : str, optional</span>
 <span class="sd">        The spec for the save function, defaults to &#39;RWFS_NPY&#39;</span>
 <span class="sd">    save_ext : str, optional</span>
-<span class="sd">        The extention to add to the file name, defaults to &#39;.npy&#39;</span>
+<span class="sd">        The extension to add to the file name, defaults to &#39;.npy&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">,</span>
-                 <span class="n">save_spec</span><span class="o">=</span><span class="s1">&#39;NPY_SEQ&#39;</span><span class="p">,</span> <span class="n">save_ext</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="n">DO_NOT_USE</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">save_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">,</span> <span class="n">save_spec</span><span class="o">=</span><span class="s1">&#39;NPY_SEQ&#39;</span><span class="p">,</span> <span class="n">save_ext</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reg</span> <span class="o">=</span> <span class="n">reg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_func</span> <span class="o">=</span> <span class="n">save_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_ext</span> <span class="o">=</span> <span class="n">save_ext</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_resource_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datum_counter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asset_docs_cache</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -777,44 +790,73 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_path_stem</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Since data is external, hint that it should not be printed or</span>
-            <span class="c1"># plotted. Relax this when LiveTable etc. get smarter about</span>
-            <span class="c1"># external data.</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[]}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span>
-
-    <span class="nd">@hints</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hints</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DO_NOT_USE</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The parameter &#39;reg&#39; is deprecated. It will be &quot;</span>
+                          <span class="s2">&quot;ignored. In a future release the parameter will be &quot;</span>
+                          <span class="s2">&quot;removed and passing a value for &#39;reg&#39; will raise &quot;</span>
+                          <span class="s2">&quot;an error.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reg</span> <span class="o">=</span> <span class="n">reg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reg</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_stem</span> <span class="o">=</span> <span class="n">short_uid</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path_stem</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_stem</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">,</span>
-                                                       <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
-                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_file_stem</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datum_counter</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+        <span class="c1"># This is temporarily more complicated than it will be in the future.</span>
+        <span class="c1"># It needs to support old configurations that have a registry.</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spec&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">,</span>
+                    <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
+                    <span class="s1">&#39;resource_path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_stem</span><span class="p">,</span>
+                    <span class="s1">&#39;resource_kwargs&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                    <span class="s1">&#39;path_semantics&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+        <span class="c1"># If a Registry is set, we need to allow it to generate the uid for us.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># register_resource has accidentally different parameter names...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">register_resource</span><span class="p">(</span>
+                <span class="n">rpath</span><span class="o">=</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;resource_path&#39;</span><span class="p">],</span>
+                <span class="n">rkwargs</span><span class="o">=</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;resource_kwargs&#39;</span><span class="p">],</span>
+                <span class="n">root</span><span class="o">=</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">],</span>
+                <span class="n">spec</span><span class="o">=</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;spec&#39;</span><span class="p">],</span>
+                <span class="n">path_semantics</span><span class="o">=</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;path_semantics&#39;</span><span class="p">])</span>
+        <span class="c1"># If a Registry is not set, we need to generate the uid.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span> <span class="o">=</span> <span class="n">new_uid</span><span class="p">()</span>
+        <span class="n">resource</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asset_docs_cache</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;resource&#39;</span><span class="p">,</span> <span class="n">resource</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
         <span class="c1"># save file stash file name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">reading</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-            <span class="c1"># Save the actual reading[&#39;value&#39;] to disk and create a record</span>
-            <span class="c1"># in Registry.</span>
+            <span class="c1"># Save the actual reading[&#39;value&#39;] to disk. For a real detector,</span>
+            <span class="c1"># this part would be done by the detector IOC, not by ophyd.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_func</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path_stem</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">save_ext</span><span class="p">),</span> <span class="n">reading</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
-            <span class="n">datum_id</span> <span class="o">=</span> <span class="n">new_uid</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">insert_datum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resource_id</span><span class="p">,</span> <span class="n">datum_id</span><span class="p">,</span>
-                                  <span class="nb">dict</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">idx</span><span class="p">))</span>
+            <span class="c1"># This is temporarily more complicated than it will be in the</span>
+            <span class="c1"># future.  It needs to support old configurations that have a</span>
+            <span class="c1"># registry.</span>
+            <span class="n">datum</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resource&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span><span class="p">,</span>
+                     <span class="s1">&#39;datum_kwargs&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">idx</span><span class="p">)}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># If a Registry is set, we need to allow it to generate the</span>
+                <span class="c1"># datum_id for us.</span>
+                <span class="n">datum_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span><span class="o">.</span><span class="n">register_datum</span><span class="p">(</span>
+                    <span class="n">datum_kwargs</span><span class="o">=</span><span class="n">datum</span><span class="p">[</span><span class="s1">&#39;datum_kwargs&#39;</span><span class="p">],</span>
+                    <span class="n">resource_uid</span><span class="o">=</span><span class="n">datum</span><span class="p">[</span><span class="s1">&#39;resource&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If a Registry is not set, we need to generate the datum_id.</span>
+                <span class="n">datum_id</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span><span class="p">,</span>
+                                          <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_datum_counter</span><span class="p">))</span>
+            <span class="n">datum</span><span class="p">[</span><span class="s1">&#39;datum_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datum_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_asset_docs_cache</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;datum&#39;</span><span class="p">,</span> <span class="n">datum</span><span class="p">))</span>
             <span class="c1"># And now change the reading in place, replacing the value with</span>
             <span class="c1"># a reference to Registry.</span>
             <span class="n">reading</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datum_id</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reading</span>
+
         <span class="k">return</span> <span class="n">NullStatus</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -826,8 +868,16 @@
             <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;external&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;FILESTORE&quot;</span>
         <span class="k">return</span> <span class="n">res</span>
 
+    <span class="k">def</span> <span class="nf">collect_asset_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asset_docs_cache</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asset_docs_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">item</span>
+
     <span class="k">def</span> <span class="nf">unstage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_resource_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resource_uid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datum_counter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asset_docs_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_stem</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path_stem</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -849,26 +899,21 @@
 
 
 <span class="k">class</span> <span class="nc">ABDetector</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">]}</span>
-
 
 <span class="k">class</span> <span class="nc">DetWithCountTime</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">intensity</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">intensity</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
     <span class="n">count_time</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Signal</span><span class="p">)</span>
-    <span class="n">_default_read_attrs</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;intensity&#39;</span><span class="p">,)</span>
 
 
 <span class="k">class</span> <span class="nc">DetWithConf</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
 
@@ -879,10 +924,6 @@
 
     <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">name</span><span class="p">]}</span>
 
 
 <span class="k">class</span> <span class="nc">InvariantSignal</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">):</span>
@@ -898,9 +939,9 @@
 
 
 <span class="k">class</span> <span class="nc">SPseudo3x3</span><span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">):</span>
-    <span class="n">pseudo1</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-    <span class="n">pseudo2</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
-    <span class="n">pseudo3</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">egu</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="n">pseudo1</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
+    <span class="n">pseudo2</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
+    <span class="n">pseudo3</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">egu</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
     <span class="n">real1</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">real2</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">real3</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -925,7 +966,7 @@
 
 
 <span class="k">class</span> <span class="nc">SPseudo1x3</span><span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">):</span>
-    <span class="n">pseudo1</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">pseudo1</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">)</span>
     <span class="n">real1</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">real2</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">real3</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -951,52 +992,203 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span>
 
 
+<span class="k">def</span> <span class="nf">make_fake_device</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inspect cls and construct a fake device that has the same structure.</span>
+
+<span class="sd">    This works by replacing EpicsSignal with FakeEpicsSignal and EpicsSignalRO</span>
+<span class="sd">    with FakeEpicsSignalRO. The fake class will be a subclass of the real</span>
+<span class="sd">    class.</span>
+
+<span class="sd">    This assumes that EPICS connections are done entirely in EpicsSignal and</span>
+<span class="sd">    EpicsSignalRO subcomponents. If this is not true, this will fail silently</span>
+<span class="sd">    on class construction and loudly when manipulating an object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : Device</span>
+<span class="sd">        A real Device class to inspect and create a fake Device class from</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fake_device : Device</span>
+<span class="sd">        The resulting fake Device class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Cache to avoid repeating work.</span>
+    <span class="c1"># EpicsSignal and EpicsSignalRO begin in the cache.</span>
+    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fake_device_cache</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Device</span><span class="p">):</span>
+            <span class="c1"># Ignore non-devices and non-epics-signals</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Ignore cls=</span><span class="si">%s</span><span class="s1">, bases are </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">)</span>
+            <span class="n">fake_device_cache</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+            <span class="k">return</span> <span class="bp">cls</span>
+        <span class="n">fake_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># Update all the components recursively</span>
+        <span class="k">for</span> <span class="n">cpt_name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
+            <span class="n">cpt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cpt_name</span><span class="p">)</span>
+            <span class="n">fake_cpt</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cpt</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cpt</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
+                <span class="n">fake_cpt</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="n">make_fake_device</span><span class="p">(</span><span class="n">cpt</span><span class="o">.</span><span class="n">cls</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;switch cpt_name=</span><span class="si">%s</span><span class="s1"> to cls=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                             <span class="n">cpt_name</span><span class="p">,</span> <span class="n">fake_cpt</span><span class="o">.</span><span class="n">cls</span><span class="p">)</span>
+            <span class="c1"># DDCpt stores the classes in a different place</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cpt</span><span class="p">,</span> <span class="n">DDC</span><span class="p">):</span>
+                <span class="n">fake_defn</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">ddcpt_name</span><span class="p">,</span> <span class="n">ddcpt_tuple</span> <span class="ow">in</span> <span class="n">cpt</span><span class="o">.</span><span class="n">defn</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">subcls</span> <span class="o">=</span> <span class="n">make_fake_device</span><span class="p">(</span><span class="n">ddcpt_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">fake_defn</span><span class="p">[</span><span class="n">ddcpt_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">subcls</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">ddcpt_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="n">fake_cpt</span><span class="o">.</span><span class="n">defn</span> <span class="o">=</span> <span class="n">fake_defn</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a component or a dynamic &quot;</span>
+                                    <span class="s2">&quot;device component. I don&#39;t know how you &quot;</span>
+                                    <span class="s2">&quot;found this error, should be impossible &quot;</span>
+                                    <span class="s2">&quot;to reach it.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cpt</span><span class="p">)))</span>
+            <span class="n">fake_dict</span><span class="p">[</span><span class="n">cpt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_cpt</span>
+        <span class="n">fake_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;Fake</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span> <span class="p">(</span><span class="bp">cls</span><span class="p">,),</span> <span class="n">fake_dict</span><span class="p">)</span>
+        <span class="n">fake_device_cache</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">fake_class</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;fake_device_cache[</span><span class="si">%s</span><span class="s1">] = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">fake_class</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fake_device_cache</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">FakeEpicsSignal</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fake version of EpicsSignal that&#39;s really just a SynSignal.</span>
+
+<span class="sd">    Wheras SynSignal is generally used to test plans, FakeEpicsSignal is</span>
+<span class="sd">    generally used in conjunction with make_fake_device to test any logic</span>
+<span class="sd">    inside of a Device subclass.</span>
+
+<span class="sd">    Unlike in SynSignal, this class is generally instantiated inside of a</span>
+<span class="sd">    subcomponent generated automatically by make_fake_device. This means we</span>
+<span class="sd">    need extra hooks for modifying the signal&#39;s properties after the class</span>
+<span class="sd">    instantiates.</span>
+
+<span class="sd">    We can emulate EpicsSignal features here. Currently we just emulate the put</span>
+<span class="sd">    limits because it was involved in a kwarg.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_pv</span><span class="p">,</span> <span class="n">write_pv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pv_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">put_complete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">auto_monitor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mimic EpicsSignal signature</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_limits</span> <span class="o">=</span> <span class="n">limits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_put_func</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">sim_set_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the SynSignal function to set a new value on trigger.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="k">def</span> <span class="nf">sim_set_putter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">putter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define arbirary behavior on signal put.</span>
+
+<span class="sd">        This can be used to emulate basic IOC behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_put_func</span> <span class="o">=</span> <span class="n">putter</span>
+
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_put_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_put_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sim_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the read-only signal&#39;s value.</span>
+
+<span class="sd">        Implement here instead of FakeEpicsSignalRO so you can call it with</span>
+<span class="sd">        every fake signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Signal</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span>
+
+    <span class="k">def</span> <span class="nf">sim_set_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limits</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the fake signal&#39;s limits.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span> <span class="o">=</span> <span class="n">limits</span>
+
+    <span class="k">def</span> <span class="nf">check_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check fake limits before putting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_limits</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">LimitError</span><span class="p">(</span><span class="s1">&#39;value=</span><span class="si">{}</span><span class="s1"> limits=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limits</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">FakeEpicsSignalRO</span><span class="p">(</span><span class="n">SynSignalRO</span><span class="p">,</span> <span class="n">FakeEpicsSignal</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read-only FakeEpicsSignal</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="n">fake_device_cache</span> <span class="o">=</span> <span class="p">{</span><span class="n">EpicsSignal</span><span class="p">:</span> <span class="n">FakeEpicsSignal</span><span class="p">,</span>
+                     <span class="n">EpicsSignalRO</span><span class="p">:</span> <span class="n">FakeEpicsSignalRO</span><span class="p">}</span>
+
+
 <span class="k">def</span> <span class="nf">hw</span><span class="p">():</span>
     <span class="s2">&quot;Build a set of synthetic hardware (hence the abbreviated name, hw)&quot;</span>
-    <span class="n">motor</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor&#39;</span><span class="p">)</span>
-    <span class="n">motor1</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor1&#39;</span><span class="p">)</span>
-    <span class="n">motor2</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor2&#39;</span><span class="p">)</span>
-    <span class="n">motor3</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor3&#39;</span><span class="p">)</span>
+    <span class="n">motor</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
+    <span class="n">motor1</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor1&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
+    <span class="n">motor2</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor2&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
+    <span class="n">motor3</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor3&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
     <span class="n">jittery_motor1</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;jittery_motor1&#39;</span><span class="p">,</span>
-                             <span class="n">readback_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+                             <span class="n">readback_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(),</span>
+                             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
     <span class="n">jittery_motor2</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;jittery_motor2&#39;</span><span class="p">,</span>
-                             <span class="n">readback_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+                             <span class="n">readback_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(),</span>
+                             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
     <span class="n">noisy_det</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;noisy_det&#39;</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                         <span class="n">noise</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">noise_multiplier</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">det</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">identical_det</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">det1</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det1&#39;</span><span class="p">,</span> <span class="n">motor1</span><span class="p">,</span> <span class="s1">&#39;motor1&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">det2</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det2&#39;</span><span class="p">,</span> <span class="n">motor2</span><span class="p">,</span> <span class="s1">&#39;motor2&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">det3</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det3&#39;</span><span class="p">,</span> <span class="n">motor3</span><span class="p">,</span> <span class="s1">&#39;motor3&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                         <span class="n">noise</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">noise_multiplier</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                         <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">det</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                   <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">identical_det</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">det1</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det1&#39;</span><span class="p">,</span> <span class="n">motor1</span><span class="p">,</span> <span class="s1">&#39;motor1&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">det2</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det2&#39;</span><span class="p">,</span> <span class="n">motor2</span><span class="p">,</span> <span class="s1">&#39;motor2&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">det3</span> <span class="o">=</span> <span class="n">SynGauss</span><span class="p">(</span><span class="s1">&#39;det3&#39;</span><span class="p">,</span> <span class="n">motor3</span><span class="p">,</span> <span class="s1">&#39;motor3&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
     <span class="n">det4</span> <span class="o">=</span> <span class="n">Syn2DGauss</span><span class="p">(</span><span class="s1">&#39;det4&#39;</span><span class="p">,</span> <span class="n">motor1</span><span class="p">,</span> <span class="s1">&#39;motor1&#39;</span><span class="p">,</span> <span class="n">motor2</span><span class="p">,</span> <span class="s1">&#39;motor2&#39;</span><span class="p">,</span>
-                      <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                      <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
     <span class="n">det5</span> <span class="o">=</span> <span class="n">Syn2DGauss</span><span class="p">(</span><span class="s1">&#39;det5&#39;</span><span class="p">,</span> <span class="n">jittery_motor1</span><span class="p">,</span> <span class="s1">&#39;jittery_motor1&#39;</span><span class="p">,</span> <span class="n">jittery_motor2</span><span class="p">,</span>
-                      <span class="s1">&#39;jittery_motor2&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                      <span class="s1">&#39;jittery_motor2&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Imax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
 
     <span class="n">flyer1</span> <span class="o">=</span> <span class="n">MockFlyer</span><span class="p">(</span><span class="s1">&#39;flyer1&#39;</span><span class="p">,</span> <span class="n">det</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
     <span class="n">flyer2</span> <span class="o">=</span> <span class="n">MockFlyer</span><span class="p">(</span><span class="s1">&#39;flyer2&#39;</span><span class="p">,</span> <span class="n">det</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">trivial_flyer</span> <span class="o">=</span> <span class="n">TrivialFlyer</span><span class="p">()</span>
 
-    <span class="c1"># Some extras not defined in ophyd.sim (should they be?)</span>
-    <span class="n">ab_det</span> <span class="o">=</span> <span class="n">ABDetector</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;det&#39;</span><span class="p">)</span>
+    <span class="n">ab_det</span> <span class="o">=</span> <span class="n">ABDetector</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
     <span class="c1"># area detector that directly stores image data in Event</span>
     <span class="n">direct_img</span> <span class="o">=</span> <span class="n">SynSignal</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))),</span>
-                           <span class="n">name</span><span class="o">=</span><span class="s1">&#39;img&#39;</span><span class="p">)</span>
-    <span class="c1"># area detector that stores data in file and registers it with Registry</span>
+                           <span class="n">name</span><span class="o">=</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="c1"># area detector that stores data in a file</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">SynSignalWithRegistry</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))),</span>
-                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;img&#39;</span><span class="p">,</span>
-                                <span class="n">reg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># do hw.img.reg = db.reg in test!</span>
-    <span class="n">invariant1</span> <span class="o">=</span> <span class="n">InvariantSignal</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;invariant1&#39;</span><span class="p">)</span>
-    <span class="n">invariant2</span> <span class="o">=</span> <span class="n">InvariantSignal</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;invariant2&#39;</span><span class="p">)</span>
-    <span class="n">det_with_conf</span> <span class="o">=</span> <span class="n">DetWithConf</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;det&#39;</span><span class="p">)</span>
-    <span class="n">det_with_count_time</span> <span class="o">=</span> <span class="n">DetWithCountTime</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;det&#39;</span><span class="p">)</span>
-    <span class="n">rand</span> <span class="o">=</span> <span class="n">SynPeriodicSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rand&#39;</span><span class="p">)</span>
-    <span class="n">rand2</span> <span class="o">=</span> <span class="n">SynPeriodicSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rand2&#39;</span><span class="p">)</span>
-    <span class="n">motor_no_pos</span> <span class="o">=</span> <span class="n">SynAxisNoPosition</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor&#39;</span><span class="p">)</span>
-    <span class="n">bool_sig</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bool_sig&#39;</span><span class="p">)</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">invariant1</span> <span class="o">=</span> <span class="n">InvariantSignal</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;invariant1&#39;</span><span class="p">,</span>
+                                 <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">invariant2</span> <span class="o">=</span> <span class="n">InvariantSignal</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;invariant2&#39;</span><span class="p">,</span>
+                                 <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">det_with_conf</span> <span class="o">=</span> <span class="n">DetWithConf</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">det_with_count_time</span> <span class="o">=</span> <span class="n">DetWithCountTime</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;det&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">rand</span> <span class="o">=</span> <span class="n">SynPeriodicSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rand&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">rand2</span> <span class="o">=</span> <span class="n">SynPeriodicSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rand2&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
+    <span class="n">motor_no_pos</span> <span class="o">=</span> <span class="n">SynAxisNoPosition</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
+    <span class="n">bool_sig</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bool_sig&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;detectors&#39;</span><span class="p">})</span>
 
-    <span class="n">motor_no_hints1</span> <span class="o">=</span> <span class="n">SynAxisNoHints</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor1&#39;</span><span class="p">)</span>
-    <span class="n">motor_no_hints2</span> <span class="o">=</span> <span class="n">SynAxisNoHints</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor2&#39;</span><span class="p">)</span>
+    <span class="n">motor_no_hints1</span> <span class="o">=</span> <span class="n">SynAxisNoHints</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor1&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
+    <span class="n">motor_no_hints2</span> <span class="o">=</span> <span class="n">SynAxisNoHints</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;motor2&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;motors&#39;</span><span class="p">})</span>
     <span class="c1"># Because some of these reference one another we must define them (above)</span>
     <span class="c1"># before we pack them into a namespace (below).</span>
 
