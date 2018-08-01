@@ -87,10 +87,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-xpdsim.area_det">xpdsim.area_det module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-xpdsim.build_sim_db">xpdsim.build_sim_db module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-xpdsim.movers">xpdsim.movers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-xpdsim">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xpdsim-area-det-module">xpdsim.area_det module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xpdsim-build-sim-db-module">xpdsim.build_sim_db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xpdsim-movers-module">xpdsim.movers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -166,19 +166,19 @@
 <li class="toctree-l1"><a class="reference internal" href="xpdsim.data.html">xpdsim.data package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="xpdsim.data.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="xpdsim.data.XPD.html">xpdsim.data.XPD package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="xpdsim.data.XPD.html#module-xpdsim.data.XPD">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xpdsim.data.XPD.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="xpdsim.data.html#module-xpdsim.data">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xpdsim.data.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="xpdsim.tests.html">xpdsim.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#module-xpdsim.tests.conftest">xpdsim.tests.conftest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#module-xpdsim.tests.test_dets">xpdsim.tests.test_dets module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#module-xpdsim.tests">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#xpdsim-tests-conftest-module">xpdsim.tests.conftest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#xpdsim-tests-test-dets-module">xpdsim.tests.test_dets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xpdsim.tests.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -187,138 +187,17 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xpdsim.area_det">
-<span id="xpdsim-area-det-module"></span><h2>xpdsim.area_det module<a class="headerlink" href="#module-xpdsim.area_det" title="Permalink to this headline">¶</a></h2>
-<p>Spoof detectors</p>
-<dl class="class">
-<dt id="xpdsim.area_det.SimulatedCam">
-<em class="property">class </em><code class="descclassname">xpdsim.area_det.</code><code class="descname">SimulatedCam</code><span class="sig-paren">(</span><em>prefix=''</em>, <em>*</em>, <em>name</em>, <em>kind=None</em>, <em>read_attrs=None</em>, <em>configuration_attrs=None</em>, <em>parent=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#SimulatedCam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.SimulatedCam" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
-<dl class="attribute">
-<dt id="xpdsim.area_det.SimulatedCam.acquire">
-<code class="descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1533019754.1686065)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xpdsim.area_det.SimulatedCam.acquire_time">
-<code class="descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1533019754.1685944)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xpdsim.area_det.SimulatedCam.component_names">
-<code class="descname">component_names</code><em class="property"> = []</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.component_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="xpdsim.area_det.build_image_cycle">
-<code class="descclassname">xpdsim.area_det.</code><code class="descname">build_image_cycle</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#build_image_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.build_image_cycle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build image cycles, essentially generators with endless images</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) – Path to the files to be used as the base for the cycle, this can
-include some globing</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The iterable like object to cycle through the images</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Cycler</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="xpdsim.area_det.det_factory">
-<code class="descclassname">xpdsim.area_det.</code><code class="descname">det_factory</code><span class="sig-paren">(</span><em>reg</em>, <em>*</em>, <em>shutter=None</em>, <em>src_path=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a detector using real images</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reg</strong> (<em>Registry</em>) – The filestore to save all the data in</li>
-<li><strong>src_path</strong> (<em>str</em>) – The path to the source tiff files</li>
-<li><strong>full_img</strong> (<em>bool, keyword-only</em>) – Option on if want to return full size imag.
-Deafult is False.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pe1c</strong> – The detector</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">SimulatedPE1C instance</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<div class="section" id="xpdsim-area-det-module">
+<h2>xpdsim.area_det module<a class="headerlink" href="#xpdsim-area-det-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xpdsim.build_sim_db">
-<span id="xpdsim-build-sim-db-module"></span><h2>xpdsim.build_sim_db module<a class="headerlink" href="#module-xpdsim.build_sim_db" title="Permalink to this headline">¶</a></h2>
-<p>this module exists for simulation environment</p>
-<dl class="function">
-<dt id="xpdsim.build_sim_db.build_sim_db">
-<code class="descclassname">xpdsim.build_sim_db.</code><code class="descname">build_sim_db</code><span class="sig-paren">(</span><em>sim_db_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/build_sim_db.html#build_sim_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.build_sim_db.build_sim_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xpdsim-build-sim-db-module">
+<h2>xpdsim.build_sim_db module<a class="headerlink" href="#xpdsim-build-sim-db-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xpdsim.movers">
-<span id="xpdsim-movers-module"></span><h2>xpdsim.movers module<a class="headerlink" href="#module-xpdsim.movers" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="xpdsim.movers.SimFilterBank">
-<em class="property">class </em><code class="descclassname">xpdsim.movers.</code><code class="descname">SimFilterBank</code><span class="sig-paren">(</span><em>prefix=''</em>, <em>*</em>, <em>name</em>, <em>kind=None</em>, <em>read_attrs=None</em>, <em>configuration_attrs=None</em>, <em>parent=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/movers.html#SimFilterBank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.movers.SimFilterBank" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
-<p>Simulated filter bank with only the first filter in by default</p>
-<dl class="attribute">
-<dt id="xpdsim.movers.SimFilterBank.component_names">
-<code class="descname">component_names</code><em class="property"> = ['flt1', 'flt2', 'flt3', 'flt4']</em><a class="headerlink" href="#xpdsim.movers.SimFilterBank.component_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt1">
-<code class="descname">flt1</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ac6fb1fce18</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
+<div class="section" id="xpdsim-movers-module">
+<h2>xpdsim.movers module<a class="headerlink" href="#xpdsim-movers-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt2">
-<code class="descname">flt2</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ac6fb1fcea0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt3">
-<code class="descname">flt3</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ac6fb1fcf28</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt4">
-<code class="descname">flt4</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt4" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ac6fb1fe048</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-xpdsim">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xpdsim" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
