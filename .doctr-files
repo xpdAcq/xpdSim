@@ -1,3 +1,11 @@
+./_modules/index.html
+./_modules/ophyd/device.html
+./_modules/ophyd/sim.html
+./_modules/xpdsim/area_det.html
+./_modules/xpdsim/build_sim_db.html
+./_modules/xpdsim/movers.html
+./_modules/xpdsim/tests/conftest.html
+./_modules/xpdsim/tests/test_dets.html
 ./_sources/index.rst.txt
 ./_sources/xpdsim.data.XPD.rst.txt
 ./_sources/xpdsim.data.rst.txt
@@ -60,6 +68,7 @@
 ./genindex.html
 ./index.html
 ./objects.inv
+./py-modindex.html
 ./search.html
 ./searchindex.js
 ./xpdsim.data.XPD.html
