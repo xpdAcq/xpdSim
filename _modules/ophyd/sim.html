@@ -413,8 +413,14 @@
 <span class="sd">        used for ``subscribe`` updates; uses ``asyncio.get_event_loop()`` if</span>
 <span class="sd">        unspecified</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">readback</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">ReadbackSignal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">setpoint</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SetpointSignal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">readback</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">ReadbackSignal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;hinted&#39;</span><span class="p">)</span>
+    <span class="n">setpoint</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SetpointSignal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+
+    <span class="n">velocity</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+    <span class="n">acceleration</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+
+    <span class="n">unused</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;omitted&#39;</span><span class="p">)</span>
+
     <span class="n">SUB_READBACK</span> <span class="o">=</span> <span class="s1">&#39;readback&#39;</span>
     <span class="n">_default_sub</span> <span class="o">=</span> <span class="n">SUB_READBACK</span>
 
