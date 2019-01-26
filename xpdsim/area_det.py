@@ -15,6 +15,7 @@
 ##############################################################################
 
 from pathlib import Path
+from tempfile import mkdtemp
 
 import numpy as np
 from cycler import cycler
@@ -97,11 +98,13 @@ def det_factory(reg, *, shutter=None,
 
         pe1c = sim.SynSignalWithRegistry(name='pe1_image',
                                          func=lambda: nexter(shutter),
-                                         reg=reg)
+                                         reg=reg,
+                                         save_path=mkdtemp(prefix='xpdsim'))
     else:
         pe1c = sim.SynSignalWithRegistry(name='pe1_image',
                                          func=lambda: np.ones((5, 5)),
-                                         reg=reg)
+                                         reg=reg,
+                                         save_path=mkdtemp(prefix='xpdsim'))
     # plug-ins
     pe1c.images_per_set = sim.SynSignal(name='images_per_set')
     pe1c.number_of_sets = sim.SynSignal(name='number_of_sets')

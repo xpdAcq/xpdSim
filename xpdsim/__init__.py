@@ -22,6 +22,6 @@ db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
 simple_pe1c = det_factory(db.reg)
 # detector with full image -> for testing data reduction
 xpd_pe1c = det_factory(db.reg, full_img=True,
-                       src_path=nsls_ii_path)
+                       src_path=nsls_ii_path, shutter=shctl1)
 # synthetic ring current
 ring_current = SynSignalRO(lambda: 300, name='ring_current')

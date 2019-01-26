@@ -1,0 +1,15 @@
+**Added:** None
+
+**Changed:**
+
+* The area detector now uses the shutter by default
+* The area detector now writes into a temp dir with a prefix (making removal 
+  easier)
+
+**Deprecated:** None
+
+**Removed:** None
+
+**Fixed:** None
+
+**Security:** None
