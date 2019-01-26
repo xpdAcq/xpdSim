@@ -159,6 +159,7 @@
 <span class="c1">##############################################################################</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">cycler</span> <span class="k">import</span> <span class="n">cycler</span>
@@ -241,11 +242,13 @@
 
         <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">,</span>
                                          <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-                                         <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">)</span>
+                                         <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
+                                         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;xpdsim&#39;</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">,</span>
                                          <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
-                                         <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">)</span>
+                                         <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
+                                         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;xpdsim&#39;</span><span class="p">))</span>
     <span class="c1"># plug-ins</span>
     <span class="n">pe1c</span><span class="o">.</span><span class="n">images_per_set</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;images_per_set&#39;</span><span class="p">)</span>
     <span class="n">pe1c</span><span class="o">.</span><span class="n">number_of_sets</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;number_of_sets&#39;</span><span class="p">)</span>
