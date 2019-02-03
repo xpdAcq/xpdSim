@@ -58,7 +58,7 @@ class SimulatedCam(Device):
 
 
 def det_factory(reg, *, shutter=None,
-                src_path=None, **kwargs):
+                src_path=None, noise=None, **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -92,6 +92,9 @@ def det_factory(reg, *, shutter=None,
                     return np.zeros_like(_img)
                 elif np.allclose(status.readback,
                                  XPD_SHUTTER_CONF['open']):
+                    if noise:
+                        a = next(gen)['pe1_image']
+                        return a + noise(np.abs(a))
                     return next(gen)['pe1_image']
             else:
                 return next(gen)['pe1_image']
