@@ -9,7 +9,7 @@ from xpdsim.movers import shctl1, cs700, fb
 
 import numpy as np
 
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 pyfai_path = rs_fn('xpdsim', 'data/pyfai/pyFAI_calib.yml')
 pyfai_poni = rs_fn('xpdsim', 'data/pyfai/test.poni')
