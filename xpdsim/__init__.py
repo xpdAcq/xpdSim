@@ -7,6 +7,8 @@ from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength
 from xpdsim.build_sim_db import build_sim_db
 from xpdsim.movers import shctl1, cs700, fb
 
+import numpy as np
+
 __version__ = '0.1.5'
 
 pyfai_path = rs_fn('xpdsim', 'data/pyfai/pyFAI_calib.yml')
@@ -22,6 +24,7 @@ db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
 simple_pe1c = det_factory(db.reg)
 # detector with full image -> for testing data reduction
 xpd_pe1c = det_factory(db.reg, full_img=True,
-                       src_path=nsls_ii_path, shutter=shctl1)
+                       src_path=nsls_ii_path, shutter=shctl1,
+                       noise=np.random.poisson)
 # synthetic ring current
 ring_current = SynSignalRO(lambda: 300, name='ring_current')
