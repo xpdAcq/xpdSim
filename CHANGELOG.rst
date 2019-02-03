@@ -4,6 +4,18 @@ xpdSim Change Log
 
 .. current developments
 
+v0.1.6
+====================
+
+**Changed:**
+
+* The area detector now uses the shutter by default
+* The area detector now writes into a temp dir with a prefix (making removal 
+  easier)
+* Add poisson noise to the detector
+
+
+
 v0.1.5
 ====================
 
