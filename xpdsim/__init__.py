@@ -26,5 +26,8 @@ simple_pe1c = det_factory(db.reg)
 xpd_pe1c = det_factory(db.reg, full_img=True,
                        src_path=nsls_ii_path, shutter=shctl1,
                        noise=np.random.poisson)
+xpd_pe2c = det_factory(db.reg, full_img=True,
+                       src_path=nsls_ii_path, shutter=shctl1,
+                       noise=np.random.normal, name='pe2_image')
 # synthetic ring current
 ring_current = SynSignalRO(lambda: 300, name='ring_current')

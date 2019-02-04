@@ -58,7 +58,7 @@ class SimulatedCam(Device):
 
 
 def det_factory(reg, *, shutter=None,
-                src_path=None, noise=None, **kwargs):
+                src_path=None, noise=None, name='pe1_image', **kwargs):
     """Build a detector using real images
 
     Parameters
@@ -99,12 +99,12 @@ def det_factory(reg, *, shutter=None,
             else:
                 return next(gen)['pe1_image']
 
-        pe1c = sim.SynSignalWithRegistry(name='pe1_image',
+        pe1c = sim.SynSignalWithRegistry(name=name,
                                          func=lambda: nexter(shutter),
                                          reg=reg,
                                          save_path=mkdtemp(prefix='xpdsim'))
     else:
-        pe1c = sim.SynSignalWithRegistry(name='pe1_image',
+        pe1c = sim.SynSignalWithRegistry(name=name,
                                          func=lambda: np.ones((5, 5)),
                                          reg=reg,
                                          save_path=mkdtemp(prefix='xpdsim'))
