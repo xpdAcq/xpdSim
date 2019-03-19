@@ -8,7 +8,8 @@ from numpy.testing import assert_array_equal
 from tifffile import imread
 
 from xpdsim.area_det import (XPD_SHUTTER_CONF, nsls_ii_path, chess_path,
-                             det_factory, build_image_cycle)
+                             det_factory, build_image_cycle,
+                             det_factory_dexela)
 from xpdsim.movers import shctl1
 
 test_params = [('nslsii', nsls_ii_path), ('chess', chess_path)]
@@ -77,3 +78,14 @@ def test_dets_noise(RE, db, name, fp):
         if name == 'event':
             assert_array_equal(doc['data']['pe1_image'],
                                next(cg)['pe1_image'])
+
+
+def test_dexela(RE, db):
+    det = det_factory_dexela(db.reg)
+    RE.subscribe(db.insert, 'all')
+    uid = RE(bp.count([det]))
+    for name, doc in db.restream(db[-1], fill=True):
+        if name == 'event':
+            db_img = doc['data']['dexela_image']
+            assert db_img.squeeze().shape == (3072, 3888, 0)
+    assert uid is not None
