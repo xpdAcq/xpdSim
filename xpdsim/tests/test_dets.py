@@ -89,3 +89,12 @@ def test_dexela(RE, db):
             db_img = doc['data']['dexela_image']
             assert db_img.squeeze().shape == (3072, 3888, 0)
     assert uid is not None
+    RE(bs.abs_set(shctl1, XPD_SHUTTER_CONF['close'], wait=True))
+    uid = RE(bp.count([det]))
+    for name, doc in db.restream(db[-1], fill=True):
+        if name == 'event':
+            db_img = doc['data']['dexela_image']
+            assert db_img.squeeze().shape == (3072, 3888, 0)
+            assert np.allclose(db_img, np.zeros_like((3072, 3888, 0)))
+    assert uid is not None
+
