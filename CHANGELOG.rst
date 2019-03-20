@@ -4,6 +4,23 @@ xpdSim Change Log
 
 .. current developments
 
+v0.2.0
+====================
+
+**Added:**
+
+* Capacity to change the name for area detectors
+* ``xpd_pe2c`` detector
+
+**Changed:**
+
+* The area detector now uses the shutter by default
+* The area detector now writes into a temp dir with a prefix (making removal 
+  easier)
+* Add poisson noise to the detector
+
+
+
 v0.1.5
 ====================
 
