@@ -169,12 +169,12 @@
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span> <span class="k">as</span> <span class="n">rs_fn</span>
 <span class="kn">from</span> <span class="nn">tifffile</span> <span class="k">import</span> <span class="n">imread</span>
 
-<span class="n">XPD_SHUTTER_CONF</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;open&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="n">XPD_SHUTTER_CONF</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;open&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 
-<span class="n">DATA_DIR_STEM</span> <span class="o">=</span> <span class="s1">&#39;xpdsim.data&#39;</span>
-<span class="n">nsls_ii_path</span> <span class="o">=</span> <span class="n">rs_fn</span><span class="p">(</span><span class="n">DATA_DIR_STEM</span> <span class="o">+</span> <span class="s1">&#39;.XPD&#39;</span><span class="p">,</span> <span class="s1">&#39;ni&#39;</span><span class="p">)</span>
+<span class="n">DATA_DIR_STEM</span> <span class="o">=</span> <span class="s2">&quot;xpdsim.data&quot;</span>
+<span class="n">nsls_ii_path</span> <span class="o">=</span> <span class="n">rs_fn</span><span class="p">(</span><span class="n">DATA_DIR_STEM</span> <span class="o">+</span> <span class="s2">&quot;.XPD&quot;</span><span class="p">,</span> <span class="s2">&quot;ni&quot;</span><span class="p">)</span>
 <span class="n">xpd_wavelength</span> <span class="o">=</span> <span class="mf">0.1823</span>
-<span class="n">chess_path</span> <span class="o">=</span> <span class="n">rs_fn</span><span class="p">(</span><span class="n">DATA_DIR_STEM</span><span class="p">,</span> <span class="s1">&#39;chess&#39;</span><span class="p">)</span>
+<span class="n">chess_path</span> <span class="o">=</span> <span class="n">rs_fn</span><span class="p">(</span><span class="n">DATA_DIR_STEM</span><span class="p">,</span> <span class="s2">&quot;chess&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="build_image_cycle"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.build_image_cycle">[docs]</a><span class="k">def</span> <span class="nf">build_image_cycle</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -192,19 +192,20 @@
 <span class="sd">        The iterable like object to cycle through the images</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">imgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="k">for</span> <span class="n">fp</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.tif*&#39;</span><span class="p">)]</span>
+    <span class="n">imgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="k">for</span> <span class="n">fp</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif*&quot;</span><span class="p">)]</span>
     <span class="c1"># switch back to pims if the error is resolved</span>
     <span class="c1"># imgs = ImageSequence(path)</span>
     <span class="k">return</span> <span class="n">cycler</span><span class="p">(</span><span class="n">pe1_image</span><span class="o">=</span><span class="n">imgs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimulatedCam"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.SimulatedCam">[docs]</a><span class="k">class</span> <span class="nc">SimulatedCam</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">acquire_time</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;acquire_time&#39;</span><span class="p">)</span>
-    <span class="n">acquire</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;acquire&#39;</span><span class="p">)</span></div>
+    <span class="n">acquire_time</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;acquire_time&quot;</span><span class="p">)</span>
+    <span class="n">acquire</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;acquire&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span>
+    <span class="n">reg</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
 
 <span class="sd">    Parameters</span>
@@ -233,31 +234,87 @@
             <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span>
-                               <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
                     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">_img</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span>
-                                 <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]):</span>
+                <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
                     <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
-                        <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">]</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
                         <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-                    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">]</span>
+                <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
 
-        <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">,</span>
-                                         <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-                                         <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
-                                         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;xpdsim&#39;</span><span class="p">))</span>
+        <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
+            <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">,</span>
-                                         <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
-                                         <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
-                                         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;xpdsim&#39;</span><span class="p">))</span>
+        <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+            <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
     <span class="c1"># plug-ins</span>
-    <span class="n">pe1c</span><span class="o">.</span><span class="n">images_per_set</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;images_per_set&#39;</span><span class="p">)</span>
-    <span class="n">pe1c</span><span class="o">.</span><span class="n">number_of_sets</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;number_of_sets&#39;</span><span class="p">)</span>
-    <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span> <span class="o">=</span> <span class="n">SimulatedCam</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;cam&#39;</span><span class="p">)</span>
+    <span class="n">pe1c</span><span class="o">.</span><span class="n">images_per_set</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;images_per_set&quot;</span><span class="p">)</span>
+    <span class="n">pe1c</span><span class="o">.</span><span class="n">number_of_sets</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;number_of_sets&quot;</span><span class="p">)</span>
+    <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span> <span class="o">=</span> <span class="n">SimulatedCam</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam&quot;</span><span class="p">)</span>
+    <span class="c1"># set default values</span>
+    <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire_time</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pe1c</span></div>
+
+
+<div class="viewcode-block" id="det_factory_dexela"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory_dexela">[docs]</a><span class="k">def</span> <span class="nf">det_factory_dexela</span><span class="p">(</span>
+    <span class="n">reg</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dexela_image&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reg: Registry</span>
+<span class="sd">        The filestore to save all the data in</span>
+<span class="sd">    src_path: str</span>
+<span class="sd">        The path to the source tiff files</span>
+<span class="sd">    full_img : bool, keyword-only</span>
+<span class="sd">        Option on if want to return full size imag.</span>
+<span class="sd">        Deafult is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pe1c: SimulatedPE1C instance</span>
+<span class="sd">        The detector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">):</span>
+        <span class="c1"># instantiate again</span>
+        <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="n">pe1c</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
+        <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
+        <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="c1"># plug-ins</span>
+    <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span> <span class="o">=</span> <span class="n">SimulatedCam</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam&quot;</span><span class="p">)</span>
     <span class="c1"># set default values</span>
     <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire_time</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
     <span class="n">pe1c</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
