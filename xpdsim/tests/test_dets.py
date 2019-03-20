@@ -88,7 +88,7 @@ def test_dets_noise(RE, db, name, fp):
 
 
 def test_dexela(RE, db):
-    det = det_factory_dexela(db.reg, shutter=shctl1, noise=np.random.random)
+    det = det_factory_dexela(db.reg, shutter=shctl1, noise=np.random.poisson)
     RE.subscribe(db.insert, "all")
     RE(bs.abs_set(shctl1, XPD_SHUTTER_CONF["open"], wait=True))
     uid = RE(bp.count([det]))

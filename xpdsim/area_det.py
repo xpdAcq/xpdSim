@@ -152,7 +152,7 @@ def det_factory_dexela(
         if shutter:
             status = shutter.get()
             if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                return np.zeros_like((3072, 3888, 0))
+                return np.zeros((3072, 3888, 0))
             elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
                 if noise:
                     a = np.random.random((3072, 3888, 0))
