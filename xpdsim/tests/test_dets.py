@@ -87,7 +87,10 @@ def test_dets_noise(RE, db, name, fp):
             assert_array_equal(doc["data"]["pe1_image"], next(cg)["pe1_image"])
 
 
-@pytest.mark.parametrize(("shutter", "noise"), [(x,y) for x in [None, shctl1] for y in [None, np.random.poisson]])
+@pytest.mark.parametrize(
+    ("shutter", "noise"),
+    [(x, y) for x in [None, shctl1] for y in [None, np.random.poisson]],
+)
 def test_dexela(RE, db, shutter, noise):
     det = det_factory_dexela(db.reg, shutter=shutter, noise=noise)
     RE.subscribe(db.insert, "all")
