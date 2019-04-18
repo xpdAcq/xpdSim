@@ -4,7 +4,7 @@ from functools import partial
 from ophyd.sim import NumpySeqHandler, SynSignalRO
 
 from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength, \
-    det_factory_dexela
+    det_factory_dexela, det_factory_blackfly
 from xpdsim.build_sim_db import build_sim_db
 from xpdsim.movers import shctl1, cs700, fb
 
@@ -45,3 +45,8 @@ xpd_pe2c = det_factory(
 ring_current = SynSignalRO(lambda: 300, name="ring_current")
 
 dexela = det_factory_dexela(db.reg, shutter=shctl1)
+
+blackfly = det_factory_blackfly(db.reg, shutter=shctl1)
+# this reports just ones, similar to a flat field
+blackfly_full_field = det_factory_blackfly(db.reg, shutter=shctl1,
+                                           full_field=True)
