@@ -14,7 +14,8 @@ from xpdsim.area_det import (
     det_factory,
     build_image_cycle,
     det_factory_dexela,
-    det_factory_blackfly)
+    det_factory_blackfly,
+)
 from xpdsim.movers import shctl1
 
 test_params = [("nslsii", nsls_ii_path), ("chess", chess_path)]
@@ -111,10 +112,8 @@ def test_dexela(RE, db, shutter, noise):
                 assert np.allclose(db_img, np.zeros_like(db_img))
         assert uid is not None
 
-@pytest.mark.parametrize(
-    ("shutter"),
-    (None, shctl1),
-)
+
+@pytest.mark.parametrize(("shutter"), (None, shctl1))
 def test_blackfly(RE, db, shutter):
     for ff in [True, False]:
         det = det_factory_blackfly(db.reg, shutter=shutter, full_field=ff)
