@@ -113,7 +113,10 @@ def test_dexela(RE, db, shutter, noise):
         assert uid is not None
 
 
-@pytest.mark.parametrize(("shutter"), (None, shctl1))
+@pytest.mark.parametrize(
+    ("shutter", "noise"),
+    [(x, y) for x in [None, shctl1] for y in [None, np.random.poisson]],
+)
 def test_blackfly(RE, db, shutter):
     for ff in [True, False]:
         det = det_factory_blackfly(db.reg, shutter=shutter, full_field=ff)
