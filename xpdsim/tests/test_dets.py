@@ -117,9 +117,10 @@ def test_dexela(RE, db, shutter, noise):
     ("shutter", "noise"),
     [(x, y) for x in [None, shctl1] for y in [None, np.random.poisson]],
 )
-def test_blackfly(RE, db, shutter):
+def test_blackfly(RE, db, shutter, noise):
     for ff in [True, False]:
-        det = det_factory_blackfly(db.reg, shutter=shutter, full_field=ff)
+        det = det_factory_blackfly(db.reg, shutter=shutter, full_field=ff,
+                                   noise=noise)
         RE.subscribe(db.insert, "all")
         RE(bs.abs_set(shctl1, XPD_SHUTTER_CONF["open"], wait=True))
         uid = RE(bp.count([det]))
