@@ -234,4 +234,3 @@ def det_factory_blackfly(
     det.cam.acquire_time.put(0.1)
     det.cam.acquire.put(1)
     return det
-
