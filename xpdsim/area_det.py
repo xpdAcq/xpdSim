@@ -74,7 +74,7 @@ def det_factory(
 
     Returns
     -------
-    pe1c: SimulatedPE1C instance
+    det: SimulatedPE1C instance
         The detector
     """
 
@@ -98,27 +98,28 @@ def det_factory(
             else:
                 return next(gen)["pe1_image"]
 
-        pe1c = sim.SynSignalWithRegistry(
+        det = sim.SynSignalWithRegistry(
             name=name,
             func=lambda: nexter(shutter),
             reg=reg,
             save_path=mkdtemp(prefix="xpdsim"),
         )
     else:
-        pe1c = sim.SynSignalWithRegistry(
+        det = sim.SynSignalWithRegistry(
             name=name,
             func=lambda: np.ones((5, 5)),
             reg=reg,
             save_path=mkdtemp(prefix="xpdsim"),
         )
     # plug-ins
-    pe1c.images_per_set = sim.SynSignal(name="images_per_set")
-    pe1c.number_of_sets = sim.SynSignal(name="number_of_sets")
-    pe1c.cam = SimulatedCam(name="cam")
+    det.images_per_set = sim.SynSignal(name="images_per_set")
+    det.number_of_sets = sim.SynSignal(name="number_of_sets")
+    det.cam = SimulatedCam(name="cam")
     # set default values
-    pe1c.cam.acquire_time.put(0.1)
-    pe1c.cam.acquire.put(1)
-    return pe1c
+    det.cam.acquire_time.put(0.1)
+    det.cam.acquire.put(1)
+    det.images_per_set.put(1)
+    return det
 
 
 def det_factory_dexela(
@@ -143,33 +144,93 @@ def det_factory_dexela(
 
     Returns
     -------
-    pe1c: SimulatedPE1C instance
+    det: SimulatedPE1C instance
         The detector
     """
 
     def nexter(shutter):
+        shape = (3072, 3888)
+        base = np.random.random(shape)
         # instantiate again
         if shutter:
             status = shutter.get()
             if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                return np.zeros((3072, 3888, 0))
+                return np.zeros(shape)
             elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
                 if noise:
-                    a = np.random.random((3072, 3888, 0))
-                    return a + noise(np.abs(a))
-                return np.random.random((3072, 3888, 0))
+                    return base + noise(np.abs(base))
+                return base
         else:
-            return np.random.random((3072, 3888, 0))
+            return base
 
-    pe1c = sim.SynSignalWithRegistry(
+    det = sim.SynSignalWithRegistry(
         name=name,
         func=lambda: nexter(shutter),
         reg=reg,
         save_path=mkdtemp(prefix="xpdsim"),
     )
     # plug-ins
-    pe1c.cam = SimulatedCam(name="cam")
+    det.cam = SimulatedCam(name="cam")
     # set default values
-    pe1c.cam.acquire_time.put(0.1)
-    pe1c.cam.acquire.put(1)
-    return pe1c
+    det.cam.acquire_time.put(0.1)
+    det.cam.acquire.put(1)
+    return det
+
+
+def det_factory_blackfly(
+    reg,
+    *,
+    shutter=None,
+    noise=None,
+    name="blackfly_det_image",
+    full_field=False,
+    **kwargs
+):
+    """Build a detector using real images
+
+    Parameters
+    ----------
+    reg: Registry
+        The filestore to save all the data in
+    src_path: str
+        The path to the source tiff files
+    full_img : bool, keyword-only
+        Option on if want to return full size imag.
+        Deafult is False.
+
+    Returns
+    -------
+    det: SimulatedPE1C instance
+        The detector
+    """
+
+    def nexter(shutter):
+        # shape = (2048, 2448)
+        shape = (20, 24)
+        base = np.random.random(shape)
+        if full_field:
+            base = np.ones(shape)
+        # instantiate again
+        if shutter:
+            status = shutter.get()
+            if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
+                return np.zeros(shape)
+            elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
+                if noise:
+                    return base + noise(np.abs(base))
+                return base
+        else:
+            return base
+
+    det = sim.SynSignalWithRegistry(
+        name=name,
+        func=lambda: nexter(shutter),
+        reg=reg,
+        save_path=mkdtemp(prefix="xpdsim"),
+    )
+    # plug-ins
+    det.cam = SimulatedCam(name="cam")
+    # set default values
+    det.cam.acquire_time.put(0.1)
+    det.cam.acquire.put(1)
+    return det

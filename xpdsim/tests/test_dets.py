@@ -14,6 +14,7 @@ from xpdsim.area_det import (
     det_factory,
     build_image_cycle,
     det_factory_dexela,
+    det_factory_blackfly,
 )
 from xpdsim.movers import shctl1
 
@@ -99,7 +100,7 @@ def test_dexela(RE, db, shutter, noise):
     for name, doc in db.restream(db[-1], fill=True):
         if name == "event":
             db_img = doc["data"]["dexela_image"]
-            assert db_img.squeeze().shape == (3072, 3888, 0)
+            assert db_img.squeeze().shape == (3072, 3888)
     assert uid is not None
     if shutter:
         RE(bs.abs_set(shctl1, XPD_SHUTTER_CONF["close"], wait=True))
@@ -107,6 +108,33 @@ def test_dexela(RE, db, shutter, noise):
         for name, doc in db.restream(db[-1], fill=True):
             if name == "event":
                 db_img = doc["data"]["dexela_image"]
-                assert db_img.squeeze().shape == (3072, 3888, 0)
+                assert db_img.squeeze().shape == (3072, 3888)
                 assert np.allclose(db_img, np.zeros_like(db_img))
         assert uid is not None
+
+
+@pytest.mark.parametrize(
+    ("shutter", "noise"),
+    [(x, y) for x in [None, shctl1] for y in [None, np.random.poisson]],
+)
+def test_blackfly(RE, db, shutter, noise):
+    for ff in [True, False]:
+        det = det_factory_blackfly(db.reg, shutter=shutter, full_field=ff,
+                                   noise=noise)
+        RE.subscribe(db.insert, "all")
+        RE(bs.abs_set(shctl1, XPD_SHUTTER_CONF["open"], wait=True))
+        uid = RE(bp.count([det]))
+        for name, doc in db.restream(db[-1], fill=True):
+            if name == "event":
+                db_img = doc["data"]["blackfly_det_image"]
+                assert db_img.squeeze().shape == (20, 24)
+        assert uid is not None
+        if shutter:
+            RE(bs.abs_set(shctl1, XPD_SHUTTER_CONF["close"], wait=True))
+            uid = RE(bp.count([det]))
+            for name, doc in db.restream(db[-1], fill=True):
+                if name == "event":
+                    db_img = doc["data"]["blackfly_det_image"]
+                    assert db_img.squeeze().shape == (20, 24)
+                    assert np.allclose(db_img, np.zeros_like(db_img))
+            assert uid is not None
