@@ -198,12 +198,12 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
 <dl class="attribute">
 <dt id="xpdsim.area_det.SimulatedCam.acquire">
-<code class="descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1555664388.242078)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
+<code class="descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1555702518.7113657)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xpdsim.area_det.SimulatedCam.acquire_time">
-<code class="descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1555664388.2420707)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
+<code class="descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1555702518.71136)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -245,7 +245,29 @@ Deafult is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>pe1c</strong> – The detector</p>
+<dd class="field-even"><p><strong>det</strong> – The detector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SimulatedPE1C instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="xpdsim.area_det.det_factory_blackfly">
+<code class="descclassname">xpdsim.area_det.</code><code class="descname">det_factory_blackfly</code><span class="sig-paren">(</span><em>reg</em>, <em>*</em>, <em>shutter=None</em>, <em>noise=None</em>, <em>name='blackfly_det_image'</em>, <em>full_field=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory_blackfly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory_blackfly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a detector using real images</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reg</strong> (<em>Registry</em>) – The filestore to save all the data in</p></li>
+<li><p><strong>src_path</strong> (<em>str</em>) – The path to the source tiff files</p></li>
+<li><p><strong>full_img</strong> (<em>bool, keyword-only</em>) – Option on if want to return full size imag.
+Deafult is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>det</strong> – The detector</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>SimulatedPE1C instance</p>
@@ -267,7 +289,7 @@ Deafult is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>pe1c</strong> – The detector</p>
+<dd class="field-even"><p><strong>det</strong> – The detector</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>SimulatedPE1C instance</p>
@@ -301,7 +323,7 @@ Deafult is False.</p></li>
 <dt id="xpdsim.movers.SimFilterBank.flt1">
 <code class="descname">flt1</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2b633fcb9a60</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ab3ec654b70</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -310,7 +332,7 @@ Deafult is False.</p></li>
 <dt id="xpdsim.movers.SimFilterBank.flt2">
 <code class="descname">flt2</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2b633fcb9ae8</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ab3ec654bf8</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -319,7 +341,7 @@ Deafult is False.</p></li>
 <dt id="xpdsim.movers.SimFilterBank.flt3">
 <code class="descname">flt3</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2b633fcb9b70</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ab3ec654c80</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -328,7 +350,7 @@ Deafult is False.</p></li>
 <dt id="xpdsim.movers.SimFilterBank.flt4">
 <code class="descname">flt4</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2b633fcb9bf8</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x2ab3ec654d08</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
