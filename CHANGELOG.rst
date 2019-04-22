@@ -4,6 +4,15 @@ xpdSim Change Log
 
 .. current developments
 
+v0.3.0
+====================
+
+**Added:**
+
+* ``blackfly`` detector and an associated ``blackfly_full_field`` det
+
+
+
 v0.2.0
 ====================
 
