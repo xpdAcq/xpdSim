@@ -82,7 +82,7 @@ def det_factory(
     if src_path:
         cycle = build_image_cycle(src_path)
         gen = cycle()
-        _img = next(gen)
+        _img = next(gen)['pe1_image']
 
         def nexter(shutter):
             # instantiate again
