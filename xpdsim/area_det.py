@@ -91,7 +91,7 @@ def det_factory(
             if shutter:
                 status = shutter.get()
                 if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                    img = np.zeros_like(_img)
+                    img = np.zeros(_img.shape)
                 elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
                     if noise:
                         img += noise(np.abs(img))
