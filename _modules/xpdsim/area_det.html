@@ -204,7 +204,8 @@
 
 
 <div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span>
-    <span class="n">reg</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="n">reg</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span>
+        <span class="n">mover</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
 
@@ -227,22 +228,24 @@
     <span class="k">if</span> <span class="n">src_path</span><span class="p">:</span>
         <span class="n">cycle</span> <span class="o">=</span> <span class="n">build_image_cycle</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
         <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>
-        <span class="n">_img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+        <span class="n">_img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">):</span>
             <span class="c1"># instantiate again</span>
             <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
-                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">_img</span><span class="p">)</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">_img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
                     <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
-                        <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
-                        <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-                    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
+                        <span class="n">img</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">mover</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+                <span class="n">img</span> <span class="o">/=</span> <span class="p">(</span><span class="n">mover</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">readback</span> <span class="o">-</span> <span class="mf">3.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">img</span>
 
         <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>

@@ -146,7 +146,7 @@
   <h1>Source code for xpdsim.movers</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">ophyd.sim</span> <span class="k">import</span> <span class="n">SynAxis</span><span class="p">,</span> <span class="n">SynSignal</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">Component</span>
 
-<span class="n">cs700</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;cs700&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">cs700</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;cs700&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">300.</span><span class="p">)</span>
 <span class="n">cs700</span><span class="o">.</span><span class="n">readback</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;temperature&#39;</span>
 <span class="n">shctl1</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;shctl1&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">shctl1</span><span class="o">.</span><span class="n">readback</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;rad&#39;</span>
