@@ -58,7 +58,8 @@ class SimulatedCam(Device):
 
 
 def det_factory(
-    reg, *, shutter=None, src_path=None, noise=None, name="pe1_image", **kwargs
+    reg, *, shutter=None, src_path=None, noise=None, name="pe1_image",
+        mover=None, **kwargs
 ):
     """Build a detector using real images
 
@@ -81,22 +82,24 @@ def det_factory(
     if src_path:
         cycle = build_image_cycle(src_path)
         gen = cycle()
-        _img = next(gen)
+        _img = next(gen)['pe1_image']
 
         def nexter(shutter):
             # instantiate again
             gen = cycle()
+            img = next(gen)["pe1_image"].copy()
             if shutter:
                 status = shutter.get()
                 if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                    return np.zeros_like(_img)
+                    img = np.zeros(_img.shape)
                 elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
                     if noise:
-                        a = next(gen)["pe1_image"]
-                        return a + noise(np.abs(a))
-                    return next(gen)["pe1_image"]
-            else:
-                return next(gen)["pe1_image"]
+                        img += noise(np.abs(img))
+            if mover:
+                print(np.mean(img))
+                img /= (mover.get().readback - 3.)**2 + 1
+                print(np.mean(img))
+            return img
 
         det = sim.SynSignalWithRegistry(
             name=name,
