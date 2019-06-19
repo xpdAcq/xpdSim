@@ -13,7 +13,7 @@ $PUSH_TAG_REMOTE = 'git@github.com:xpdAcq/xpdSim.git'
 
 $GITHUB_ORG = 'xpdAcq'
 $GITHUB_REPO = 'xpdSim'
-$CONDA_FORGE_FEEDSTOCK = 'xpdsim-feedstock'
+#$CONDA_FORGE_FEEDSTOCK = 'xpdsim-feedstock'
 $LICENSE_URL = 'https://github.com/{}/{}/blob/master/LICENSE'.format($GITHUB_ORG, $GITHUB_REPO)
 
 from urllib.request import urlopen

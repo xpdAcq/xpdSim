@@ -33,6 +33,14 @@ xpd_pe1c = det_factory(
     shutter=shctl1,
     noise=np.random.poisson,
 )
+xpd_pe1c_mover = det_factory(
+    db.reg,
+    full_img=True,
+    src_path=nsls_ii_path,
+    shutter=shctl1,
+    noise=np.random.poisson,
+    mover=cs700
+)
 xpd_pe2c = det_factory(
     db.reg,
     full_img=True,
