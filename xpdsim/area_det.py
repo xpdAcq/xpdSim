@@ -96,9 +96,7 @@ def det_factory(
                     if noise:
                         img += noise(np.abs(img))
             if mover:
-                print(np.mean(img))
                 img /= (mover.get().readback - 3.)**2 + 1
-                print(np.mean(img))
             return img
 
         det = sim.SynSignalWithRegistry(
