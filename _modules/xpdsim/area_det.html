@@ -242,9 +242,7 @@
                     <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
                         <span class="n">img</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">mover</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
                 <span class="n">img</span> <span class="o">/=</span> <span class="p">(</span><span class="n">mover</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">readback</span> <span class="o">-</span> <span class="mf">3.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">img</span>
 
         <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
