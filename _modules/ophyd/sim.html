@@ -833,7 +833,7 @@
                     <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
                     <span class="s1">&#39;resource_path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_stem</span><span class="p">,</span>
                     <span class="s1">&#39;resource_kwargs&#39;</span><span class="p">:</span> <span class="p">{},</span>
-                    <span class="s1">&#39;path_semantics&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+                    <span class="s1">&#39;path_semantics&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;posix&#39;</span><span class="p">:</span> <span class="s1">&#39;posix&#39;</span><span class="p">,</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span> <span class="s1">&#39;windows&#39;</span><span class="p">}[</span><span class="n">os</span><span class="o">.</span><span class="n">name</span><span class="p">]}</span>
         <span class="c1"># If a Registry is set, we need to allow it to generate the uid for us.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># register_resource has accidentally different parameter names...</span>
