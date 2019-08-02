@@ -97,7 +97,7 @@ def det_factory(
                         img += noise(np.abs(img))
             if mover:
                 img /= (mover.get().readback - 3.)**2 + 1
-            return img
+            return img.astype(np.float32)
 
         det = sim.SynSignalWithRegistry(
             name=name,
@@ -151,18 +151,16 @@ def det_factory_dexela(
 
     def nexter(shutter):
         shape = (3072, 3888)
-        base = np.random.random(shape)
+        img = np.random.random(shape)
         # instantiate again
         if shutter:
             status = shutter.get()
             if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                return np.zeros(shape)
+                img = np.zeros(shape)
             elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
                 if noise:
-                    return base + noise(np.abs(base))
-                return base
-        else:
-            return base
+                    img += noise(np.abs(img))
+        return img.astype(np.float32)
 
     det = sim.SynSignalWithRegistry(
         name=name,
