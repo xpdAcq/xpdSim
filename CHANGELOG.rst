@@ -4,6 +4,19 @@ xpdSim Change Log
 
 .. current developments
 
+v0.4.0
+====================
+
+**Added:**
+
+* new area detector who's value is coupled to a mover
+
+**Fixed:**
+
+* Cast detectors into float32 before sending data out
+
+
+
 v0.3.0
 ====================
 
