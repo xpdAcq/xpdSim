@@ -11,7 +11,7 @@ Welcome to xpdSim's documentation!
    :caption: Contents:
 
    xpdsim
-
+   installation
 
 Indices and tables
 ==================
