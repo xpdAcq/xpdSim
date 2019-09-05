@@ -1,7 +1,7 @@
 ``xpdsim`` installation guide
 =============================
 
-Before startting, make sure ``anaconda`` is installed, it is required for this instlalation. Note the syntax of this installation guide, as it was written, is based Uinux system. For Windows user, please change the syntax accordingly if needed.
+Before starting, make sure ``anaconda`` is installed, it is required for this installation. Note the syntax of this installation guide, as it was written, is based on Uinux system. For Windows users, please change the syntax accordingly if needed.
 
 #. Activate/create a ``python3`` conda environment
 
@@ -54,7 +54,7 @@ Before startting, make sure ``anaconda`` is installed, it is required for this i
 
       ipython --profile=collection
 
-#. You should be prompted into an ``ipython`` session, simulating your upcoming beamline exerience. Please refer to the `quikstart guide in xpdAcq documentation <https://xpdacq.github.io/xpdAcq/quickstart.html>`_ to run your simulated beamline and enjoy playing!
+#. You should be prompted into an ``ipython`` session, simulating your upcoming beamline experience. Please refer to the `quikstart guide in xpdAcq documentation <https://xpdacq.github.io/xpdAcq/quickstart.html>`_ to run your simulated beamline and enjoy playing!
 
    * You may find yourself need a syntax to create your simulated beamtime object and get everything running. This quick code snippet may be helpful for you.
 
