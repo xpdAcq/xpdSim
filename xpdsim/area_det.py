@@ -57,61 +57,35 @@ class SimulatedCam(Device):
     acquire = sim.SynSignal(name="acquire")
 
 
-def det_factory(
-    reg, *, shutter=None, src_path=None, noise=None, name="pe1_image",
-        mover=None, **kwargs
-):
-    """Build a detector using real images
 
-    Parameters
-    ----------
-    reg: Registry
-        The filestore to save all the data in
-    src_path: str
-        The path to the source tiff files
-    full_img : bool, keyword-only
-        Option on if want to return full size imag.
-        Deafult is False.
 
-    Returns
-    -------
-    det: SimulatedPE1C instance
-        The detector
-    """
-
-    if src_path:
-        cycle = build_image_cycle(src_path)
-        gen = cycle()
-        _img = next(gen)['pe1_image']
-
-        def nexter(shutter):
-            # instantiate again
-            gen = cycle()
-            img = next(gen)["pe1_image"].copy()
-            if shutter:
-                status = shutter.get()
-                if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                    img = np.zeros(_img.shape)
-                elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
-                    if noise:
-                        img += noise(np.abs(img))
-            if mover:
-                img /= (mover.get().readback - 3.)**2 + 1
-            return img.astype(np.float32)
 
         det = sim.SynSignalWithRegistry(
             name=name,
             func=lambda: nexter(shutter),
-            reg=reg,
             save_path=mkdtemp(prefix="xpdsim"),
         )
     else:
         det = sim.SynSignalWithRegistry(
             name=name,
             func=lambda: np.ones((5, 5)),
-            reg=reg,
             save_path=mkdtemp(prefix="xpdsim"),
         )
+
+
+def fake_pe1_cam(det):
+    """faking the cam device of the true PE detoctor
+
+    Parameters
+    ----------
+    det: SimulatedPE1C instance
+        The detector
+
+    Returns
+    -------
+    det: SimulatedPE1C instance
+        The detector
+    """
     # plug-ins
     det.images_per_set = sim.SynSignal(name="images_per_set")
     det.number_of_sets = sim.SynSignal(name="number_of_sets")
@@ -122,6 +96,67 @@ def det_factory(
     det.images_per_set.put(1)
     return det
 
+
+def det_factory(img_gen, *, shutter=None,
+                name="pe1_image", **kwargs):
+
+    """Build a Perkin-Elmer like detector using real images
+
+    Parameters
+    ----------
+    img_gen : callable
+        function to return image sequence will be output from this
+        detector
+    shutter : settable object, optional
+        abstraction of settable object in ophyd. Default to the
+        simulated shutter in xpdsim
+    name : str, optional
+        name of image field name. Default to ``pe1_image``
+
+    Returns
+    -------
+    det: SimulatedPE1C instance
+        The detector
+    """
+    det = sim.SynSignalWithRegistry(
+        name=name,
+        func=lambda: img_gen,
+        save_path=mkdtemp(prefix="xpdsim"),
+    )
+    return det
+
+
+def simple_img_gen():
+    """image generator for 2D images of size (5, 5)
+    with values ones.
+
+    Returns
+    -------
+    img_gen : func
+    """
+
+    return np.ones((5, 5))
+
+def img_gen(src_path, *, shutter=None, noise=None, mover=None):
+    cycle = build_image_cycle(src_path)
+    gen = cycle()
+    _img = next(gen)['pe1_image']
+
+    def nexter(shutter):
+        # instantiate again
+        gen = cycle()
+        img = next(gen)["pe1_image"].copy()
+        # noise fro
+        if shutter:
+            status = shutter.get()
+            if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
+                img = np.zeros(_img.shape)
+            elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
+                if noise:
+                    img += noise(np.abs(img))
+        return img.astype(np.float32)
+
+    return nexter(shutter)
 
 def det_factory_dexela(
     reg,
