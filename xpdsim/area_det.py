@@ -54,9 +54,9 @@ def build_image_cycle(path, key='pe1_image'):
     """
     p = Path(path)
     imgs = [imread(str(fp)) for fp in p.glob("*.tif*")]
-    # switch back to pims if the error is resolved
+    # TODO: switch back to pims if the error is resolved
     # imgs = ImageSequence(path)
-    return cycler(key=imgs)
+    return cycler(key, imgs)
 
 
 class SimulatedCam(Device):
@@ -127,7 +127,8 @@ def img_gen(cycle=None, *, size=PE_IMG_SIZE,
          input size.
     size : tuple, optional
         Tuple to specify image size from the simulated detetor.
-        Default to ``(2048, 2048)`` (PE detector).
+        Default to ``(2048, 2048)`` (PE detector). Overriden when
+        ``cycle`` argument is passed.
     shutter : settable, optional
         Ophyd objects to represent the shutter associated with
          with the detector. If it is not passed, assuming shutter
@@ -144,13 +145,18 @@ def img_gen(cycle=None, *, size=PE_IMG_SIZE,
     """
     if not cycle:
         cycle = cycler(pe1_image=np.random.random(size))
+    key = cycle.keys
+    if not len(key) == 1:
+        raise RuntimeError('Only support single data key')
+    key = key.pop()
     gen = cycle()
-    _img = next(gen)['pe1_image']
+    _img = next(gen)[key]
 
-    def nexter(shutter):
+    def nexter(cycle, shutter):
         # instantiate again
+        key = cycle.keys.pop()
         gen = cycle()
-        img = next(gen)["pe1_image"].copy()
+        img = next(gen)[key].copy()
         # if shutter, consider more realistic situation
         # TODO: separate shutter logic in the future
         if shutter:
@@ -161,4 +167,4 @@ def img_gen(cycle=None, *, size=PE_IMG_SIZE,
                 if noise:
                     img += noise(np.abs(img))
         return img.astype(np.float32)
-    return nexter(shutter)
+    return nexter(cycle, shutter)

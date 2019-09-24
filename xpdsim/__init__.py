@@ -27,24 +27,22 @@ db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
 # simple detector that outputs 5 by 5 noisy images 
 simple_pe1c = det_factory(img_gen())
 # detector with real images
-xpd_img_gen = img_gen(build_image_cycle(nsls_ii_path))
-xpd_pe1c = det_factory(xpd_img_gen,
-    shutter=shctl1,
-    noise=np.random.poisson,
-)
-xpd_img_gen = img_gen(build_image_cycle(nsls_ii_path, 'pe2_image'))
-xpd_pe2c = det_factory(xpd_img_gen,
-    shutter=shctl1,
-    noise=partial(np.random.normal, scale=100),
-    name="pe2_image",
-)
+xpd_img_gen = img_gen(build_image_cycle(nsls_ii_path),
+                      shutter=shctl1, noise=np.random.poisson)
+xpd_pe1c = det_factory(xpd_img_gen)
+xpd_img_gen = img_gen(build_image_cycle(nsls_ii_path, 'pe2_image'),
+                      shutter=shctl1,
+                      noise=partial(np.random.normal, scale=100))
+xpd_pe2c = det_factory(xpd_img_gen, name="pe2_image")
 # other detectors
-dexela = det_factory(size=DEXELA_IMG_SIZE, shutter=shctl1)
-blackfly = det_factory(size=BLACKFLY_IMG_SIZE, shutter=shctl1)
+dexela_img_gen = img_gen(size=DEXELA_IMG_SIZE, shutter=shctl1)
+dexela = det_factory(dexela_img_gen)
+blackfly_img_gen = img_gen(size=BLACKFLY_IMG_SIZE, shutter=shctl1)
+blackfly = det_factory(blackfly_img_gen)
 # this reports just ones, similar to a flat field
-full_filed_img_gen = cycler(pe1_image=np.ones(BLACKFLY_IMG_SIZE))
-blackfly_full_field = det_factory(full_filed_img_gen,
-                                  shutter=shctl1)
+full_filed_img_gen = img_gen(cycler(pe1_image=np.ones(BLACKFLY_IMG_SIZE)),
+        shutter=shctl1)
+blackfly_full_field = det_factory(full_filed_img_gen)
 # synthetic ring current
 ring_current = SynSignalRO(lambda: 300, name="ring_current")
 
