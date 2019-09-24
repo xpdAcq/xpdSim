@@ -13,8 +13,9 @@ from xpdsim.area_det import (
     chess_path,
     det_factory,
     build_image_cycle,
-    det_factory_dexela,
-    det_factory_blackfly,
+    img_gen,
+    add_fake_cam
+
 )
 from xpdsim.movers import shctl1
 
@@ -32,7 +33,9 @@ def test_img_shape(name, fp):
 
 @pytest.mark.parametrize(("name", "fp"), test_params)
 def test_dets(RE, db, fp, name):
-    det = det_factory(src_path=fp)
+    xpd_img_gen = img_gen(build_image_cycle(fp),
+                          shutter=shctl1)
+    det = det_factory(xpd_img_gen)
     RE.subscribe(db.insert, "all")
     uid = RE(bp.count([det]))
     cycle2 = build_image_cycle(fp)
@@ -46,10 +49,10 @@ def test_dets(RE, db, fp, name):
             assert cycler_img.squeeze().shape == (2048, 2048)
     assert uid is not None
 
-
+"""
 @pytest.mark.parametrize(("name", "fp"), test_params)
 def test_dets_shutter(RE, db, name, fp):
-    det = det_factory(src_path=fp, shutter=shctl1)
+    det = det_factory(db.reg, src_path=fp, shutter=shctl1)
     RE.subscribe(db.insert, "all")
     cycle2 = build_image_cycle(fp)
     cg = cycle2()
@@ -77,7 +80,7 @@ def test_dets_shutter(RE, db, name, fp):
 @pytest.mark.parametrize(("name", "fp"), test_params)
 def test_dets_noise(RE, db, name, fp):
     det = det_factory(
-        src_path=fp, shutter=shctl1, noise=np.random.poisson
+        db.reg, src_path=fp, shutter=shctl1, noise=np.random.poisson
     )
     RE.subscribe(db.insert, "all")
     cycle2 = build_image_cycle(fp)
@@ -138,3 +141,4 @@ def test_blackfly(RE, db, shutter, noise):
                     assert db_img.squeeze().shape == (20, 24)
                     assert np.allclose(db_img, np.zeros_like(db_img))
             assert uid is not None
+"""
