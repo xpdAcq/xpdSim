@@ -65,7 +65,7 @@ class SimulatedCam(Device):
 
 
 def add_fake_cam(det):
-    """Adding simulated cam device signals to the detoctor
+    """Adding simulated cam device signals to the detector
 
     Parameters
     ----------
@@ -101,14 +101,14 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
         Default to images with standard Gaussian noise in
          input size.
     size : tuple, optional
-        Tuple to specify image size from the simulated detetor.
-        Default to ``(2048, 2048)`` (PE detector). Overriden when
+        Tuple to specify image size from the simulated detector.
+        Default to ``(2048, 2048)`` (PE detector). Overridden when
         ``cycle`` argument is passed.
     shutter : settable, optional
         Ophyd objects to represent the shutter associated with
          with the detector. If it is not passed, assuming shutter
-         is always open. If is given, assuming it follows the same
-         configuration as XPD beamline.
+         is always open. If shutter is passed, assuming it 
+         follows the same configuration as XPD beamline (60 means open).
     noise : callable, optional
         function to generate noise based on absolute scale of image.
         Default to noise-free.
