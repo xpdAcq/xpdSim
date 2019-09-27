@@ -107,7 +107,7 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
     shutter : settable, optional
         Ophyd objects to represent the shutter associated with
          with the detector. If it is not passed, assuming shutter
-         is always open. If shutter is passed, assuming it 
+         is always open. If shutter is passed, assuming it
          follows the same configuration as XPD beamline (60 means open).
     noise : callable, optional
         function to generate noise based on absolute scale of image.
@@ -126,7 +126,7 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
         raise RuntimeError('Only support single data key')
     key = keys.pop()
     gen = cycle()
-    _img = next(gen)[key]  # kick-off cycler
+    next(gen)[key]  # kick-off cycler
     gen = cycle()  # instantiate again
     img = next(gen)[key].copy()
     # if shutter, consider more realistic situation
@@ -188,4 +188,3 @@ def det_factory(cycle=None, img_gen_func=img_gen,
         save_path=mkdtemp(prefix="xpdsim"),
     )
     return add_fake_cam(det)
-
