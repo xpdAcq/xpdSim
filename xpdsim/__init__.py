@@ -22,27 +22,36 @@ image_file = rs_fn(
     "-150911_Ni_Tim_series_tseries_1_e910af_0250.tif",
 )
 
-sim_db_dir, db = build_sim_db()  # default is sqlite
-db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
+#sim_db_dir, db = build_sim_db()  # default is sqlite
+#db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
+
 # simple detector that outputs 5 by 5 noisy images
-simple_pe1c = det_factory(img_gen())
+simple_pe1c = det_factory()
 # detector with real images
-xpd_img_gen = img_gen(build_image_cycle(nsls_ii_path),
-                      shutter=shctl1, noise=np.random.poisson)
-xpd_pe1c = det_factory(xpd_img_gen)
-xpd_img_gen = img_gen(build_image_cycle(nsls_ii_path, 'pe2_image'),
-                      shutter=shctl1,
-                      noise=partial(np.random.normal, scale=100))
-xpd_pe2c = det_factory(xpd_img_gen, name="pe2_image")
+xpd_pe1c = det_factory(build_image_cycle(nsls_ii_path),
+                       data_key="pe1_image",
+                       shutter=shctl1,
+                       noise=np.random.poisson)
+xpd_pe2c = det_factory(build_image_cycle(nsls_ii_path, 'pe2_image'),
+                       data_key="pe2_image",
+                       shutter=shctl1,
+                       noise=partial(np.random.normal, scale=100),
+                       )
 # other detectors
-dexela_img_gen = img_gen(size=DEXELA_IMG_SIZE, shutter=shctl1)
-dexela = det_factory(dexela_img_gen)
-blackfly_img_gen = img_gen(size=BLACKFLY_IMG_SIZE, shutter=shctl1)
-blackfly = det_factory(blackfly_img_gen)
+dexela = det_factory(data_key='dexela_image',
+                     shutter=shctl1,
+                     size=DEXELA_IMG_SIZE,
+                     )
+blackfly = det_factory(data_key='blackfly_det_image',
+                       shutter=shctl1,
+                       size=BLACKFLY_IMG_SIZE)
 # this reports just ones, similar to a flat field
-full_filed_img_gen = img_gen(cycler(pe1_image=np.ones(BLACKFLY_IMG_SIZE)),
-        shutter=shctl1)
-blackfly_full_field = det_factory(full_filed_img_gen)
+cycle = cycler("blackfly_det_image",
+               [np.ones(BLACKFLY_IMG_SIZE)])
+blackfly_full_field = det_factory(cycle,
+                                  data_key='blackfly_det_image',
+                                  shutter=shctl1,
+                                  size=BLACKFLY_IMG_SIZE)
 # synthetic ring current
 ring_current = SynSignalRO(lambda: 300, name="ring_current")
 
