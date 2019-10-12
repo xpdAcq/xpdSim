@@ -130,11 +130,8 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
     gen = cycle()  # instantiate again
     img = next(gen)[key].copy()
     # if shutter, consider more realistic situation
-    # TODO: separate shutter logic in the future
     if shutter:
         status = shutter.get()
-        print('shutter status ', status)
-        print('shutter id', id(shutter))
         if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
             img = np.zeros(img.shape)
         elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
