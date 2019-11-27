@@ -33,30 +33,30 @@
   <h1>Source code for ophyd.sim</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">ttime</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">OrderedDict</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">mkdtemp</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 
-<span class="kn">from</span> <span class="nn">.signal</span> <span class="k">import</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>
-<span class="kn">from</span> <span class="nn">.areadetector.base</span> <span class="k">import</span> <span class="n">EpicsSignalWithRBV</span>
-<span class="kn">from</span> <span class="nn">.status</span> <span class="k">import</span> <span class="n">DeviceStatus</span><span class="p">,</span> <span class="n">StatusBase</span>
-<span class="kn">from</span> <span class="nn">.device</span> <span class="k">import</span> <span class="p">(</span><span class="n">Device</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">C</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.signal</span> <span class="kn">import</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>
+<span class="kn">from</span> <span class="nn">.areadetector.base</span> <span class="kn">import</span> <span class="n">EpicsSignalWithRBV</span>
+<span class="kn">from</span> <span class="nn">.status</span> <span class="kn">import</span> <span class="n">DeviceStatus</span><span class="p">,</span> <span class="n">StatusBase</span>
+<span class="kn">from</span> <span class="nn">.device</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Device</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">C</span><span class="p">,</span>
                      <span class="n">DynamicDeviceComponent</span> <span class="k">as</span> <span class="n">DDC</span><span class="p">,</span> <span class="n">Kind</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">.pseudopos</span> <span class="k">import</span> <span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">,</span> <span class="n">PseudoSingle</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
+<span class="kn">from</span> <span class="nn">.pseudopos</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">,</span> <span class="n">PseudoSingle</span><span class="p">,</span>
                         <span class="n">real_position_argument</span><span class="p">,</span> <span class="n">pseudo_position_argument</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.positioner</span> <span class="k">import</span> <span class="n">SoftPositioner</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">DO_NOT_USE</span><span class="p">,</span> <span class="n">ReadOnlyError</span><span class="p">,</span> <span class="n">LimitError</span>
+<span class="kn">from</span> <span class="nn">.positioner</span> <span class="kn">import</span> <span class="n">SoftPositioner</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">DO_NOT_USE</span><span class="p">,</span> <span class="n">ReadOnlyError</span><span class="p">,</span> <span class="n">LimitError</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -78,7 +78,7 @@
 <span class="k">class</span> <span class="nc">NullStatus</span><span class="p">(</span><span class="n">StatusBase</span><span class="p">):</span>
     <span class="s2">&quot;A simple Status object that is always immediately done, successfully.&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -109,7 +109,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># This signature is arranged to mimic the signature of EpicsSignal, where</span>
     <span class="c1"># the Python function (func) takes the place of the PV.</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">,</span>  <span class="c1"># required, keyword-only</span>
                  <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
@@ -220,7 +220,7 @@
 <span class="sd">        used for ``subscribe`` updates; uses ``asyncio.get_event_loop()`` if</span>
 <span class="sd">        unspecified</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">,</span>  <span class="c1"># required, keyword-only</span>
                  <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">period_jitter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -315,7 +315,7 @@
     <span class="n">SUB_READBACK</span> <span class="o">=</span> <span class="s1">&#39;readback&#39;</span>
     <span class="n">_default_sub</span> <span class="o">=</span> <span class="n">SUB_READBACK</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">,</span>
                  <span class="n">readback_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
@@ -425,7 +425,7 @@
 <span class="sd">    det = SynGauss(&#39;det&#39;, motor, &#39;motor&#39;, center=0, Imax=1, sigma=1)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="n">motor_field</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">Imax</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="n">motor_field</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">Imax</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">noise</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;poisson&#39;</span><span class="p">,</span> <span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;noise must be one of &#39;poisson&#39;, &#39;uniform&#39;, None&quot;</span><span class="p">)</span>
@@ -486,7 +486,7 @@
 <span class="sd">    det = SynGauss(&#39;det&#39;, motor, &#39;motor&#39;, center=0, Imax=1, sigma=1)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">motor0</span><span class="p">,</span> <span class="n">motor_field0</span><span class="p">,</span> <span class="n">motor1</span><span class="p">,</span> <span class="n">motor_field1</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">motor0</span><span class="p">,</span> <span class="n">motor_field0</span><span class="p">,</span> <span class="n">motor1</span><span class="p">,</span> <span class="n">motor_field1</span><span class="p">,</span>
                  <span class="n">center</span><span class="p">,</span> <span class="n">Imax</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise_multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
@@ -558,7 +558,7 @@
 <span class="sd">    Class for mocking a flyscan API implemented with stepper motors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mot</span> <span class="o">=</span> <span class="n">motor</span>
@@ -682,7 +682,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="n">DO_NOT_USE</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">reg</span><span class="o">=</span><span class="n">DO_NOT_USE</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">save_func</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
                  <span class="n">save_spec</span><span class="o">=</span><span class="s1">&#39;NPY_SEQ&#39;</span><span class="p">,</span> <span class="n">save_ext</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -799,10 +799,10 @@
 <span class="k">class</span> <span class="nc">NumpySeqHandler</span><span class="p">:</span>
     <span class="n">specs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;NPY_SEQ&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">.npy&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">index</span><span class="p">),</span>
                        <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -831,7 +831,7 @@
     <span class="n">c</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]</span>
@@ -848,7 +848,7 @@
             <span class="n">res</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="n">res</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;INVARIANT REPR&gt;&quot;</span>
 
 
@@ -980,7 +980,7 @@
 <span class="sd">    We can emulate EpicsSignal features here. We currently emulate the put</span>
 <span class="sd">    limits and some enum handling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_pv</span><span class="p">,</span> <span class="n">write_pv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pv_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_pv</span><span class="p">,</span> <span class="n">write_pv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pv_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">put_complete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">auto_monitor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1101,7 +1101,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FakeEpicsSignal with PV and PV_RBV; used in the AreaDetector PV naming scheme</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;_RBV&#39;</span><span class="p">,</span> <span class="n">write_pv</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 

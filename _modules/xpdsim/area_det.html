@@ -47,14 +47,14 @@
 <span class="c1">#</span>
 <span class="c1">##############################################################################</span>
 
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">mkdtemp</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">mkdtemp</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">cycler</span> <span class="k">import</span> <span class="n">cycler</span>
-<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">sim</span><span class="p">,</span> <span class="n">Device</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span> <span class="k">as</span> <span class="n">rs_fn</span>
-<span class="kn">from</span> <span class="nn">tifffile</span> <span class="k">import</span> <span class="n">imread</span>
+<span class="kn">from</span> <span class="nn">cycler</span> <span class="kn">import</span> <span class="n">cycler</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">sim</span><span class="p">,</span> <span class="n">Device</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span> <span class="k">as</span> <span class="n">rs_fn</span>
+<span class="kn">from</span> <span class="nn">tifffile</span> <span class="kn">import</span> <span class="n">imread</span>
 
 <span class="n">XPD_SHUTTER_CONF</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;open&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 
