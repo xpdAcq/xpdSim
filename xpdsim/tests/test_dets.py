@@ -32,7 +32,7 @@ def test_img_shape(name, fp):
 
 @pytest.mark.parametrize(("name", "fp"), test_params)
 def test_dets(RE, db, fp, name):
-    det = det_factory(db.reg, src_path=fp)
+    det = det_factory(src_path=fp)
     RE.subscribe(db.insert, "all")
     uid = RE(bp.count([det]))
     cycle2 = build_image_cycle(fp)
@@ -49,7 +49,7 @@ def test_dets(RE, db, fp, name):
 
 @pytest.mark.parametrize(("name", "fp"), test_params)
 def test_dets_shutter(RE, db, name, fp):
-    det = det_factory(db.reg, src_path=fp, shutter=shctl1)
+    det = det_factory(src_path=fp, shutter=shctl1)
     RE.subscribe(db.insert, "all")
     cycle2 = build_image_cycle(fp)
     cg = cycle2()
@@ -77,7 +77,7 @@ def test_dets_shutter(RE, db, name, fp):
 @pytest.mark.parametrize(("name", "fp"), test_params)
 def test_dets_noise(RE, db, name, fp):
     det = det_factory(
-        db.reg, src_path=fp, shutter=shctl1, noise=np.random.poisson
+        src_path=fp, shutter=shctl1, noise=np.random.poisson
     )
     RE.subscribe(db.insert, "all")
     cycle2 = build_image_cycle(fp)
