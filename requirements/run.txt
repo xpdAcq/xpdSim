@@ -1,4 +1,4 @@
 ophyd
 pyfai
-databroker=0.13.0
+databroker
 bluesky
