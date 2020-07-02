@@ -54,9 +54,9 @@ def build_image_cycle(path, key='pe1_image'):
     """
     p = Path(path)
     imgs = [imread(str(fp)) for fp in p.glob("*.tif*")]
-    # switch back to pims if the error is resolved
+    # TODO: switch back to pims if the error is resolved
     # imgs = ImageSequence(path)
-    return cycler(key=imgs)
+    return cycler(key, imgs)
 
 
 class SimulatedCam(Device):
@@ -65,7 +65,7 @@ class SimulatedCam(Device):
 
 
 def add_fake_cam(det):
-    """Adding simulated cam device signals to the detoctor
+    """Adding simulated cam device signals to the detector
 
     Parameters
     ----------
@@ -88,32 +88,7 @@ def add_fake_cam(det):
     return det
 
 
-def det_factory(img_gen, *, name="pe1_image"):
-
-    """Build a Perkin-Elmer like detector using real images
-
-    Parameters
-    ----------
-    img_gen : callable
-        function to return image sequence will be output from this
-        detector
-    name : str, optional
-        name of image field name. Default to ``pe1_image``
-
-    Returns
-    -------
-    det: SimulatedPE1C instance
-        The detector
-    """
-    det = sim.SynSignalWithRegistry(
-        name=name,
-        func=lambda: img_gen,
-        save_path=mkdtemp(prefix="xpdsim"),
-    )
-    return add_fake_cam(det)
-
-
-def img_gen(cycle=None, *, size=PE_IMG_SIZE,
+def img_gen(cycle=None, size=PE_IMG_SIZE,
             shutter=None, noise=None):
     """Generator of diffraction images from 2D detector.
 
@@ -126,39 +101,87 @@ def img_gen(cycle=None, *, size=PE_IMG_SIZE,
         Default to images with standard Gaussian noise in
          input size.
     size : tuple, optional
-        Tuple to specify image size from the simulated detetor.
-        Default to ``(2048, 2048)`` (PE detector).
+        Tuple to specify image size from the simulated detector.
+        Default to ``(2048, 2048)`` (PE detector). Overridden when
+        ``cycle`` argument is passed.
     shutter : settable, optional
         Ophyd objects to represent the shutter associated with
          with the detector. If it is not passed, assuming shutter
-         is always open. If is given, assuming it follows the same
-         configuration as XPD beamline.
+         is always open. If shutter is passed, assuming it
+         follows the same configuration as XPD beamline (60 means open).
     noise : callable, optional
         function to generate noise based on absolute scale of image.
         Default to noise-free.
 
     Returns
     -------
-    img_gen : ndarray
-        simulated (2048, 2048) 2D diffraction image
+    img : ndarray
+        simulated 2D diffraction image with specified size.
     """
-    if not cycle:
-        cycle = cycler(pe1_image=np.random.random(size))
+    if cycle is None:
+        cycle = cycler(pe1_image=[np.random.random(size)])
+    # check data keys
+    keys = cycle.keys
+    if not len(keys) == 1:
+        raise RuntimeError('Only support single data key')
+    key = keys.pop()
     gen = cycle()
-    _img = next(gen)['pe1_image']
+    _ = next(gen)[key]  # kick-off cycler
+    gen = cycle()  # instantiate again
+    img = next(gen)[key].copy()
+    # if shutter, consider more realistic situation
+    if shutter:
+        status = shutter.get()
+        if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
+            img = np.zeros(img.shape)
+        elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
+            if noise:
+                img += noise(np.abs(img))
+    return img.astype(np.float32)
 
-    def nexter(shutter):
-        # instantiate again
-        gen = cycle()
-        img = next(gen)["pe1_image"].copy()
-        # if shutter, consider more realistic situation
-        # TODO: separate shutter logic in the future
-        if shutter:
-            status = shutter.get()
-            if np.allclose(status.readback, XPD_SHUTTER_CONF["close"]):
-                img = np.zeros(_img.shape)
-            elif np.allclose(status.readback, XPD_SHUTTER_CONF["open"]):
-                if noise:
-                    img += noise(np.abs(img))
-        return img.astype(np.float32)
-    return nexter(shutter)
+
+def det_factory(cycle=None, img_gen_func=img_gen,
+                data_key="pe1_image", *args, **kwargs):
+
+    """Build a simulated detector yielding input image sequence
+
+    Parameters
+    ----------
+    cycle: cycler.Cycler, optional
+        The iterable like object to cycle through the images.
+        Default to output images in (2048, 2048) dimension
+        with Gaussian(0, 1) noise.
+    img_gen_func : callable, optional
+        function to return image sequence will be output from
+         this detector. The function signature is expected
+         to be ``f(cycler, *args, **kwargs)``. Default to
+         ``xpdsim.img_gen`` function where simulated shutter
+         and noise can be included.
+    data_key : str, optional
+        data key will be shown in Descriptor. Default to
+         ``'pe1_image'``.
+    args :
+        extra arguments will be passed to
+         ``img_gen_func``.
+    kwargs :
+        extra keyword arguments will be
+         passed to ``img_gen_func``.
+
+    Returns
+    -------
+    det: SimulatedPE1C instance
+        The detector
+
+    See also
+    --------
+    ``xpdsim.img_gen``
+    """
+
+    det = sim.SynSignalWithRegistry(
+        name=data_key,
+        func=lambda: img_gen_func(cycle,
+                                  *args,
+                                  **kwargs),
+        save_path=mkdtemp(prefix="xpdsim"),
+    )
+    return add_fake_cam(det)
