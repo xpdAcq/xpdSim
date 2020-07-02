@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xpdsim.area_det &#8212; xpdSim  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -90,21 +91,14 @@
     <span class="n">acquire</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;acquire&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span>
-    <span class="n">reg</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span>
-        <span class="n">mover</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span> <span class="n">mover</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reg: Registry</span>
-<span class="sd">        The filestore to save all the data in</span>
 <span class="sd">    src_path: str</span>
 <span class="sd">        The path to the source tiff files</span>
-<span class="sd">    full_img : bool, keyword-only</span>
-<span class="sd">        Option on if want to return full size imag.</span>
-<span class="sd">        Deafult is False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -135,14 +129,12 @@
         <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-            <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
             <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
-            <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
             <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="c1"># plug-ins</span>
@@ -198,7 +190,6 @@
     <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
         <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-        <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="c1"># plug-ins</span>
@@ -257,7 +248,6 @@
     <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
         <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-        <span class="n">reg</span><span class="o">=</span><span class="n">reg</span><span class="p">,</span>
         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="c1"># plug-ins</span>
@@ -300,7 +290,7 @@
       &copy;2018, Author.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

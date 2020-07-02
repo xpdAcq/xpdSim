@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xpdsim package &#8212; xpdSim  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -65,30 +66,30 @@
 <div class="section" id="module-xpdsim.area_det">
 <span id="xpdsim-area-det-module"></span><h2>xpdsim.area_det module<a class="headerlink" href="#module-xpdsim.area_det" title="Permalink to this headline">¶</a></h2>
 <p>Spoof detectors</p>
-<dl class="class">
+<dl class="py class">
 <dt id="xpdsim.area_det.SimulatedCam">
-<em class="property">class </em><code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">SimulatedCam</code><span class="sig-paren">(</span><em class="sig-param">prefix=''</em>, <em class="sig-param">*</em>, <em class="sig-param">name</em>, <em class="sig-param">kind=None</em>, <em class="sig-param">read_attrs=None</em>, <em class="sig-param">configuration_attrs=None</em>, <em class="sig-param">parent=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#SimulatedCam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.SimulatedCam" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">SimulatedCam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">kind</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">read_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">configuration_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#SimulatedCam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.SimulatedCam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.area_det.SimulatedCam.acquire">
-<code class="sig-name descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1584100103.6110983)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1593711756.897642)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.area_det.SimulatedCam.acquire_time">
-<code class="sig-name descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1584100103.6110919)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1593711756.8976283)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.area_det.SimulatedCam.component_names">
 <code class="sig-name descname">component_names</code><em class="property"> = ()</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.component_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="xpdsim.area_det.build_image_cycle">
-<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">build_image_cycle</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#build_image_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.build_image_cycle" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">build_image_cycle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#build_image_cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.build_image_cycle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build image cycles, essentially generators with endless images</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -104,18 +105,13 @@ include some globing</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="xpdsim.area_det.det_factory">
-<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">det_factory</code><span class="sig-paren">(</span><em class="sig-param">reg</em>, <em class="sig-param">*</em>, <em class="sig-param">shutter=None</em>, <em class="sig-param">src_path=None</em>, <em class="sig-param">noise=None</em>, <em class="sig-param">name='pe1_image'</em>, <em class="sig-param">mover=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">det_factory</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">shutter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">src_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">noise</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'pe1_image'</span></em>, <em class="sig-param"><span class="n">mover</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a detector using real images</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>reg</strong> (<em>Registry</em>) – The filestore to save all the data in</p></li>
-<li><p><strong>src_path</strong> (<em>str</em>) – The path to the source tiff files</p></li>
-<li><p><strong>full_img</strong> (<em>bool, keyword-only</em>) – Option on if want to return full size imag.
-Deafult is False.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>src_path</strong> (<em>str</em>) – The path to the source tiff files</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>det</strong> – The detector</p>
@@ -126,9 +122,9 @@ Deafult is False.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="xpdsim.area_det.det_factory_blackfly">
-<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">det_factory_blackfly</code><span class="sig-paren">(</span><em class="sig-param">reg</em>, <em class="sig-param">*</em>, <em class="sig-param">shutter=None</em>, <em class="sig-param">noise=None</em>, <em class="sig-param">name='blackfly_det_image'</em>, <em class="sig-param">full_field=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory_blackfly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory_blackfly" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">det_factory_blackfly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reg</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">shutter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">noise</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'blackfly_det_image'</span></em>, <em class="sig-param"><span class="n">full_field</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory_blackfly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory_blackfly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a detector using real images</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -148,9 +144,9 @@ Deafult is False.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="xpdsim.area_det.det_factory_dexela">
-<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">det_factory_dexela</code><span class="sig-paren">(</span><em class="sig-param">reg</em>, <em class="sig-param">*</em>, <em class="sig-param">shutter=None</em>, <em class="sig-param">noise=None</em>, <em class="sig-param">name='dexela_image'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory_dexela"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory_dexela" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">xpdsim.area_det.</code><code class="sig-name descname">det_factory_dexela</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reg</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">shutter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">noise</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'dexela_image'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory_dexela"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.area_det.det_factory_dexela" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a detector using real images</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -174,58 +170,170 @@ Deafult is False.</p></li>
 <div class="section" id="module-xpdsim.build_sim_db">
 <span id="xpdsim-build-sim-db-module"></span><h2>xpdsim.build_sim_db module<a class="headerlink" href="#module-xpdsim.build_sim_db" title="Permalink to this headline">¶</a></h2>
 <p>this module exists for simulation environment</p>
-<dl class="function">
+<dl class="py function">
 <dt id="xpdsim.build_sim_db.build_sim_db">
-<code class="sig-prename descclassname">xpdsim.build_sim_db.</code><code class="sig-name descname">build_sim_db</code><span class="sig-paren">(</span><em class="sig-param">sim_db_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/build_sim_db.html#build_sim_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.build_sim_db.build_sim_db" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">xpdsim.build_sim_db.</code><code class="sig-name descname">build_sim_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sim_db_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/build_sim_db.html#build_sim_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.build_sim_db.build_sim_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <div class="section" id="module-xpdsim.movers">
 <span id="xpdsim-movers-module"></span><h2>xpdsim.movers module<a class="headerlink" href="#module-xpdsim.movers" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="xpdsim.movers.SimFilterBank">
-<em class="property">class </em><code class="sig-prename descclassname">xpdsim.movers.</code><code class="sig-name descname">SimFilterBank</code><span class="sig-paren">(</span><em class="sig-param">prefix=''</em>, <em class="sig-param">*</em>, <em class="sig-param">name</em>, <em class="sig-param">kind=None</em>, <em class="sig-param">read_attrs=None</em>, <em class="sig-param">configuration_attrs=None</em>, <em class="sig-param">parent=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/movers.html#SimFilterBank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.movers.SimFilterBank" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">xpdsim.movers.</code><code class="sig-name descname">SimFilterBank</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">kind</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">read_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">configuration_attrs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/movers.html#SimFilterBank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpdsim.movers.SimFilterBank" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
 <p>Simulated filter bank with only the first filter in by default</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.movers.SimFilterBank.component_names">
 <code class="sig-name descname">component_names</code><em class="property"> = ('flt1', 'flt2', 'flt3', 'flt4')</em><a class="headerlink" href="#xpdsim.movers.SimFilterBank.component_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.movers.SimFilterBank.flt1">
 <code class="sig-name descname">flt1</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x7f6ac59a71e0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<dd><p>A descriptor representing a device component (or signal)</p>
+<p>Unrecognized keyword arguments will be passed directly to the component
+class initializer.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+(if <cite>suffix</cite> is given):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
 </div>
+<p>or (if suffix is None)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>The class may have a <cite>wait_for_connection()</cite> which is called during the
+component instance creation.</p>
+</li>
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+the final PV that the instance component will bind to.
+Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+instantiated upon component instantiation</p></li>
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+at trigger time.</p></li>
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+of the component instance.
+Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.movers.SimFilterBank.flt2">
 <code class="sig-name descname">flt2</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x7f6ac59a7268</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<dd><p>A descriptor representing a device component (or signal)</p>
+<p>Unrecognized keyword arguments will be passed directly to the component
+class initializer.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+(if <cite>suffix</cite> is given):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
 </div>
+<p>or (if suffix is None)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>The class may have a <cite>wait_for_connection()</cite> which is called during the
+component instance creation.</p>
+</li>
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+the final PV that the instance component will bind to.
+Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+instantiated upon component instantiation</p></li>
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+at trigger time.</p></li>
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+of the component instance.
+Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.movers.SimFilterBank.flt3">
 <code class="sig-name descname">flt3</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x7f6ac59a72f0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<dd><p>A descriptor representing a device component (or signal)</p>
+<p>Unrecognized keyword arguments will be passed directly to the component
+class initializer.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+(if <cite>suffix</cite> is given):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
 </div>
+<p>or (if suffix is None)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>The class may have a <cite>wait_for_connection()</cite> which is called during the
+component instance creation.</p>
+</li>
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+the final PV that the instance component will bind to.
+Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+instantiated upon component instantiation</p></li>
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+at trigger time.</p></li>
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+of the component instance.
+Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="xpdsim.movers.SimFilterBank.flt4">
 <code class="sig-name descname">flt4</code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt4" title="Permalink to this definition">¶</a></dt>
-<dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">,</span> <span class="n">func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">SimFilterBank</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x7f6ac59a7378</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<dd><p>A descriptor representing a device component (or signal)</p>
+<p>Unrecognized keyword arguments will be passed directly to the component
+class initializer.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+(if <cite>suffix</cite> is given):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
 </div>
+<p>or (if suffix is None)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>The class may have a <cite>wait_for_connection()</cite> which is called during the
+component instance creation.</p>
+</li>
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+the final PV that the instance component will bind to.
+Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+instantiated upon component instantiation</p></li>
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+at trigger time.</p></li>
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+of the component instance.
+Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -269,7 +377,7 @@ Deafult is False.</p></li>
       &copy;2018, Author.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

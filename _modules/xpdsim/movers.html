@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xpdsim.movers &#8212; xpdSim  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -31,7 +32,8 @@
           <div class="body" role="main">
             
   <h1>Source code for xpdsim.movers</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ophyd.sim</span> <span class="kn">import</span> <span class="n">SynAxis</span><span class="p">,</span> <span class="n">SynSignal</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">Component</span>
+<span></span><span class="kn">from</span> <span class="nn">ophyd.sim</span> <span class="kn">import</span> <span class="n">SynAxis</span><span class="p">,</span> <span class="n">SynSignal</span><span class="p">,</span> <span class="n">Device</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">Component</span>
 
 <span class="n">cs700</span> <span class="o">=</span> <span class="n">SynAxis</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;cs700&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">300.</span><span class="p">)</span>
 <span class="n">cs700</span><span class="o">.</span><span class="n">readback</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;temperature&#39;</span>
@@ -82,7 +84,7 @@
       &copy;2018, Author.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
