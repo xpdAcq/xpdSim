@@ -24,17 +24,15 @@ image_file = rs_fn(
 sim_db_dir, db = build_sim_db()  # default is sqlite
 db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
 # detector with 5 by 5 image -> for testing functionality
-simple_pe1c = det_factory(db.reg)
+simple_pe1c = det_factory()
 # detector with full image -> for testing data reduction
 xpd_pe1c = det_factory(
-    db.reg,
     full_img=True,
     src_path=nsls_ii_path,
     shutter=shctl1,
     noise=np.random.poisson,
 )
 xpd_pe1c_mover = det_factory(
-    db.reg,
     full_img=True,
     src_path=nsls_ii_path,
     shutter=shctl1,
@@ -42,7 +40,6 @@ xpd_pe1c_mover = det_factory(
     mover=cs700
 )
 xpd_pe2c = det_factory(
-    db.reg,
     full_img=True,
     src_path=nsls_ii_path,
     shutter=shctl1,

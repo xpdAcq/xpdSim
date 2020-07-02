@@ -57,21 +57,13 @@ class SimulatedCam(Device):
     acquire = sim.SynSignal(name="acquire")
 
 
-def det_factory(
-    reg, *, shutter=None, src_path=None, noise=None, name="pe1_image",
-        mover=None, **kwargs
-):
+def det_factory(*, shutter=None, src_path=None, noise=None, name="pe1_image", mover=None, **kwargs):
     """Build a detector using real images
 
     Parameters
     ----------
-    reg: Registry
-        The filestore to save all the data in
     src_path: str
         The path to the source tiff files
-    full_img : bool, keyword-only
-        Option on if want to return full size imag.
-        Deafult is False.
 
     Returns
     -------
@@ -102,14 +94,12 @@ def det_factory(
         det = sim.SynSignalWithRegistry(
             name=name,
             func=lambda: nexter(shutter),
-            reg=reg,
             save_path=mkdtemp(prefix="xpdsim"),
         )
     else:
         det = sim.SynSignalWithRegistry(
             name=name,
             func=lambda: np.ones((5, 5)),
-            reg=reg,
             save_path=mkdtemp(prefix="xpdsim"),
         )
     # plug-ins
@@ -165,7 +155,6 @@ def det_factory_dexela(
     det = sim.SynSignalWithRegistry(
         name=name,
         func=lambda: nexter(shutter),
-        reg=reg,
         save_path=mkdtemp(prefix="xpdsim"),
     )
     # plug-ins
@@ -224,7 +213,6 @@ def det_factory_blackfly(
     det = sim.SynSignalWithRegistry(
         name=name,
         func=lambda: nexter(shutter),
-        reg=reg,
         save_path=mkdtemp(prefix="xpdsim"),
     )
     # plug-ins

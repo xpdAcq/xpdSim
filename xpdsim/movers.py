@@ -1,4 +1,5 @@
-from ophyd.sim import SynAxis, SynSignal, Device, Component
+from ophyd.sim import SynAxis, SynSignal, Device
+from ophyd import Component
 
 cs700 = SynAxis(name='cs700', value=300.)
 cs700.readback.name = 'temperature'
