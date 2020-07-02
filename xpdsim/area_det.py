@@ -57,7 +57,8 @@ class SimulatedCam(Device):
     acquire = sim.SynSignal(name="acquire")
 
 
-def det_factory(*, shutter=None, src_path=None, noise=None, name="pe1_image", mover=None, **kwargs):
+def det_factory(*, shutter=None, src_path=None,
+                noise=None, name="pe1_image", mover=None, **kwargs):
     """Build a detector using real images
 
     Parameters
