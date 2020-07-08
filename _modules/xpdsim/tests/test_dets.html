@@ -32,13 +32,16 @@
           <div class="body" role="main">
             
   <h1>Source code for xpdsim.tests.test_dets</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-
-<span class="kn">import</span> <span class="nn">bluesky.plan_stubs</span> <span class="k">as</span> <span class="nn">bs</span>
-<span class="kn">import</span> <span class="nn">bluesky.plans</span> <span class="k">as</span> <span class="nn">bp</span>
+<span></span><span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">cycler</span> <span class="kn">import</span> <span class="n">cycler</span>
 <span class="kn">from</span> <span class="nn">numpy.testing</span> <span class="kn">import</span> <span class="n">assert_array_equal</span>
+
+<span class="kn">import</span> <span class="nn">bluesky.plans</span> <span class="k">as</span> <span class="nn">bp</span>
+<span class="kn">import</span> <span class="nn">bluesky.plan_stubs</span> <span class="k">as</span> <span class="nn">bs</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">sim</span>
+
 <span class="kn">from</span> <span class="nn">tifffile</span> <span class="kn">import</span> <span class="n">imread</span>
 
 <span class="kn">from</span> <span class="nn">xpdsim.area_det</span> <span class="kn">import</span> <span class="p">(</span>
@@ -47,8 +50,12 @@
     <span class="n">chess_path</span><span class="p">,</span>
     <span class="n">det_factory</span><span class="p">,</span>
     <span class="n">build_image_cycle</span><span class="p">,</span>
-    <span class="n">det_factory_dexela</span><span class="p">,</span>
-    <span class="n">det_factory_blackfly</span><span class="p">,</span>
+    <span class="n">img_gen</span><span class="p">,</span>
+    <span class="n">add_fake_cam</span><span class="p">,</span>
+    <span class="n">PE_IMG_SIZE</span><span class="p">,</span>
+    <span class="n">DEXELA_IMG_SIZE</span><span class="p">,</span>
+    <span class="n">BLACKFLY_IMG_SIZE</span>
+
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">xpdsim.movers</span> <span class="kn">import</span> <span class="n">shctl1</span>
 
@@ -59,14 +66,24 @@
 <span class="k">def</span> <span class="nf">test_img_shape</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
     <span class="n">shape_check</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">)</span> <span class="k">for</span> <span class="n">fp</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif*&quot;</span><span class="p">)</span>
+        <span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">PE_IMG_SIZE</span> <span class="k">for</span> <span class="n">fp</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif*&quot;</span><span class="p">)</span>
     <span class="p">]</span>
     <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">shape_check</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="test_add_cam"><a class="viewcode-back" href="../../../xpdsim.tests.html#xpdsim.tests.test_dets.test_add_cam">[docs]</a><span class="k">def</span> <span class="nf">test_add_cam</span><span class="p">():</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;yolo&#39;</span><span class="p">)</span>
+    <span class="n">det</span> <span class="o">=</span> <span class="n">add_fake_cam</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="s1">&#39;images_per_set&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="s1">&#39;number_of_sets&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="s1">&#39;cam&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">cam</span><span class="p">,</span> <span class="s1">&#39;acquire_time&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">cam</span><span class="p">,</span> <span class="s1">&#39;acquire&#39;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="test_dets"><a class="viewcode-back" href="../../../xpdsim.tests.html#xpdsim.tests.test_dets.test_dets">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">),</span> <span class="n">test_params</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_dets</span><span class="p">(</span><span class="n">RE</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span><span class="n">src_path</span><span class="o">=</span><span class="n">fp</span><span class="p">)</span>
+    <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span><span class="n">build_image_cycle</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>
     <span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
     <span class="n">uid</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="n">det</span><span class="p">]))</span>
     <span class="n">cycle2</span> <span class="o">=</span> <span class="n">build_image_cycle</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
@@ -76,15 +93,17 @@
             <span class="n">db_img</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
             <span class="n">cycler_img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cg</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span>
             <span class="n">assert_array_equal</span><span class="p">(</span><span class="n">db_img</span><span class="p">,</span> <span class="n">cycler_img</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">cycler_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">PE_IMG_SIZE</span>
+            <span class="k">assert</span> <span class="n">cycler_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">PE_IMG_SIZE</span>
     <span class="k">assert</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="test_dets_shutter"><a class="viewcode-back" href="../../../xpdsim.tests.html#xpdsim.tests.test_dets.test_dets_shutter">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">),</span> <span class="n">test_params</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_dets_shutter</span><span class="p">(</span><span class="n">RE</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
-    <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span><span class="n">src_path</span><span class="o">=</span><span class="n">fp</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="n">shctl1</span><span class="p">)</span>
+    <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span><span class="n">cycle</span><span class="o">=</span><span class="n">build_image_cycle</span><span class="p">(</span><span class="n">fp</span><span class="p">),</span>
+                      <span class="n">shutter</span><span class="o">=</span><span class="n">shctl1</span><span class="p">)</span>
     <span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
+    <span class="n">uid</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="n">det</span><span class="p">]))</span>
     <span class="n">cycle2</span> <span class="o">=</span> <span class="n">build_image_cycle</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
     <span class="n">cg</span> <span class="o">=</span> <span class="n">cycle2</span><span class="p">()</span>
     <span class="c1"># With the shutter down</span>
@@ -100,10 +119,13 @@
 
     <span class="c1"># With the shutter up</span>
     <span class="n">RE</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">abs_set</span><span class="p">(</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">],</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;outside shutter id =&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="n">shctl1</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;outside shutter status =&#39;</span><span class="p">,</span> <span class="n">shctl1</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
     <span class="n">uid</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="n">det</span><span class="p">]))</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">restream</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
-            <span class="n">assert_array_equal</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">],</span> <span class="nb">next</span><span class="p">(</span><span class="n">cg</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">])</span>
+            <span class="n">assert_array_equal</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">],</span>
+                               <span class="nb">next</span><span class="p">(</span><span class="n">cg</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">])</span>
     <span class="k">assert</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
@@ -111,7 +133,7 @@
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">),</span> <span class="n">test_params</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_dets_noise</span><span class="p">(</span><span class="n">RE</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
     <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span>
-        <span class="n">src_path</span><span class="o">=</span><span class="n">fp</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">reg</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="n">fp</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span>
     <span class="p">)</span>
     <span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
     <span class="n">cycle2</span> <span class="o">=</span> <span class="n">build_image_cycle</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
@@ -127,14 +149,18 @@
     <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">shctl1</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">]],</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_dexela</span><span class="p">(</span><span class="n">RE</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">shutter</span><span class="p">,</span> <span class="n">noise</span><span class="p">):</span>
-    <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory_dexela</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">reg</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="n">shutter</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">DEXELA_IMG_SIZE</span><span class="p">)</span>
+    <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span><span class="n">shutter</span><span class="o">=</span><span class="n">shutter</span><span class="p">,</span>
+                      <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+                      <span class="n">size</span><span class="o">=</span><span class="n">DEXELA_IMG_SIZE</span><span class="p">,</span>
+                      <span class="n">data_key</span><span class="o">=</span><span class="s1">&#39;dexela_image&#39;</span><span class="p">)</span>
     <span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
     <span class="n">RE</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">abs_set</span><span class="p">(</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">],</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="n">uid</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="n">det</span><span class="p">]))</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">restream</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
             <span class="n">db_img</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;dexela_image&quot;</span><span class="p">]</span>
-            <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">DEXELA_IMG_SIZE</span>
     <span class="k">assert</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
         <span class="n">RE</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">abs_set</span><span class="p">(</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">],</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -142,7 +168,7 @@
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">restream</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
                 <span class="n">db_img</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;dexela_image&quot;</span><span class="p">]</span>
-                <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">DEXELA_IMG_SIZE</span>
                 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">db_img</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">db_img</span><span class="p">))</span>
         <span class="k">assert</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
@@ -152,16 +178,22 @@
     <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">shctl1</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">]],</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_blackfly</span><span class="p">(</span><span class="n">RE</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">shutter</span><span class="p">,</span> <span class="n">noise</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">ff</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
-        <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory_blackfly</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">reg</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="n">shutter</span><span class="p">,</span> <span class="n">full_field</span><span class="o">=</span><span class="n">ff</span><span class="p">,</span>
-                                   <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">cycler</span><span class="p">(</span><span class="s2">&quot;blackfly_det_image&quot;</span><span class="p">,</span>
+                         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">BLACKFLY_IMG_SIZE</span><span class="p">)])]:</span>
+        <span class="n">det</span> <span class="o">=</span> <span class="n">det_factory</span><span class="p">(</span><span class="n">cycle</span><span class="o">=</span><span class="n">cycle</span><span class="p">,</span>
+                          <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;blackfly_det_image&quot;</span><span class="p">,</span>
+                          <span class="n">shutter</span><span class="o">=</span><span class="n">shutter</span><span class="p">,</span>
+                          <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+                          <span class="n">size</span><span class="o">=</span><span class="n">BLACKFLY_IMG_SIZE</span><span class="p">,</span>
+                          <span class="p">)</span>
         <span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
         <span class="n">RE</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">abs_set</span><span class="p">(</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">],</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="n">uid</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="n">det</span><span class="p">]))</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">restream</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
                 <span class="n">db_img</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;blackfly_det_image&quot;</span><span class="p">]</span>
-                <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">BLACKFLY_IMG_SIZE</span>
         <span class="k">assert</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
             <span class="n">RE</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">abs_set</span><span class="p">(</span><span class="n">shctl1</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">],</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -169,7 +201,7 @@
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">restream</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
                     <span class="n">db_img</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;blackfly_det_image&quot;</span><span class="p">]</span>
-                    <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+                    <span class="k">assert</span> <span class="n">db_img</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">BLACKFLY_IMG_SIZE</span>
                     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">db_img</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">db_img</span><span class="p">))</span>
             <span class="k">assert</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 </pre></div>

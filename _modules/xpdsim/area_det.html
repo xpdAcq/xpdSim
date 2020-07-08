@@ -41,7 +41,7 @@
 <span class="c1">#                        New York.</span>
 <span class="c1">#                   All rights reserved</span>
 <span class="c1">#</span>
-<span class="c1"># File coded by:    Christopher J. Wright</span>
+<span class="c1"># File coded by:    Christopher J. Wright, Timothy Liu</span>
 <span class="c1">#</span>
 <span class="c1"># See AUTHORS.txt for a list of people who contributed.</span>
 <span class="c1"># See LICENSE.txt for license information.</span>
@@ -57,22 +57,29 @@
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span> <span class="k">as</span> <span class="n">rs_fn</span>
 <span class="kn">from</span> <span class="nn">tifffile</span> <span class="kn">import</span> <span class="n">imread</span>
 
-<span class="n">XPD_SHUTTER_CONF</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;open&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 
+<span class="c1"># extra config</span>
+<span class="n">XPD_SHUTTER_CONF</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;open&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 <span class="n">DATA_DIR_STEM</span> <span class="o">=</span> <span class="s2">&quot;xpdsim.data&quot;</span>
+<span class="c1"># image size</span>
+<span class="n">PE_IMG_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">)</span>
+<span class="n">DEXELA_IMG_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3088</span><span class="p">)</span>
+<span class="n">BLACKFLY_IMG_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="c1"># package filepath</span>
 <span class="n">nsls_ii_path</span> <span class="o">=</span> <span class="n">rs_fn</span><span class="p">(</span><span class="n">DATA_DIR_STEM</span> <span class="o">+</span> <span class="s2">&quot;.XPD&quot;</span><span class="p">,</span> <span class="s2">&quot;ni&quot;</span><span class="p">)</span>
 <span class="n">xpd_wavelength</span> <span class="o">=</span> <span class="mf">0.1823</span>
 <span class="n">chess_path</span> <span class="o">=</span> <span class="n">rs_fn</span><span class="p">(</span><span class="n">DATA_DIR_STEM</span><span class="p">,</span> <span class="s2">&quot;chess&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="build_image_cycle"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.build_image_cycle">[docs]</a><span class="k">def</span> <span class="nf">build_image_cycle</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="build_image_cycle"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.build_image_cycle">[docs]</a><span class="k">def</span> <span class="nf">build_image_cycle</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Build image cycles, essentially generators with endless images</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    path: str</span>
-<span class="sd">        Path to the files to be used as the base for the cycle, this can</span>
-<span class="sd">        include some globing</span>
+<span class="sd">        Path to the files to be used as the base for the cycle.</span>
+<span class="sd">    key: str, optional</span>
+<span class="sd">        key of the entire image sequence. Default to ``&#39;pe1_image&#39;``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -81,9 +88,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">imgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span> <span class="k">for</span> <span class="n">fp</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif*&quot;</span><span class="p">)]</span>
-    <span class="c1"># switch back to pims if the error is resolved</span>
+    <span class="c1"># TODO: switch back to pims if the error is resolved</span>
     <span class="c1"># imgs = ImageSequence(path)</span>
-    <span class="k">return</span> <span class="n">cycler</span><span class="p">(</span><span class="n">pe1_image</span><span class="o">=</span><span class="n">imgs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cycler</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">imgs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimulatedCam"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.SimulatedCam">[docs]</a><span class="k">class</span> <span class="nc">SimulatedCam</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
@@ -91,52 +98,19 @@
     <span class="n">acquire</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;acquire&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">src_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span> <span class="n">mover</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
+<div class="viewcode-block" id="add_fake_cam"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.add_fake_cam">[docs]</a><span class="k">def</span> <span class="nf">add_fake_cam</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adding simulated cam device signals to the detector</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    src_path: str</span>
-<span class="sd">        The path to the source tiff files</span>
+<span class="sd">    det: SimulatedPE1C instance</span>
+<span class="sd">        The detector</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    det: SimulatedPE1C instance</span>
 <span class="sd">        The detector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">src_path</span><span class="p">:</span>
-        <span class="n">cycle</span> <span class="o">=</span> <span class="n">build_image_cycle</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
-        <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>
-        <span class="n">_img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s1">&#39;pe1_image&#39;</span><span class="p">]</span>
-
-        <span class="k">def</span> <span class="nf">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">):</span>
-            <span class="c1"># instantiate again</span>
-            <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
-                    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">_img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
-                        <span class="n">img</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">mover</span><span class="p">:</span>
-                <span class="n">img</span> <span class="o">/=</span> <span class="p">(</span><span class="n">mover</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">readback</span> <span class="o">-</span> <span class="mf">3.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-        <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-            <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
-            <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
     <span class="c1"># plug-ins</span>
     <span class="n">det</span><span class="o">.</span><span class="n">images_per_set</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;images_per_set&quot;</span><span class="p">)</span>
     <span class="n">det</span><span class="o">.</span><span class="n">number_of_sets</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;number_of_sets&quot;</span><span class="p">)</span>
@@ -148,114 +122,103 @@
     <span class="k">return</span> <span class="n">det</span></div>
 
 
-<div class="viewcode-block" id="det_factory_dexela"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory_dexela">[docs]</a><span class="k">def</span> <span class="nf">det_factory_dexela</span><span class="p">(</span>
-    <span class="n">reg</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dexela_image&quot;</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
+<div class="viewcode-block" id="img_gen"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.img_gen">[docs]</a><span class="k">def</span> <span class="nf">img_gen</span><span class="p">(</span><span class="n">cycle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">PE_IMG_SIZE</span><span class="p">,</span>
+            <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator of diffraction images from 2D detector.</span>
+
+<span class="sd">    The output images is determined by ``cycle`` argument.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reg: Registry</span>
-<span class="sd">        The filestore to save all the data in</span>
-<span class="sd">    src_path: str</span>
-<span class="sd">        The path to the source tiff files</span>
-<span class="sd">    full_img : bool, keyword-only</span>
-<span class="sd">        Option on if want to return full size imag.</span>
-<span class="sd">        Deafult is False.</span>
+<span class="sd">    cycle: cycler.Cycler, optional</span>
+<span class="sd">        The iterable like object to cycle through the images.</span>
+<span class="sd">        Default to images with standard Gaussian noise in</span>
+<span class="sd">         input size.</span>
+<span class="sd">    size : tuple, optional</span>
+<span class="sd">        Tuple to specify image size from the simulated detector.</span>
+<span class="sd">        Default to ``(2048, 2048)`` (PE detector). Overridden when</span>
+<span class="sd">        ``cycle`` argument is passed.</span>
+<span class="sd">    shutter : settable, optional</span>
+<span class="sd">        Ophyd objects to represent the shutter associated with</span>
+<span class="sd">         with the detector. If it is not passed, assuming shutter</span>
+<span class="sd">         is always open. If shutter is passed, assuming it</span>
+<span class="sd">         follows the same configuration as XPD beamline (60 means open).</span>
+<span class="sd">    noise : callable, optional</span>
+<span class="sd">        function to generate noise based on absolute scale of image.</span>
+<span class="sd">        Default to noise-free.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img : ndarray</span>
+<span class="sd">        simulated 2D diffraction image with specified size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">cycle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="n">cycler</span><span class="p">(</span><span class="n">pe1_image</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="p">)])</span>
+    <span class="c1"># check data keys</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">cycle</span><span class="o">.</span><span class="n">keys</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Only support single data key&#39;</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="n">key</span><span class="p">]</span>  <span class="c1"># kick-off cycler</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">()</span>  <span class="c1"># instantiate again</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">)[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># if shutter, consider more realistic situation</span>
+    <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="det_factory"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory">[docs]</a><span class="k">def</span> <span class="nf">det_factory</span><span class="p">(</span><span class="n">cycle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">img_gen_func</span><span class="o">=</span><span class="n">img_gen</span><span class="p">,</span>
+                <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;pe1_image&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Build a simulated detector yielding input image sequence</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cycle: cycler.Cycler, optional</span>
+<span class="sd">        The iterable like object to cycle through the images.</span>
+<span class="sd">        Default to output images in (2048, 2048) dimension</span>
+<span class="sd">        with Gaussian(0, 1) noise.</span>
+<span class="sd">    img_gen_func : callable, optional</span>
+<span class="sd">        function to return image sequence will be output from</span>
+<span class="sd">         this detector. The function signature is expected</span>
+<span class="sd">         to be ``f(cycler, *args, **kwargs)``. Default to</span>
+<span class="sd">         ``xpdsim.img_gen`` function where simulated shutter</span>
+<span class="sd">         and noise can be included.</span>
+<span class="sd">    data_key : str, optional</span>
+<span class="sd">        data key will be shown in Descriptor. Default to</span>
+<span class="sd">         ``&#39;pe1_image&#39;``.</span>
+<span class="sd">    args :</span>
+<span class="sd">        extra arguments will be passed to</span>
+<span class="sd">         ``img_gen_func``.</span>
+<span class="sd">    kwargs :</span>
+<span class="sd">        extra keyword arguments will be</span>
+<span class="sd">         passed to ``img_gen_func``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    det: SimulatedPE1C instance</span>
 <span class="sd">        The detector</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ``xpdsim.img_gen``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">):</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3072</span><span class="p">,</span> <span class="mi">3888</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="c1"># instantiate again</span>
-        <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
-                <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
-                    <span class="n">img</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
     <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-        <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">data_key</span><span class="p">,</span>
+        <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">img_gen_func</span><span class="p">(</span><span class="n">cycle</span><span class="p">,</span>
+                                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
         <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="c1"># plug-ins</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">cam</span> <span class="o">=</span> <span class="n">SimulatedCam</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam&quot;</span><span class="p">)</span>
-    <span class="c1"># set default values</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire_time</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">det</span></div>
-
-
-<div class="viewcode-block" id="det_factory_blackfly"><a class="viewcode-back" href="../../xpdsim.html#xpdsim.area_det.det_factory_blackfly">[docs]</a><span class="k">def</span> <span class="nf">det_factory_blackfly</span><span class="p">(</span>
-    <span class="n">reg</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">shutter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">noise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blackfly_det_image&quot;</span><span class="p">,</span>
-    <span class="n">full_field</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Build a detector using real images</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    reg: Registry</span>
-<span class="sd">        The filestore to save all the data in</span>
-<span class="sd">    src_path: str</span>
-<span class="sd">        The path to the source tiff files</span>
-<span class="sd">    full_img : bool, keyword-only</span>
-<span class="sd">        Option on if want to return full size imag.</span>
-<span class="sd">        Deafult is False.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    det: SimulatedPE1C instance</span>
-<span class="sd">        The detector</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">):</span>
-        <span class="c1"># shape = (2048, 2448)</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
-        <span class="n">base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">full_field</span><span class="p">:</span>
-            <span class="n">base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="c1"># instantiate again</span>
-        <span class="k">if</span> <span class="n">shutter</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="n">shutter</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]):</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span> <span class="n">XPD_SHUTTER_CONF</span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="n">noise</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">base</span> <span class="o">+</span> <span class="n">noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">base</span><span class="p">))</span>
-                <span class="k">return</span> <span class="n">base</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">base</span>
-
-    <span class="n">det</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">SynSignalWithRegistry</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-        <span class="n">func</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">nexter</span><span class="p">(</span><span class="n">shutter</span><span class="p">),</span>
-        <span class="n">save_path</span><span class="o">=</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xpdsim&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="c1"># plug-ins</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">cam</span> <span class="o">=</span> <span class="n">SimulatedCam</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam&quot;</span><span class="p">)</span>
-    <span class="c1"># set default values</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire_time</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">cam</span><span class="o">.</span><span class="n">acquire</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">det</span></div>
+    <span class="k">return</span> <span class="n">add_fake_cam</span><span class="p">(</span><span class="n">det</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
