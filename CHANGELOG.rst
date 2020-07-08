@@ -4,6 +4,22 @@ xpdSim Change Log
 
 .. current developments
 
+v0.4.1
+====================
+
+**Added:**
+
+  * Factory method for creating simulated area detectors with
+     user-supplied image sequence. Useful for testing analysis
+      pipelines on specific sample/experiment conditions.
+
+**Fixed:**
+
+  * Syntax of simulated ophyd object. Aligned with current NSLS-II
+    development.
+
+
+
 v0.4.0
 ====================
 
@@ -37,7 +53,7 @@ v0.2.0
 **Changed:**
 
 * The area detector now uses the shutter by default
-* The area detector now writes into a temp dir with a prefix (making removal 
+* The area detector now writes into a temp dir with a prefix (making removal
   easier)
 * Add poisson noise to the detector
 
