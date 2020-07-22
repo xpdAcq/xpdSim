@@ -1239,7 +1239,14 @@
             <span class="c1"># Initial access of signal</span>
             <span class="n">cpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Component does not exist: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;The Component </span><span class="si">{</span><span class="n">attr</span><span class="si">!r}</span><span class="s1"> exists at the Python level and &#39;</span>
+                <span class="s1">&#39;has triggered the `_instantiate_component` &#39;</span>
+                <span class="s1">&#39;code path on Device, but has not been registered with &#39;</span>
+                <span class="s1">&#39;the Component management machinery in Device.  This may be due to &#39;</span>
+                <span class="s1">&#39;using multiple inheritance with a mix-in class that defines &#39;</span>
+                <span class="s1">&#39;a Component but does not inherent from Device.&#39;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpt</span><span class="o">.</span><span class="n">create_component</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

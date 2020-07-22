@@ -229,6 +229,8 @@
 <span class="k">class</span> <span class="nc">SynPeriodicSignal</span><span class="p">(</span><span class="n">SynSignal</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A synthetic Signal that evaluates a Python function periodically.</span>
+<span class="sd">    The signal value is updated in a background thread. To start the thread,</span>
+<span class="sd">    call the `start_simulation()` method before the beginning of simulation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -260,30 +262,78 @@
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_period</span> <span class="o">=</span> <span class="n">period</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_period_jitter</span> <span class="o">=</span> <span class="n">period_jitter</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
                          <span class="n">exposure_time</span><span class="o">=</span><span class="n">exposure_time</span><span class="p">,</span>
                          <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">def</span> <span class="nf">periodic_update</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">period_jitter</span><span class="p">):</span>
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">signal</span> <span class="o">=</span> <span class="n">ref</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">signal</span><span class="p">:</span>
-                    <span class="c1"># Our target Signal has been garbage collected. Shut</span>
-                    <span class="c1"># down the Thread.</span>
-                    <span class="k">return</span>
-                <span class="n">signal</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">_func</span><span class="p">())</span>
-                <span class="k">del</span> <span class="n">signal</span>
-                <span class="c1"># Sleep for period +/- period_jitter.</span>
-                <span class="n">ttime</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span>
-                    <span class="nb">max</span><span class="p">(</span><span class="n">period</span> <span class="o">+</span> <span class="n">period_jitter</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(),</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">start_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start background thread that performs periodic value updates. The method</span>
+<span class="sd">        should be called at least once before the beginning of simulation. Multiple</span>
+<span class="sd">        calls to the method are ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">periodic_update</span><span class="p">,</span>
-                                         <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                         <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-                                               <span class="n">period</span><span class="p">,</span>
-                                               <span class="n">period_jitter</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="k">def</span> <span class="nf">periodic_update</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">period_jitter</span><span class="p">):</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">signal</span> <span class="o">=</span> <span class="n">ref</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">signal</span><span class="p">:</span>
+                        <span class="c1"># Our target Signal has been garbage collected. Shut</span>
+                        <span class="c1"># down the Thread.</span>
+                        <span class="k">return</span>
+                    <span class="n">signal</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">_func</span><span class="p">())</span>
+                    <span class="k">del</span> <span class="n">signal</span>
+                    <span class="c1"># Sleep for period +/- period_jitter.</span>
+                    <span class="n">ttime</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span>
+                        <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_period</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_period_jitter</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(),</span> <span class="mi">0</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">periodic_update</span><span class="p">,</span>
+                                             <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_period</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_period_jitter</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_start_simulation_deprecated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call `start_simulation` and print deprecation warning.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Deprecated API: Objects of SynPeriodicSignal must be initialized before simulation</span><span class="se">\n</span><span class="s2">&quot;</span>
+                   <span class="s2">&quot;by calling &#39;start_simulation()&#39; method. Two such objects (&#39;rand&#39; and &#39;rand2&#39;) are</span><span class="se">\n</span><span class="s2">&quot;</span>
+                   <span class="s2">&quot;created by &#39;ophyd.sim&#39; module. Call</span><span class="se">\n</span><span class="s2">&quot;</span>
+                   <span class="s2">&quot;    rand.start_simulation() or rand2.start_simulation()</span><span class="se">\n</span><span class="s2">&quot;</span>
+                   <span class="s2">&quot;before the object is used.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_simulation</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_simulation_deprecated</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_simulation_deprecated</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_simulation_deprecated</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_simulation_deprecated</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_simulation_deprecated</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_simulation_deprecated</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_ReadbackSignal</span><span class="p">(</span><span class="n">Signal</span><span class="p">):</span>
