@@ -22,8 +22,8 @@ image_file = rs_fn(
     "-150911_Ni_Tim_series_tseries_1_e910af_0250.tif",
 )
 
-#sim_db_dir, db = build_sim_db()  # default is sqlite
-#db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
+sim_db_dir, db = build_sim_db()  # default is sqlite
+db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
 
 # simple detector that outputs 5 by 5 noisy images
 simple_pe1c = det_factory()
