@@ -72,12 +72,12 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
 <dl class="py attribute">
 <dt id="xpdsim.area_det.SimulatedCam.acquire">
-<code class="sig-name descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1597242960.439186)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">acquire</code><em class="property"> = SynSignal(name='acquire', value=1, timestamp=1597415859.2927065)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="xpdsim.area_det.SimulatedCam.acquire_time">
-<code class="sig-name descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1597242960.4391758)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">acquire_time</code><em class="property"> = SynSignal(name='acquire_time', value=0.1, timestamp=1597415859.2926943)</em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -93,13 +93,13 @@
 <dd><p>Adding simulated cam device signals to the detector</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>det</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SimulatedPE1C</span> <span class="pre">instance</span></code>) – The detector</p>
+<dd class="field-odd"><p><strong>det</strong> (<em>SimulatedPE1C instance</em>) – The detector</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>det</strong> – The detector</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulatedPE1C</span> <span class="pre">instance</span></code></p>
+<dd class="field-odd"><p>SimulatedPE1C instance</p>
 </dd>
 </dl>
 </dd></dl>
@@ -111,8 +111,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to the files to be used as the base for the cycle.</p></li>
-<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – key of the entire image sequence. Default to <code class="docutils literal notranslate"><span class="pre">'pe1_image'</span></code>.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Path to the files to be used as the base for the cycle.</p></li>
+<li><p><strong>key</strong> (<em>str, optional</em>) – key of the entire image sequence. Default to <code class="docutils literal notranslate"><span class="pre">'pe1_image'</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -131,10 +131,10 @@
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
-<li><p><strong>cycle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">cycler.Cycler</span></code>, <em>optional</em>) – The iterable like object to cycle through the images.
+<li><p><strong>cycle</strong> (<em>cycler.Cycler, optional</em>) – The iterable like object to cycle through the images.
 Default to output images in (2048, 2048) dimension
 with Gaussian(0, 1) noise.</p></li>
-<li><p><strong>img_gen_func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <em>optional</em>) –</p>
+<li><p><strong>img_gen_func</strong> (<em>callable, optional</em>) –</p>
 <dl class="simple">
 <dt>function to return image sequence will be output from</dt><dd><p>this detector. The function signature is expected
 to be <code class="docutils literal notranslate"><span class="pre">f(cycler,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>. Default to
@@ -143,7 +143,7 @@ and noise can be included.</p>
 </dd>
 </dl>
 </li>
-<li><p><strong>data_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) –</p>
+<li><p><strong>data_key</strong> (<em>str, optional</em>) –</p>
 <dl class="simple">
 <dt>data key will be shown in Descriptor. Default to</dt><dd><p><code class="docutils literal notranslate"><span class="pre">'pe1_image'</span></code>.</p>
 </dd>
@@ -167,7 +167,7 @@ and noise can be included.</p>
 <dd class="field-even"><p><strong>det</strong> – The detector</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulatedPE1C</span> <span class="pre">instance</span></code></p>
+<dd class="field-odd"><p>SimulatedPE1C instance</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -184,16 +184,16 @@ and noise can be included.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
-<li><p><strong>cycle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">cycler.Cycler</span></code>, <em>optional</em>) – The iterable like object to cycle through the images.
+<li><p><strong>cycle</strong> (<em>cycler.Cycler, optional</em>) – The iterable like object to cycle through the images.
 Default to images with standard Gaussian noise in</p>
 <blockquote>
 <div><p>input size.</p>
 </div></blockquote>
 </li>
-<li><p><strong>size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>, <em>optional</em>) – Tuple to specify image size from the simulated detector.
+<li><p><strong>size</strong> (<em>tuple, optional</em>) – Tuple to specify image size from the simulated detector.
 Default to <code class="docutils literal notranslate"><span class="pre">(2048,</span> <span class="pre">2048)</span></code> (PE detector). Overridden when
 <code class="docutils literal notranslate"><span class="pre">cycle</span></code> argument is passed.</p></li>
-<li><p><strong>shutter</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">settable</span></code>, <em>optional</em>) –</p>
+<li><p><strong>shutter</strong> (<em>settable, optional</em>) –</p>
 <dl class="simple">
 <dt>Ophyd objects to represent the shutter associated with</dt><dd><p>with the detector. If it is not passed, assuming shutter
 is always open. If shutter is passed, assuming it
@@ -201,7 +201,7 @@ follows the same configuration as XPD beamline (60 means open).</p>
 </dd>
 </dl>
 </li>
-<li><p><strong>noise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <em>optional</em>) – function to generate noise based on absolute scale of image.
+<li><p><strong>noise</strong> (<em>callable, optional</em>) – function to generate noise based on absolute scale of image.
 Default to noise-free.</p></li>
 </ul>
 </dd>
@@ -209,7 +209,7 @@ Default to noise-free.</p></li>
 <dd class="field-even"><p><strong>img</strong> – simulated 2D diffraction image with specified size.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+<dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -245,7 +245,7 @@ class initializer.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
-<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">class</span></code>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
 (if <cite>suffix</cite> is given):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
@@ -257,17 +257,17 @@ class initializer.</p>
 <p>The class may have a <cite>wait_for_connection()</cite> which is called during the
 component instance creation.</p>
 </li>
-<li><p><strong>suffix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
-<li><p><strong>lazy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
 instantiated upon component instantiation</p></li>
-<li><p><strong>trigger_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>, <em>optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
-<li><p><strong>add_prefix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sequence</span></code>, <em>optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
 of the component instance.
 Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
-<li><p><strong>doc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
 </ul>
 </dd>
 </dl>
@@ -282,7 +282,7 @@ class initializer.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
-<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">class</span></code>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
 (if <cite>suffix</cite> is given):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
@@ -294,17 +294,17 @@ class initializer.</p>
 <p>The class may have a <cite>wait_for_connection()</cite> which is called during the
 component instance creation.</p>
 </li>
-<li><p><strong>suffix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
-<li><p><strong>lazy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
 instantiated upon component instantiation</p></li>
-<li><p><strong>trigger_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>, <em>optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
-<li><p><strong>add_prefix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sequence</span></code>, <em>optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
 of the component instance.
 Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
-<li><p><strong>doc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
 </ul>
 </dd>
 </dl>
@@ -319,7 +319,7 @@ class initializer.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
-<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">class</span></code>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
 (if <cite>suffix</cite> is given):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
@@ -331,17 +331,17 @@ class initializer.</p>
 <p>The class may have a <cite>wait_for_connection()</cite> which is called during the
 component instance creation.</p>
 </li>
-<li><p><strong>suffix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
-<li><p><strong>lazy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
 instantiated upon component instantiation</p></li>
-<li><p><strong>trigger_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>, <em>optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
-<li><p><strong>add_prefix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sequence</span></code>, <em>optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
 of the component instance.
 Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
-<li><p><strong>doc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
 </ul>
 </dd>
 </dl>
@@ -356,7 +356,7 @@ class initializer.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul>
-<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">class</span></code>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
+<li><p><strong>cls</strong> (<em>class</em>) – Class of signal to create.  The required signature of <cite>cls.__init__</cite> is
 (if <cite>suffix</cite> is given):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </pre></div>
@@ -368,17 +368,17 @@ class initializer.</p>
 <p>The class may have a <cite>wait_for_connection()</cite> which is called during the
 component instance creation.</p>
 </li>
-<li><p><strong>suffix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
+<li><p><strong>suffix</strong> (<em>str, optional</em>) – The PV suffix, which gets appended onto <code class="docutils literal notranslate"><span class="pre">parent.prefix</span></code> to generate
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
-<li><p><strong>lazy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
+<li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
 instantiated upon component instantiation</p></li>
-<li><p><strong>trigger_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>, <em>optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
+<li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
-<li><p><strong>add_prefix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sequence</span></code>, <em>optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
+<li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
 of the component instance.
 Defaults to <code class="docutils literal notranslate"><span class="pre">('suffix',</span> <span class="pre">'write_pv',</span> <span class="pre">)</span></code></p></li>
-<li><p><strong>doc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
+<li><p><strong>doc</strong> (<em>str, optional</em>) – string to attach to component DvcClass.component.__doc__</p></li>
 </ul>
 </dd>
 </dl>
@@ -425,7 +425,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">('suffi
       &copy;2018, Author.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
