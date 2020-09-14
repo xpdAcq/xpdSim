@@ -1,5 +1,5 @@
 [run]
-source = 
+source =
     xpdsim
 [report]
 omit =
@@ -8,6 +8,7 @@ omit =
     # ignore _version.py and versioneer.py
     .*version.*
     *_version.py
+    xpdsim/tests/conftest.py
 
 exclude_lines =
     if __name__ == '__main__':
