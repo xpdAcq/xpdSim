@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpdsim installation guide &mdash; xpdSim 0.4.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="xpdsim.tests package" href="xpdsim.tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> xpdSim
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="xpdsim.html">xpdsim package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">xpdsim</span></code> installation guide</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpdSim</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">xpdsim</span></code> installation guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="xpdsim-installation-guide">
+<h1><code class="docutils literal notranslate"><span class="pre">xpdsim</span></code> installation guide<a class="headerlink" href="#xpdsim-installation-guide" title="Permalink to this headline">¶</a></h1>
+<p>Before starting, make sure <code class="docutils literal notranslate"><span class="pre">anaconda</span></code> is installed, it is required for this installation. Note the syntax of this installation guide, as it was written, is based on Uinux system. For Windows users, please change the syntax accordingly if needed.</p>
+<ol class="arabic">
+<li><p>Activate/create a <code class="docutils literal notranslate"><span class="pre">python3</span></code> conda environment</p></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">XPD</span></code> stack from your terminal</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge ipython xpdsim xpdacq xpdan
+</pre></div>
+</div>
+</li>
+<li><p>Setting up <code class="docutils literal notranslate"><span class="pre">ipython</span></code> profile</p>
+<ol class="arabic">
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">collection</span></code> profile from your terminal</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ipython profile create collection
+</pre></div>
+</div>
+</li>
+<li><p>Download the configuration file <a class="reference external" href="https://github.com/xpdAcq/xpdAcq/blob/master/xpdacq/999-load.py">999-load.py</a> from <cite>xpdAcq</cite> repo.</p></li>
+<li><p>Copy and paste the configuration file into the <cite>startup</cite> directory of ipython <cite>collection</cite> profile: <code class="docutils literal notranslate"><span class="pre">~/.ipython/profile_collection/startup/</span></code>.</p>
+<p>Note <code class="docutils literal notranslate"><span class="pre">~/</span></code> means the home directory of your machine, which depends on your OS and machine status. You can find out the exact filepath of <code class="docutils literal notranslate"><span class="pre">~</span></code> by doing the following in a <code class="docutils literal notranslate"><span class="pre">Python</span></code> session</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>More information about the <code class="docutils literal notranslate"><span class="pre">ipython</span></code> configuration directory can be found in their <a class="reference external" href="https://ipython.readthedocs.io/en/stable/config/intro.html#the-ipython-directory">official documentaion</a>.</p>
+</li>
+</ol>
+</li>
+<li><p>Create directories to simulate the machine status at the beamline</p>
+<ol class="arabic">
+<li><p>At your terminal, create simulation directories</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkdir -v ~/acqsim
+mkdir -v ~/acqsim/xpdUser
+mkdir -v ~/acqsim/xpdConfig
+</pre></div>
+</div>
+</li>
+<li><p>Create an empty long-term beamline config file</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>echo &#39;{}&#39; &gt;~/acqsim/xpdConfig/XPD_beamline_config.yml
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">ipython</span></code> with <code class="docutils literal notranslate"><span class="pre">collection</span></code> profile specified from your terminal. This is command is essentially the same as <code class="docutils literal notranslate"><span class="pre">bsui</span></code> you will be typing at beamline!</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ipython --profile=collection
+</pre></div>
+</div>
+</li>
+<li><p>You should be prompted into an <code class="docutils literal notranslate"><span class="pre">ipython</span></code> session, simulating your upcoming beamline experience. Please refer to the <a class="reference external" href="https://xpdacq.github.io/xpdAcq/quickstart.html">quikstart guide in xpdAcq documentation</a> to run your simulated beamline and enjoy playing!</p>
+<ul>
+<li><p>You may find yourself need a syntax to create your simulated beamtime object and get everything running. This quick code snippet may be helpful for you.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bt</span> <span class="o">=</span> <span class="n">_start_beamtime</span><span class="p">(</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">saf_num</span><span class="o">=</span><span class="mi">300000</span><span class="p">,</span> <span class="n">experimenters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Jane&#39;</span><span class="p">,</span> <span class="s1">&#39;Doe&#39;</span><span class="p">],</span> <span class="n">wavelength</span><span class="o">=</span><span class="mf">0.184649</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="xpdsim.tests.html" class="btn btn-neutral float-left" title="xpdsim.tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Songsheng Tao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
