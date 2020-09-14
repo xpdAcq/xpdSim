@@ -13,9 +13,11 @@
 #
 ##############################################################################
 import tempfile
+import asyncio
 
 import pytest
 from ophyd.sim import (NumpySeqHandler)
+from bluesky import RunEngine
 
 
 @pytest.fixture(scope='module')
@@ -26,3 +28,23 @@ def db():
     db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
     yield db
     temp_dir.cleanup()
+
+
+@pytest.fixture(scope='function')
+def RE(request):
+    loop = asyncio.new_event_loop()
+    loop.set_debug(True)
+    RE = RunEngine({}, loop=loop)
+
+    def clean_event_loop():
+        if RE.state not in ('idle', 'panicked'):
+            try:
+                RE.halt()
+            except TransitionError:
+                pass
+        loop.call_soon_threadsafe(loop.stop)
+        RE._th.join()
+        loop.close()
+
+    request.addfinalizer(clean_event_loop)
+    return RE

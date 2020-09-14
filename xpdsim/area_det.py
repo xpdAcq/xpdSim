@@ -125,7 +125,7 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
         raise RuntimeError('Only support single data key')
     key = keys.pop()
     gen = cycle()
-    next(gen)[key]  # kick-off cycler
+    next(gen)  # kick-off cycler
     gen = cycle()  # instantiate again
     img = next(gen)[key].copy()
     # if shutter, consider more realistic situation

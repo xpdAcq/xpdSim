@@ -1,10 +1,10 @@
 """this module exists for simulation environment"""
 import os
 import tempfile
+from databroker import Broker
 
 
 def build_sim_db(sim_db_dir=None):
-    from databroker import Broker
     if not sim_db_dir:
         sim_db_dir = tempfile.mkdtemp()
     config = {

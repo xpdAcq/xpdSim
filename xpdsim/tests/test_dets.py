@@ -93,21 +93,6 @@ def test_dets_shutter(RE, db, name, fp):
     assert uid is not None
 
 
-@pytest.mark.xfail
-@pytest.mark.parametrize(("name", "fp"), test_params)
-def test_dets_noise(RE, db, name, fp):
-    det = det_factory(
-        db.reg, src_path=fp, shutter=shctl1, noise=np.random.poisson
-    )
-    RE.subscribe(db.insert, "all")
-    cycle2 = build_image_cycle(fp)
-    cg = cycle2()
-    RE(bp.count([det]))
-    for name, doc in db.restream(db[-1], fill=True):
-        if name == "event":
-            assert_array_equal(doc["data"]["pe1_image"], next(cg)["pe1_image"])
-
-
 @pytest.mark.parametrize(
     ("shutter", "noise"),
     [(x, y) for x in [None, shctl1] for y in [None, np.random.poisson]],
