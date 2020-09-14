@@ -1,10 +1,3 @@
-language: python
-sudo: false
-
-env:
-  global:
-    - secure: "ARO7fKE3i5jtNsqwcX7moq0kK/opj9cre1Uh3I5g8FOdnBMGDDmO7ng6z/vbhymBjI8GYgWfMS08mQ+6X4y41picT7/UKqydEfYOa3P30q1TYBBy+Az1wE3XcEjC8biu//Jd99PwCIUfO145K3hSbp+aMa3BizprqUC+e89txFaJV2FHkGjHLkGvV+QMvzS7KRHyv5pUKT4gtqaTk89uNCPjBXSOJ+Njfn0hrYPG7UqG+wj7PeNg1ZhPNWR5WpNgbhIza2i8B2QqeYLho790MnThn9iQjVQb7hX7g7YEA4Akw6CPdw5d5BNsL2KFpjncAWDJdF+ofVYTvXovXXngeBJtI3aq55pJ976tJmi0wZMKfa1j0Gy6TxzOGvf65RovrmmZAT78HwSm0qQG4IlqteBmKLjAN8k0VdPz19wHs3qe0zTyKHIQ5nEZOG7dOjIgfiaP6h0DqPNxZyUPMpLrQWm4E3TfTIww5mFL41gsAu/rh3paSp5QCtX9KzPKGTzKA1rSzV5P3Rhc/ikdErCWHnLVYFYkFTpY/fKngGzh1/7ZNR713widAPniwQgW6PrZlYlalrmfqxtBOCzYPvvoNjkMcXCItoTH3YHRskzxhfg4FwAlqIXL3K9h7fKGOH2mZhyLsOKQ/QHClc9COievEejDOhC7L0FLBMB+hzGRFuY="
-
 cache:
   directories:
     - $HOME/.cache/pip
@@ -12,6 +5,7 @@ cache:
 
 services:
   - mongodb
+
 addons:
   apt:
     sources:
@@ -19,42 +13,40 @@ addons:
     packages:
     - mongodb-org-server
 
-matrix:
-  include:
-    - python: 3.6
-      env: BUILD_DOCS=true
-
 before_install:
   - git clone https://github.com/NSLS-II/nsls2-ci --branch master --single-branch ~/ci_scripts
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
   - "export DISPLAY=:99.0"
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda config --set always_yes yes --set changeps1 no
+  - conda config --set always_yes yes --set changeps1 no --set quiet true
+  - conda config --add channels nsls2forge
   - conda config --add channels conda-forge
-  - conda update conda
 
 install:
   - export GIT_FULL_HASH=`git rev-parse HEAD`
-  - conda create -n testenv python=$TRAVIS_PYTHON_VERSION --quiet
-  - source activate testenv
-  - conda install --file requirements/build.txt --quiet
-  - pip install .
-  - conda install --file requirements/run.txt --quiet
-  - python -c "from bluesky.utils import get_history; get_history()"
-  - python -c "from xpdsim import xpd_pe1c; xpd_pe1c.get()"
+  - conda create -n test --file requirements/build.txt --file requirements/run.txt --file requirements/docs.txt --file requirements/test.txt
+  - source activate test
+  - python -m pip install . --no-deps -vv
   - git clean -xfd
 
 script:
   - set -e
+  - source activate test
   - conda install --file requirements/test.txt
-  - coverage run run_tests.py
+  - coverage run -m pytest xpdsim/tests
   - coverage report -m
-  - flake8 xpdsim
-  - codecov
-  - conda install --file requirements/doc.txt
-  - cd docs
-  - make html
-  - cd ..
-  - doctr deploy . --built-docs ./docs/_build/html;
+  - bash <(curl -s https://codecov.io/bash)
+  - flake8 .
+  - make -C docs html
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  on:
+    branch: master
+  local_dir: docs/_build/html
