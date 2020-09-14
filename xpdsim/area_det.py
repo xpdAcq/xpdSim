@@ -23,7 +23,6 @@ from ophyd import sim, Device
 from pkg_resources import resource_filename as rs_fn
 from tifffile import imread
 
-
 # extra config
 XPD_SHUTTER_CONF = {"open": 60, "close": 0}
 DATA_DIR_STEM = "xpdsim.data"
@@ -142,7 +141,6 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
 
 def det_factory(cycle=None, img_gen_func=img_gen,
                 data_key="pe1_image", *args, **kwargs):
-
     """Build a simulated detector yielding input image sequence
 
     Parameters

@@ -1,15 +1,14 @@
-from cycler import cycler
 from functools import partial
-from pkg_resources import resource_filename as rs_fn
 
+import numpy as np
+from cycler import cycler
 from ophyd.sim import NumpySeqHandler, SynSignalRO
+from pkg_resources import resource_filename as rs_fn
 
 from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength, \
     img_gen, build_image_cycle, DEXELA_IMG_SIZE, BLACKFLY_IMG_SIZE
 from xpdsim.build_sim_db import build_sim_db
 from xpdsim.movers import shctl1, cs700, fb
-
-import numpy as np
 
 __version__ = '0.4.2'
 
@@ -54,4 +53,3 @@ blackfly_full_field = det_factory(cycle,
                                   size=BLACKFLY_IMG_SIZE)
 # synthetic ring current
 ring_current = SynSignalRO(lambda: 300, name="ring_current")
-

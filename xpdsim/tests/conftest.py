@@ -15,7 +15,6 @@
 import tempfile
 
 import pytest
-from bluesky.tests.conftest import RE
 from ophyd.sim import (NumpySeqHandler)
 
 

@@ -1,13 +1,12 @@
-import pytest
-import numpy as np
 from pathlib import Path
+
+import bluesky.plan_stubs as bs
+import bluesky.plans as bp
+import numpy as np
+import pytest
 from cycler import cycler
 from numpy.testing import assert_array_equal
-
-import bluesky.plans as bp
-import bluesky.plan_stubs as bs
 from ophyd import sim
-
 from tifffile import imread
 
 from xpdsim.area_det import (
@@ -16,7 +15,6 @@ from xpdsim.area_det import (
     chess_path,
     det_factory,
     build_image_cycle,
-    img_gen,
     add_fake_cam,
     PE_IMG_SIZE,
     DEXELA_IMG_SIZE,
