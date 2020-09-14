@@ -6,4 +6,7 @@ exclude =
     xpdsim/__init__.py,
     xpdsim/tests/conftest.py
     xpdsim/tests/test_imports.py
+    docs/*
+    news/*
+    requirements/*
 max-complexity = 10
