@@ -292,8 +292,6 @@
             <span class="n">connected</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
         <span class="c1"># There should be only one key here, but for the sake of generality....</span>
@@ -302,12 +300,9 @@
         <span class="k">return</span> <span class="n">res</span>
 
     <span class="k">def</span> <span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;trigger </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
         <span class="n">st</span> <span class="o">=</span> <span class="n">DeviceStatus</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">delay_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span>
         <span class="k">if</span> <span class="n">delay_time</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> delay_time is </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">delay_time</span><span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">sleep_and_finish</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;sleep_and_finish </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -924,7 +919,7 @@
         <span class="n">dd</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">dd</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mot</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
         <span class="n">dd</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_detector</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;stream_name&#39;</span><span class="p">:</span> <span class="n">dd</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">dd</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completion_status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
