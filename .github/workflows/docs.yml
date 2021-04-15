@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branch: main
+    branch: master
 
 jobs:
   main:
