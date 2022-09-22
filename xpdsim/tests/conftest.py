@@ -12,22 +12,16 @@
 # See LICENSE.txt for license information.
 #
 ##############################################################################
-import tempfile
 import asyncio
 
 import pytest
-from ophyd.sim import (NumpySeqHandler)
 from bluesky import RunEngine
+from databroker.v2 import temp
 
 
 @pytest.fixture(scope='module')
 def db():
-    temp_dir = tempfile.TemporaryDirectory()
-    from xpdsim.build_sim_db import build_sim_db
-    sim_db_dir, db = build_sim_db(temp_dir.name)
-    db.reg.register_handler('NPY_SEQ', NumpySeqHandler)
-    yield db
-    temp_dir.cleanup()
+    return temp()
 
 
 @pytest.fixture(scope='function')
