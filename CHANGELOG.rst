@@ -4,6 +4,11 @@ xpdSim Change Log
 
 .. current developments
 
+v0.4.3
+====================
+
+
+
 v0.4.2
 ====================
 
