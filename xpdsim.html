@@ -121,17 +121,22 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.acquire">
-<span class="sig-name descname"><span class="pre">acquire</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SynSignal(name='acquire',</span> <span class="pre">value=1,</span> <span class="pre">timestamp=1663874955.2018926)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">acquire</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SynSignal(name='acquire',</span> <span class="pre">value=1,</span> <span class="pre">timestamp=1663880137.468878)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.acquire_time">
-<span class="sig-name descname"><span class="pre">acquire_time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SynSignal(name='acquire_time',</span> <span class="pre">value=0.1,</span> <span class="pre">timestamp=1663874955.2018833)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">acquire_time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SynSignal(name='acquire_time',</span> <span class="pre">value=0.1,</span> <span class="pre">timestamp=1663880137.4688685)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.component_names">
 <span class="sig-name descname"><span class="pre">component_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.component_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.subscriptions">
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.subscriptions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -304,7 +309,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -341,7 +347,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -378,7 +385,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -415,7 +423,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -426,6 +435,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">('suffi
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.subscriptions">
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#xpdsim.movers.SimFilterBank.subscriptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
