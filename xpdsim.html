@@ -1,74 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>xpdsim package &mdash; xpdSim 0.4.2 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>xpdsim package &mdash; xpdSim 0.4.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="xpdsim.data package" href="xpdsim.data.html" />
     <link rel="prev" title="Welcome to xpdSim’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> xpdSim
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                0.4.2
+                0.4.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,19 +39,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">xpdsim package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
@@ -98,7 +50,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-xpdsim.area_det">xpdsim.area_det module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-xpdsim.build_sim_db">xpdsim.build_sim_db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xpdsim-build-sim-db-module">xpdsim.build_sim_db module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-xpdsim.movers">xpdsim.movers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-xpdsim">Module contents</a></li>
 </ul>
@@ -106,75 +58,34 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html"><code class="docutils literal notranslate"><span class="pre">xpdsim</span></code> installation guide</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">xpdSim</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>xpdsim package</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/xpdsim.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="xpdsim-package">
-<h1>xpdsim package<a class="headerlink" href="#xpdsim-package" title="Permalink to this headline">¶</a></h1>
+<h1>xpdsim package<a class="headerlink" href="#xpdsim-package" title="Permalink to this heading">¶</a></h1>
 <div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="xpdsim.data.html">xpdsim.data package</a><ul>
@@ -199,35 +110,40 @@
 </div>
 </div>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </div>
 <div class="section" id="module-xpdsim.area_det">
-<span id="xpdsim-area-det-module"></span><h2>xpdsim.area_det module<a class="headerlink" href="#module-xpdsim.area_det" title="Permalink to this headline">¶</a></h2>
+<span id="xpdsim-area-det-module"></span><h2>xpdsim.area_det module<a class="headerlink" href="#module-xpdsim.area_det" title="Permalink to this heading">¶</a></h2>
 <p>Spoof detectors</p>
 <dl class="py class">
-<dt id="xpdsim.area_det.SimulatedCam">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></code><code class="sig-name descname"><span class="pre">SimulatedCam</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#SimulatedCam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.SimulatedCam" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
+<dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></span><span class="sig-name descname"><span class="pre">SimulatedCam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#SimulatedCam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.SimulatedCam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></p>
 <dl class="py attribute">
-<dt id="xpdsim.area_det.SimulatedCam.acquire">
-<code class="sig-name descname"><span class="pre">acquire</span></code><em class="property"> <span class="pre">=</span> <span class="pre">SynSignal(name='acquire',</span> <span class="pre">value=1,</span> <span class="pre">timestamp=1618521916.8632874)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SynSignal(name='acquire',</span> <span class="pre">value=1,</span> <span class="pre">timestamp=1663874865.1724894)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="xpdsim.area_det.SimulatedCam.acquire_time">
-<code class="sig-name descname"><span class="pre">acquire_time</span></code><em class="property"> <span class="pre">=</span> <span class="pre">SynSignal(name='acquire_time',</span> <span class="pre">value=0.1,</span> <span class="pre">timestamp=1618521916.8632708)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.acquire_time">
+<span class="sig-name descname"><span class="pre">acquire_time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SynSignal(name='acquire_time',</span> <span class="pre">value=0.1,</span> <span class="pre">timestamp=1663874865.172471)</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.acquire_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="xpdsim.area_det.SimulatedCam.component_names">
-<code class="sig-name descname"><span class="pre">component_names</span></code><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.component_names" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.component_names">
+<span class="sig-name descname"><span class="pre">component_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.component_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xpdsim.area_det.SimulatedCam.subscriptions">
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#xpdsim.area_det.SimulatedCam.subscriptions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="xpdsim.area_det.add_fake_cam">
-<code class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></code><code class="sig-name descname"><span class="pre">add_fake_cam</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">det</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#add_fake_cam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.add_fake_cam" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.add_fake_cam">
+<span class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></span><span class="sig-name descname"><span class="pre">add_fake_cam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">det</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#add_fake_cam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.add_fake_cam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adding simulated cam device signals to the detector</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -243,8 +159,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="xpdsim.area_det.build_image_cycle">
-<code class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></code><code class="sig-name descname"><span class="pre">build_image_cycle</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pe1_image'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#build_image_cycle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.build_image_cycle" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.build_image_cycle">
+<span class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></span><span class="sig-name descname"><span class="pre">build_image_cycle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pe1_image'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#build_image_cycle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.build_image_cycle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build image cycles, essentially generators with endless images</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -263,8 +179,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="xpdsim.area_det.det_factory">
-<code class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></code><code class="sig-name descname"><span class="pre">det_factory</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">cycle=None</span></em>, <em class="sig-param"><span class="pre">img_gen_func=&lt;function</span> <span class="pre">img_gen&gt;</span></em>, <em class="sig-param"><span class="pre">data_key='pe1_image'</span></em>, <em class="sig-param"><span class="pre">*args</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.det_factory" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.det_factory">
+<span class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></span><span class="sig-name descname"><span class="pre">det_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycle=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_gen_func=&lt;function</span> <span class="pre">img_gen&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key='pe1_image'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#det_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.det_factory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a simulated detector yielding input image sequence</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -315,8 +231,8 @@ and noise can be included.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="xpdsim.area_det.img_gen">
-<code class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></code><code class="sig-name descname"><span class="pre">img_gen</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2048,</span> <span class="pre">2048)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shutter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#img_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.img_gen" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.area_det.img_gen">
+<span class="sig-prename descclassname"><span class="pre">xpdsim.area_det.</span></span><span class="sig-name descname"><span class="pre">img_gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2048,</span> <span class="pre">2048)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shutter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/area_det.html#img_gen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.area_det.img_gen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator of diffraction images from 2D detector.</p>
 <p>The output images is determined by <code class="docutils literal notranslate"><span class="pre">cycle</span></code> argument.</p>
 <dl class="field-list">
@@ -353,30 +269,24 @@ Default to noise-free.</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-xpdsim.build_sim_db">
-<span id="xpdsim-build-sim-db-module"></span><h2>xpdsim.build_sim_db module<a class="headerlink" href="#module-xpdsim.build_sim_db" title="Permalink to this headline">¶</a></h2>
-<p>this module exists for simulation environment</p>
-<dl class="py function">
-<dt id="xpdsim.build_sim_db.build_sim_db">
-<code class="sig-prename descclassname"><span class="pre">xpdsim.build_sim_db.</span></code><code class="sig-name descname"><span class="pre">build_sim_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_db_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/build_sim_db.html#build_sim_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.build_sim_db.build_sim_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xpdsim-build-sim-db-module">
+<h2>xpdsim.build_sim_db module<a class="headerlink" href="#xpdsim-build-sim-db-module" title="Permalink to this heading">¶</a></h2>
 </div>
 <div class="section" id="module-xpdsim.movers">
-<span id="xpdsim-movers-module"></span><h2>xpdsim.movers module<a class="headerlink" href="#module-xpdsim.movers" title="Permalink to this headline">¶</a></h2>
+<span id="xpdsim-movers-module"></span><h2>xpdsim.movers module<a class="headerlink" href="#module-xpdsim.movers" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
-<dt id="xpdsim.movers.SimFilterBank">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xpdsim.movers.</span></code><code class="sig-name descname"><span class="pre">SimFilterBank</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/movers.html#SimFilterBank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.movers.SimFilterBank" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.device.Device</span></code></p>
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpdsim.movers.</span></span><span class="sig-name descname"><span class="pre">SimFilterBank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpdsim/movers.html#SimFilterBank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpdsim.movers.SimFilterBank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></p>
 <p>Simulated filter bank with only the first filter in by default</p>
 <dl class="py attribute">
-<dt id="xpdsim.movers.SimFilterBank.component_names">
-<code class="sig-name descname"><span class="pre">component_names</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('flt1',</span> <span class="pre">'flt2',</span> <span class="pre">'flt3',</span> <span class="pre">'flt4')</span></em><a class="headerlink" href="#xpdsim.movers.SimFilterBank.component_names" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.component_names">
+<span class="sig-name descname"><span class="pre">component_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('flt1',</span> <span class="pre">'flt2',</span> <span class="pre">'flt3',</span> <span class="pre">'flt4')</span></em><a class="headerlink" href="#xpdsim.movers.SimFilterBank.component_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt1">
-<code class="sig-name descname"><span class="pre">flt1</span></code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt1" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.flt1">
+<span class="sig-name descname"><span class="pre">flt1</span></span><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt1" title="Permalink to this definition">¶</a></dt>
 <dd><p>A descriptor representing a device component (or signal)</p>
 <p>Unrecognized keyword arguments will be passed directly to the component
 class initializer.</p>
@@ -399,7 +309,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -412,8 +323,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">('suffi
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt2">
-<code class="sig-name descname"><span class="pre">flt2</span></code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.flt2">
+<span class="sig-name descname"><span class="pre">flt2</span></span><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt2" title="Permalink to this definition">¶</a></dt>
 <dd><p>A descriptor representing a device component (or signal)</p>
 <p>Unrecognized keyword arguments will be passed directly to the component
 class initializer.</p>
@@ -436,7 +347,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -449,8 +361,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">('suffi
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt3">
-<code class="sig-name descname"><span class="pre">flt3</span></code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt3" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.flt3">
+<span class="sig-name descname"><span class="pre">flt3</span></span><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt3" title="Permalink to this definition">¶</a></dt>
 <dd><p>A descriptor representing a device component (or signal)</p>
 <p>Unrecognized keyword arguments will be passed directly to the component
 class initializer.</p>
@@ -473,7 +385,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -486,8 +399,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">('suffi
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="xpdsim.movers.SimFilterBank.flt4">
-<code class="sig-name descname"><span class="pre">flt4</span></code><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt4" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.flt4">
+<span class="sig-name descname"><span class="pre">flt4</span></span><a class="headerlink" href="#xpdsim.movers.SimFilterBank.flt4" title="Permalink to this definition">¶</a></dt>
 <dd><p>A descriptor representing a device component (or signal)</p>
 <p>Unrecognized keyword arguments will be passed directly to the component
 class initializer.</p>
@@ -510,7 +423,8 @@ component instance creation.</p>
 the final PV that the instance component will bind to.
 Also see <code class="docutils literal notranslate"><span class="pre">add_prefix</span></code></p></li>
 <li><p><strong>lazy</strong> (<em>bool, optional</em>) – Lazily instantiate the signal. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the signal will be
-instantiated upon component instantiation</p></li>
+instantiated upon component instantiation.  Defaults to
+<code class="docutils literal notranslate"><span class="pre">component.lazy_default</span></code>.</p></li>
 <li><p><strong>trigger_value</strong> (<em>any, optional</em>) – Mark as a signal to be set on trigger. The value is sent to the signal
 at trigger time.</p></li>
 <li><p><strong>add_prefix</strong> (<em>sequence, optional</em>) – Keys in the kwargs to prefix with the Device PV prefix during creation
@@ -521,61 +435,49 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">('suffi
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xpdsim.movers.SimFilterBank.subscriptions">
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#xpdsim.movers.SimFilterBank.subscriptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-xpdsim">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xpdsim" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xpdsim" title="Permalink to this heading">¶</a></h2>
 </div>
 </div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="xpdsim.data.html" class="btn btn-neutral float-right" title="xpdsim.data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to xpdSim’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xpdsim.data.html" class="btn btn-neutral float-right" title="xpdsim.data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Songsheng Tao.
-
-    </p>
+    <p>&#169; Copyright 2020, Songsheng Tao.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
