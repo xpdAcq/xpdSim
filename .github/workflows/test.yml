@@ -29,6 +29,3 @@ jobs:
         run: |
           coverage report -m
           codecov
-
-      - name: check the code style
-        run: flake8
