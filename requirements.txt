@@ -1,4 +1,6 @@
+python
+bluesky
+databroker
 ophyd
 pyfai
-databroker
-bluesky
+suitcase-mongo
