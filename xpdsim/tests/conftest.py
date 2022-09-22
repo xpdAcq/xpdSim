@@ -34,8 +34,8 @@ def RE(request):
         if RE.state not in ('idle', 'panicked'):
             try:
                 RE.halt()
-            except TransitionError:
-                pass
+            except Exception as error:
+                print(error)
         loop.call_soon_threadsafe(loop.stop)
         RE._th.join()
         loop.close()
