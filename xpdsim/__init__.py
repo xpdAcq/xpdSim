@@ -2,13 +2,14 @@ from functools import partial
 
 import numpy as np
 from cycler import cycler
-from ophyd.sim import NumpySeqHandler, SynSignalRO
+from databroker.v2 import temp
+from ophyd.sim import SynSignalRO
 from pkg_resources import resource_filename as rs_fn
 
-from xpdsim.area_det import det_factory, nsls_ii_path, xpd_wavelength, \
-    img_gen, build_image_cycle, DEXELA_IMG_SIZE, BLACKFLY_IMG_SIZE
-from xpdsim.build_sim_db import build_sim_db
-from xpdsim.movers import shctl1, cs700, fb
+from xpdsim.area_det import (BLACKFLY_IMG_SIZE, DEXELA_IMG_SIZE,
+                             build_image_cycle, det_factory, img_gen,
+                             nsls_ii_path, xpd_wavelength)
+from xpdsim.movers import cs700, fb, shctl1
 
 __version__ = '0.4.2'
 
@@ -21,8 +22,7 @@ image_file = rs_fn(
     "-150911_Ni_Tim_series_tseries_1_e910af_0250.tif",
 )
 
-sim_db_dir, db = build_sim_db()  # default is sqlite
-db.reg.register_handler("NPY_SEQ", NumpySeqHandler)
+db = temp()
 
 # simple detector that outputs 5 by 5 noisy images
 simple_pe1c = det_factory()

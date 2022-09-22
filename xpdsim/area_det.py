@@ -19,7 +19,7 @@ from tempfile import mkdtemp
 
 import numpy as np
 from cycler import cycler
-from ophyd import sim, Device
+from ophyd import Device, sim
 from pkg_resources import resource_filename as rs_fn
 from tifffile import imread
 
@@ -36,7 +36,7 @@ xpd_wavelength = 0.1823
 chess_path = rs_fn(DATA_DIR_STEM, "chess")
 
 
-def build_image_cycle(path, key='pe1_image'):
+def build_image_cycle(path, key="pe1_image"):
     """Build image cycles, essentially generators with endless images
 
     Parameters
@@ -53,8 +53,6 @@ def build_image_cycle(path, key='pe1_image'):
     """
     p = Path(path)
     imgs = [imread(str(fp)) for fp in p.glob("*.tif*")]
-    # TODO: switch back to pims if the error is resolved
-    # imgs = ImageSequence(path)
     return cycler(key, imgs)
 
 
@@ -87,8 +85,7 @@ def add_fake_cam(det):
     return det
 
 
-def img_gen(cycle=None, size=PE_IMG_SIZE,
-            shutter=None, noise=None):
+def img_gen(cycle=None, size=PE_IMG_SIZE, shutter=None, noise=None):
     """Generator of diffraction images from 2D detector.
 
     The output images is determined by ``cycle`` argument.
@@ -122,7 +119,7 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
     # check data keys
     keys = cycle.keys
     if not len(keys) == 1:
-        raise RuntimeError('Only support single data key')
+        raise RuntimeError("Only support single data key")
     key = keys.pop()
     gen = cycle()
     next(gen)  # kick-off cycler
@@ -139,8 +136,9 @@ def img_gen(cycle=None, size=PE_IMG_SIZE,
     return img.astype(np.float32)
 
 
-def det_factory(cycle=None, img_gen_func=img_gen,
-                data_key="pe1_image", *args, **kwargs):
+def det_factory(
+    cycle=None, img_gen_func=img_gen, data_key="pe1_image", *args, **kwargs
+):
     """Build a simulated detector yielding input image sequence
 
     Parameters
@@ -177,9 +175,7 @@ def det_factory(cycle=None, img_gen_func=img_gen,
 
     det = sim.SynSignalWithRegistry(
         name=data_key,
-        func=lambda: img_gen_func(cycle,
-                                  *args,
-                                  **kwargs),
+        func=lambda: img_gen_func(cycle, *args, **kwargs),
         save_path=mkdtemp(prefix="xpdsim"),
     )
     return add_fake_cam(det)

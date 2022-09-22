@@ -1,15 +1,15 @@
 import pyFAI
-
 from xpdsim import *
 
-DEVICE_LIST = ['simple_pe1c',
-               'xpd_pe1c',
-               'xpd_pe2c',
-               'dexela',
-               'blackfly',
-               'blackfly_full_field',
-               'ring_current',
-               ]
+DEVICE_LIST = [
+    "simple_pe1c",
+    "xpd_pe1c",
+    "xpd_pe2c",
+    "dexela",
+    "blackfly",
+    "blackfly_full_field",
+    "ring_current",
+]
 
 
 def test_load_pyfai():
