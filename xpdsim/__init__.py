@@ -11,7 +11,7 @@ from xpdsim.area_det import (BLACKFLY_IMG_SIZE, DEXELA_IMG_SIZE,
                              nsls_ii_path, xpd_wavelength)
 from xpdsim.movers import cs700, fb, shctl1
 
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 
 pyfai_path = rs_fn("xpdsim", "data/pyfai/pyFAI_calib.yml")
 pyfai_poni = rs_fn("xpdsim", "data/pyfai/test.poni")
